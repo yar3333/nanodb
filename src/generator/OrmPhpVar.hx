@@ -1,7 +1,7 @@
 package generator;
 
-typedef OrmHaxeVar =
-{>HaxeVar,
+typedef OrmPhpVar =
+{>PhpVar,
 	var table: String;
 	var name : String;
 	var type : String;

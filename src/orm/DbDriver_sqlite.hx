@@ -1,6 +1,5 @@
 package orm;
 
-import Type;
 import php.Exception;
 import php.Global;
 import php.Syntax;

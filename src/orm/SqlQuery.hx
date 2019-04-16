@@ -99,7 +99,7 @@ class SqlQuery<T>
 		
 		if (fields != null)
 		{
-			Syntax.foreach(Reflect.fields(fields), function(_, name) f.push("`" + name + "`"));
+			Syntax.foreach(Global.array_keys(Global.get_object_vars(fields)), function(_, name) f.push("`" + name + "`"));
 		}
 		else
 		{

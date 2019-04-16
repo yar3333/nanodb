@@ -1,5 +1,7 @@
 package orm;
 
+import php.Syntax;
+import php.TypedAssoc;
 import sys.db.ResultSet;
 import orm.DbDriver_mysql;
 import orm.DbDriver_sqlite;
@@ -31,9 +33,7 @@ class Db
 		
 		#if profiler Profiler.begin("Db.open"); #end
 		var klassName = "nanodb.orm.DbDriver_" + dbtype;
-		var klass = Type.resolveClass(klassName);
-		if (klass == null) throw new Exception("Class " + klassName + " is not found.");
-		connection = Type.createInstance(klass, [ dbparams ]);
+		connection = Syntax.construct(klassName, dbparams);
 		#if profiler Profiler.end(); #end
 		
     }
@@ -79,15 +79,12 @@ class Db
 		connection = null;
 	}
 	
-	public function bind(sql:String, params:Dynamic) : String
+	public function bind(sql:String, params:TypedAssoc<String, Dynamic>) : String
 	{
 		return new EReg("[{]([_a-zA-Z][_a-zA-Z0-9]*)[}]", "").map(sql, function(re) 
 		{
 			var name = re.matched(1);
-			if (Reflect.hasField(params, name))
-			{
-				return quote(Reflect.field(params, name));
-			}
+			if (params.hasKey(name)) return quote(params[name]);
 			throw "Param '" + name + "' not found while binding SQL query '" + sql + "'.";
 		});
 	}

@@ -161,7 +161,7 @@ class Log
 	
     function indent(depth:Int) : String
     {
-        return StringTools.rpad("", " ", depth * 2);
+        return StringToolsNative.rpad("", " ", depth * 2);
     }
 	
 	function print(s:String)
@@ -171,7 +171,7 @@ class Log
 	
 	function println(s:String)
 	{
-		Sys.println(s);
+		Sys.print(s + "\n");
 	}
 	
 	//}

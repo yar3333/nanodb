@@ -85,10 +85,10 @@ class Main
 		else
 		{
 			
-			Lib.println("Generating set of the haxe classes from database tables.");
-			Lib.println("\nUsage:\n\thaxelib run orm <databaseConnectionString> [options]");
-			Lib.println("\nOptions:\n");
-			Lib.println(options.getHelpMessage());
+			Lib.print("Generating set of the php classes from database tables.\n");
+			Lib.print("\nUsage:\n\tbin\\nanodb <databaseConnectionString> [options]\n");
+			Lib.print("\nOptions:\n\n");
+			Lib.print(options.getHelpMessage() + "\n");
 		}
         
         Sys.exit(0);
@@ -98,7 +98,7 @@ class Main
 	{
 		if (message != null)
 		{
-			Lib.println("ERROR: " + message);
+			Lib.print("ERROR: " + message + "\n");
 		}
 		Sys.exit(1);
 	}

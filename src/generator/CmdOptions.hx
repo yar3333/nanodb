@@ -124,7 +124,7 @@ class CmdOptions
 		this.args = args.copy();
 		paramWoSwitchIndex = 0;
 		
-		params = new TypedAssoc<String,Dynamic>();
+		params = new TypedAssoc<String, Dynamic>();
 		Syntax.foreach(options, function(_, opt)
 		{
 			params.set(opt.name, opt.defaultValue);

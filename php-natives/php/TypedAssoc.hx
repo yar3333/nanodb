@@ -1,11 +1,12 @@
 package php;
+
 import haxe.extern.EitherType;
 
-abstract TypedAssoc<K, V>(NativeArray) from NativeArray to NativeArray
+extern abstract TypedAssoc<K, V>(NativeArray) from NativeArray to NativeArray
 {
 	public inline function new()
 	{
-		this = new NativeArray();
+		this = Syntax.arrayDecl();
 	}
 	
 	public var length(get, never) : Int;
@@ -29,7 +30,7 @@ abstract TypedAssoc<K, V>(NativeArray) from NativeArray to NativeArray
 		return cast arr;
 	}
 	
-	public inline function toIndexedArray() : NativeIndexedArray<V>
+	 public inline function toIndexedArray() : NativeIndexedArray<V>
 	{
 		return cast this;
 	}
@@ -54,15 +55,13 @@ abstract TypedAssoc<K, V>(NativeArray) from NativeArray to NativeArray
 		return Global.array_shift(this);
 	}
 	
-	public inline function join(glue="") : String
+	public inline function join(glue:String="") : String
 	{
 		return Global.implode(glue, this);
 	}
 	
-	public function splice(offset:Int, ?length:Int, ?replacement:TypedAssoc<K, V>) : TypedAssoc<K, V>
+	public inline function splice(offset:Int, length:Int=0, ?replacement:TypedAssoc<K, V>) : TypedAssoc<K, V>
 	{
-		if (length == null) length = Global.count(this) - offset;
-		if (replacement == null) replacement = new TypedAssoc<K, V>();
 		return Global.array_splice(this, offset, length, replacement);
 	}
 	
@@ -76,7 +75,7 @@ abstract TypedAssoc<K, V>(NativeArray) from NativeArray to NativeArray
 		return Global.array_key_exists(cast k, this);
 	}
 	
-	public inline function hasValue(v:V, strict=false) : Bool
+	public inline function hasValue(v:V, strict:Bool=false) : Bool
 	{
 		return Global.in_array(v, this, strict);
 	}

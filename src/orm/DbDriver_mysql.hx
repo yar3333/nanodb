@@ -1,6 +1,5 @@
 package orm;
 
-import Type;
 import php.Global;
 import php.Syntax;
 import php.TypedAssoc;
@@ -97,8 +96,8 @@ class DbDriver_mysql implements DbDriver
         var rows = query("SHOW TABLES FROM `" + database + "`");
         Syntax.foreach(rows, function(_, row)
         {
-			var fields = Reflect.fields(row);
-			r.push(Reflect.field(row, fields[0]));
+			var fields = Global.array_keys(Global.get_object_vars(row));
+			r.push(Syntax.field(row, fields[0]));
 		});
         return r;
     }
@@ -112,8 +111,8 @@ class DbDriver_mysql implements DbDriver
         {
 			r.push({
                  name : row.Field
-                ,type : Reflect.field(row, "Type")
-                ,isNull : Reflect.field(row, "Null") == "YES"
+                ,type : Syntax.field(row, "Type")
+                ,isNull : Syntax.field(row, "Null") == "YES"
                 ,isKey : row.Key == "PRI"
                 ,isAutoInc : row.Extra == "auto_increment"
 			});

@@ -34,7 +34,7 @@ class OrmTools
 		return "String";
 	}
 	
-	public static function createVar(haxeName:String, haxeType:String, ?haxeDefVal:String) : HaxeVar
+	public static function createVar(haxeName:String, haxeType:String, ?haxeDefVal:String) : PhpVar
 	{
 		return
 		{
@@ -44,7 +44,7 @@ class OrmTools
 		};
 	}
 	
-	static function field2var(table:String, f:DbTableFieldData, positions:OrmPositions) : OrmHaxeVar
+	static function field2var(table:String, f:DbTableFieldData, positions:OrmPositions) : OrmPhpVar
 	{ 
 		return
 		{
@@ -61,7 +61,7 @@ class OrmTools
 		};
 	}
 	
-	public static function fields2vars(table:String, fields:TypedArray<DbTableFieldData>, positions:OrmPositions) : TypedArray<OrmHaxeVar>
+	public static function fields2vars(table:String, fields:TypedArray<DbTableFieldData>, positions:OrmPositions) : TypedArray<OrmPhpVar>
 	{
 		return fields.map(function(x) return OrmTools.field2var(table, x, positions));
 	}

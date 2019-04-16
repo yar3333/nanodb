@@ -4,7 +4,7 @@ import php.Syntax;
 import php.TypedArray;
 using php.StringToolsNative;
 
-class HaxeClass
+class PhpClass
 {
 	var fullClassName : String;
 	var baseFullClassName : String;
@@ -29,7 +29,7 @@ class HaxeClass
 		imports.push("import " + packageName + ";");
 	}
 	
-	public function addVar(v:HaxeVar, isPrivate=false, isStatic=false, isReadOnlyProperty=false, ?allows:TypedArray<String>) : Void
+	public function addVar(v:PhpVar, isPrivate=false, isStatic=false, isReadOnlyProperty=false, ?allows:TypedArray<String>) : Void
 	{
 		if (v != null)
 		{
@@ -46,7 +46,7 @@ class HaxeClass
 		}
  	}
 	
-	public function addVarGetter(v:HaxeVarGetter, isPrivate = false, isStatic = false, isInline = false) : Void
+	public function addVarGetter(v:PhpVarGetter, isPrivate = false, isStatic = false, isInline = false) : Void
 	{
 		var s = "\n\t"
 		      + (isPrivate ? "" : "public ")
@@ -63,13 +63,13 @@ class HaxeClass
 		vars.push(s);
 	}
 	
-	public function addMethod(name:String, vars:TypedArray<HaxeVar>, retType:String, body:String, isPrivate=false, isStatic=false) : Void
+	public function addMethod(name:String, vars:TypedArray<PhpVar>, retType:String, body:String, isPrivate=false, isStatic=false) : Void
 	{
 		var header = 
 				(isPrivate ? '' : 'public ')
 			  + (isStatic ? 'static  ' : '')
 			  + 'function ' + name + '('
-			  + vars.map(function(v:HaxeVar) { return v.haxeName + ":" + v.haxeType + (v.haxeDefVal != null ? '=' + v.haxeDefVal : ''); } ).join(', ')
+			  + vars.map(function(v:PhpVar) { return v.haxeName + ":" + v.haxeType + (v.haxeDefVal != null ? '=' + v.haxeDefVal : ''); } ).join(', ')
 			  + ') : ' + retType;
 		var s = header + '\n'
 			  + '\t{\n'

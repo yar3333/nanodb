@@ -1,7 +1,7 @@
 package generator;
 
-typedef HaxeVar = {
+typedef PhpVarGetter = {
 	var haxeName : String;
 	var haxeType : String;
-	var haxeDefVal : String;
+	var haxeBody:String;
 }
