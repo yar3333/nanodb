@@ -6,6 +6,7 @@
   "require": {
     "php": ">=7.1.0"
   },
+  "bin": [ "nanodb" ],
   "autoload": {
     "psr-4": {
       "nanodb\\": "lib/nanodb"
