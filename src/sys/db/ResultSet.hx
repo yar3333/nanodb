@@ -1,6 +1,6 @@
 package sys.db;
 
-import php.TypedAssoc;
+import php.TypedArray;
 
 interface ResultSet {
 
@@ -10,9 +10,9 @@ interface ResultSet {
 
 	function hasNext() : Bool;
 	function next() : Dynamic;
-	function results() : TypedAssoc<Int, Dynamic>;
+	function results() : TypedArray<Dynamic>;
 	function getResult( n : Int ) : String;
 	function getIntResult( n : Int ) : Int;
 	function getFloatResult( n : Int ) : Float;
-	function getFieldsNames() : TypedAssoc<Int, String>;
+	function getFieldsNames() : TypedArray<String>;
 }
