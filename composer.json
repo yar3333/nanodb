@@ -2,11 +2,10 @@
   "name": "nanodb/nanodb",
   "type": "ORM",
   "description": "ORM",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "require": {
     "php": ">=7.1.0"
   },
-  "bin": [ "nanodb" ],
   "autoload": {
     "psr-4": {
       "nanodb\\": "lib/nanodb"
