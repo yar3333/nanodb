@@ -1,7 +1,6 @@
 package generator;
 
 import php.TypedArray;
-import orm.DbDriver;
 import orm.DbTableFieldData;
 
 class OrmTools 
@@ -62,7 +61,7 @@ class OrmTools
 		};
 	}
 	
-	public static function fields2vars(table:String, fields:TypedArray<Int, DbTableFieldData>, positions:OrmPositions) : TypedArray<Int, OrmHaxeVar>
+	public static function fields2vars(table:String, fields:TypedArray<DbTableFieldData>, positions:OrmPositions) : TypedArray<OrmHaxeVar>
 	{
 		return fields.map(function(x) return OrmTools.field2var(table, x, positions));
 	}

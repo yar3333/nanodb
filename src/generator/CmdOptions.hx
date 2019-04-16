@@ -1,17 +1,19 @@
 package generator;
 
 import php.Lib;
+import php.Syntax;
+import php.TypedAssoc;
 import php.TypedArray;
 import Type;
 import php.ArrayNatives;
-using StringTools;
+using php.StringToolsNative;
 
 private typedef Option = 
 {
 	var name : String;
 	var defaultValue : Dynamic;
 	var type : ValueType;
-	var switches : TypedArray<Int, String>;
+	var switches : TypedArray<String>;
 	var help : String;
 	var repeatable : Bool;
 }
@@ -28,14 +30,14 @@ private typedef Option =
  */
 class CmdOptions
 {
-	var options : TypedArray<Int, Option>;
-	var args : TypedArray<Int, String>;
+	var options : TypedArray<Option>;
+	var args : TypedArray<String>;
 	var paramWoSwitchIndex : Int;
-	var params : TypedArray<String, Dynamic>;
+	var params : TypedAssoc<String, Dynamic>;
 
 	public function new()
 	{
-		options = new TypedArray<Int, Option>();
+		options = new TypedArray<Option>();
 	}
 	
 	public function get(name:String) : Dynamic
@@ -43,14 +45,14 @@ class CmdOptions
 		return params.get(name);
 	}
 	
-	public function add(name:String, defaultValue:Dynamic, ?switches:TypedArray<Int, String>, help="")
+	public function add(name:String, defaultValue:Dynamic, ?switches:TypedArray<String>, help="")
 	{
 		var type = Type.typeof(defaultValue);
 		if (type == ValueType.TNull) type = ValueType.TClass(String);
 		addInner(name, defaultValue, type, switches, help, false);
 	}
 	
-	public function addRepeatable(name:String, typeName:String, ?switches:TypedArray<Int, String>, help="")
+	public function addRepeatable(name:String, typeName:String, ?switches:TypedArray<String>, help="")
 	{
 		var type : ValueType = switch(typeName)
 		{
@@ -62,7 +64,7 @@ class CmdOptions
 		addInner(name, [], type, switches, help, true);
 	}
 	
-	function addInner(name:String, defaultValue:Dynamic, type:ValueType, switches:TypedArray<Int, String>, help:String, repeatable:Bool)
+	function addInner(name:String, defaultValue:Dynamic, type:ValueType, switches:TypedArray<String>, help:String, repeatable:Bool)
 	{
 		if (!hasOption(name))
 		{
@@ -90,7 +92,7 @@ class CmdOptions
 		}
 		
 		var s = "";
-		for (opt in options)
+		Syntax.foreach(options, function(i, opt) 
 		{
 			if (opt.switches != null && opt.switches.length > 0)
 			{
@@ -103,9 +105,9 @@ class CmdOptions
 			
 			if (opt.help != null && opt.help != "") 
 			{
-				var helpLines = opt.help.split("\n");
+				var helpLines = StringToolsNative.split(opt.help, "\n");
 				s += helpLines.shift() + "\n";
-				s += Lambda.map(helpLines, function(s) return prefix + "".lpad(" ", maxSwitchLength + 1) + s + "\n").join("");
+				s += helpLines.map(function(s) return prefix + "".lpad(" ", maxSwitchLength + 1) + s + "\n").join("");
 			}
 			else
 			{
@@ -113,17 +115,17 @@ class CmdOptions
 			}
 			
 			s += "\n";
-		}
+		});
 		
 		return s.rtrim() + "\n";
 	}
 	
-	public function parse(args:TypedArray<Int, String>) : TypedArray<String,Dynamic>
+	public function parse(args:TypedArray<String>) : TypedAssoc<String,Dynamic>
 	{
 		this.args = args.copy();
 		paramWoSwitchIndex = 0;
 		
-		params = new TypedArray<String,Dynamic>();
+		params = new TypedAssoc<String,Dynamic>();
 		for (opt in options)
 		{
 			params.set(opt.name, opt.defaultValue);

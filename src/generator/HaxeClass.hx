@@ -1,26 +1,26 @@
 package generator;
 
 import php.TypedArray;
-using StringTools;
+using php.StringToolsNative;
 
 class HaxeClass
 {
 	var fullClassName : String;
 	var baseFullClassName : String;
 	
-	var imports : TypedArray<Int, String>;
-	var vars : TypedArray<Int, String>;
-	var methods : TypedArray<Int, String>;
-	var customs : TypedArray<Int, String>;
+	var imports : TypedArray<String>;
+	var vars : TypedArray<String>;
+	var methods : TypedArray<String>;
+	var customs : TypedArray<String>;
 	
 	public function new(fullClassName:String, baseFullClassName:String=null) : Void
 	{
 		this.fullClassName = fullClassName;
 		this.baseFullClassName = baseFullClassName;
-		this.imports = new TypedArray<Int, String>();
-		this.vars = new TypedArray<Int, String>();
-		this.methods = new TypedArray<Int, String>();
-		this.customs = new TypedArray<Int, String>();
+		this.imports = new TypedArray<String>();
+		this.vars = new TypedArray<String>();
+		this.methods = new TypedArray<String>();
+		this.customs = new TypedArray<String>();
 	}
 	
 	public function addImport(packageName:String) : Void
@@ -28,7 +28,7 @@ class HaxeClass
 		imports.push("import " + packageName + ";");
 	}
 	
-	public function addVar(v:HaxeVar, isPrivate=false, isStatic=false, isReadOnlyProperty=false, ?allows:Array<String>) : Void
+	public function addVar(v:HaxeVar, isPrivate=false, isStatic=false, isReadOnlyProperty=false, ?allows:TypedArray<String>) : Void
 	{
 		if (v != null)
 		{
@@ -62,7 +62,7 @@ class HaxeClass
 		vars.push(s);
 	}
 	
-	public function addMethod(name:String, vars:TypedArray<Int, HaxeVar>, retType:String, body:String, isPrivate=false, isStatic=false) : Void
+	public function addMethod(name:String, vars:TypedArray<HaxeVar>, retType:String, body:String, isPrivate=false, isStatic=false) : Void
 	{
 		var header = 
 				(isPrivate ? '' : 'public ')
@@ -86,7 +86,7 @@ class HaxeClass
 	{
 		var clas = splitFullClassName(fullClassName);
 		
-		var varLines = new TypedArray<Int, String>();
+		var varLines = new TypedArray<String>();
 		for (v in vars)
 		{
 			varLines.push(v.replace("\n", "\n\t"));

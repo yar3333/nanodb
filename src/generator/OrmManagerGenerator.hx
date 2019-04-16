@@ -3,10 +3,11 @@ package generator;
 import haxe.io.Path;
 import orm.Db;
 import php.Lib;
-import php.TypedArray;
+import php.TypedAssoc;
 import sys.FileSystem;
 import sys.io.File;
 import php.TypedArray;
+import php.TypedAssoc;
 using StringTools;
 using Lambda;
 
@@ -39,7 +40,7 @@ class OrmManagerGenerator
 		Log.finishSuccess();
 	}
 	
-	function getAutogenManager(db:Db, table:String, vars:TypedArray<Int, OrmHaxeVar>, modelClassName:String, autogenManagerClassName:String, customOrmClassName:String, positions:OrmPositions) : HaxeClass
+	function getAutogenManager(db:Db, table:String, vars:TypedArray<OrmHaxeVar>, modelClassName:String, autogenManagerClassName:String, customOrmClassName:String, positions:OrmPositions) : HaxeClass
 	{
 		var model:HaxeClass = new HaxeClass(autogenManagerClassName);
 		
@@ -50,7 +51,7 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			'get_query',
-			new TypedArray<Int, HaxeVar>(),
+			new TypedArray<HaxeVar>(),
 			'orm.SqlQuery<' + modelClassName + '>',
 			"return new orm.SqlQuery<" + modelClassName + ">(\"" + table + "\", db, this);",
 			true
@@ -157,7 +158,7 @@ class OrmManagerGenerator
 			+"return newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? 'db.lastInsertId()' : "data." + x.haxeName).join(", ") + ");"
 		);
 		
-		var dataVars: TypedArray<Int, HaxeVar> = Lib.toPhpArray([ OrmTools.createVar("data", "{ " + createVars.map(function(x) return (x.isKey ? "" : "?") + x.haxeName + ":" + x.haxeType).join(", ") + " }") ]);
+		var dataVars: TypedArray<HaxeVar> = Lib.toPhpArray([ OrmTools.createVar("data", "{ " + createVars.map(function(x) return (x.isKey ? "" : "?") + x.haxeName + ":" + x.haxeType).join(", ") + " }") ]);
 		
 		if (vars.exists(function(x) return x.isKey))
 		{
@@ -254,7 +255,7 @@ class OrmManagerGenerator
 		return model;
 	}
 	
-	function getCustomManager(table:String, vars:TypedArray<Int, OrmHaxeVar>, modelClassName:String, fullClassName:String, baseClassName:String=null) : HaxeClass
+	function getCustomManager(table:String, vars:TypedArray<OrmHaxeVar>, modelClassName:String, fullClassName:String, baseClassName:String=null) : HaxeClass
 	{
 		var model = new HaxeClass(fullClassName, baseClassName);
 		
@@ -263,7 +264,7 @@ class OrmManagerGenerator
 		return model;
 	}
 	
-	function createGetByMethodOne(table:String, vars:TypedArray<Int, OrmHaxeVar>, modelClassName:String, whereVars:TypedArray<Int, OrmHaxeVar>, model:HaxeClass) : Void
+	function createGetByMethodOne(table:String, vars:TypedArray<OrmHaxeVar>, modelClassName:String, whereVars:TypedArray<OrmHaxeVar>, model:HaxeClass) : Void
 	{
 		if (whereVars == null || whereVars.length == 0) return;
         
@@ -276,33 +277,33 @@ class OrmManagerGenerator
 		);
 	}
 	
-	function createGetByMethodMany(table:String, vars:TypedArray<Int, OrmHaxeVar>, modelClassName:String, whereVars:TypedArray<Int, OrmHaxeVar>, model:HaxeClass, positions:OrmPositions) : Void
+	function createGetByMethodMany(table:String, vars:TypedArray<OrmHaxeVar>, modelClassName:String, whereVars:TypedArray<OrmHaxeVar>, model:HaxeClass, positions:OrmPositions) : Void
 	{
 		if (whereVars == null || whereVars.length == 0) return;
 
 		model.addMethod
 		(
 			'getBy' + whereVars.map(function(v) return StringToolsEx.capitalize(v.haxeName)).join('And'),
-			(cast whereVars:TypedArray<Int, HaxeVar>).concat(Lib.toPhpArray([ OrmTools.createVar('_order', 'String', getOrderDefVal(vars, positions)) ])), 
+			(cast whereVars:TypedArray<HaxeVar>).concat(Lib.toPhpArray([ OrmTools.createVar('_order', 'String', getOrderDefVal(vars, positions)) ])), 
 			'Array<' + modelClassName + '>',
 			"return getBySqlMany('SELECT * FROM `" + table + "`" + getWhereSql(whereVars) + " + (_order != null ? ' ORDER BY ' + _order : ''));"
 		);
 	}
 	
-	function getOrderDefVal(vars:TypedArray<Int, OrmHaxeVar>, positions:OrmPositions) : String
+	function getOrderDefVal(vars:TypedArray<OrmHaxeVar>, positions:OrmPositions) : String
 	{
 		var positionVar = vars.filter(function(x) return positions.is(x));
 		return positionVar.length == 0 ? "null" : "'" + positionVar.map(function(x) return x.name).join(", ") + "'";
 	}
     
-    function getWhereSql(vars:TypedArray<Int, OrmHaxeVar>) : String
+    function getWhereSql(vars:TypedArray<OrmHaxeVar>) : String
     {
         return vars.length > 0
             ? " WHERE " + vars.map(function(v) return "`" + v.name + "` = ' + db.quote(" + v.haxeName + ")").join("+ ' AND ")
             : "'";
     }
     
-    function getForeignKeyVars(db:Db, table:String, vars:TypedArray<Int, OrmHaxeVar>) : TypedArray<Int, OrmHaxeVar>
+    function getForeignKeyVars(db:Db, table:String, vars:TypedArray<OrmHaxeVar>) : TypedArray<OrmHaxeVar>
     {
         var foreignKeys = db.connection.getForeignKeys(table);
         var foreignKeyVars = vars.filter(function(v)

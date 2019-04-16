@@ -1,8 +1,11 @@
 package orm;
 
+import php.Global;
+import php.TypedArray;
+
 private typedef Manager<T> =
 {
-	function getBySqlMany(sql:String) : Array<T>;
+	function getBySqlMany(sql:String) : TypedArray<T>;
 	function getBySqlOne(sql:String) : T;
 }
 
@@ -12,8 +15,8 @@ class SqlQuery<T>
 	var db : Db;
 	var manager : Manager<T>;
 	
-	var conditions = new Array<String>();
-	var orderBys = new Array<String>();
+	var conditions = new TypedArray<String>();
+	var orderBys = new TypedArray<String>();
 	
 	public function new(table:String, db:Db, manager:Manager<T>)
 	{
@@ -40,7 +43,7 @@ class SqlQuery<T>
 		return this;
 	}
 	
-	public function findMany(?limit:Int,?offset:Int) : Array<T>
+	public function findMany(?limit:Int,?offset:Int) : TypedArray<T>
 	{
 		return manager.getBySqlMany(getSelectSql(null) + getLimitSql(limit) + getOffsetSql(offset));
 	}
@@ -134,11 +137,9 @@ class SqlQuery<T>
 			}
 		}
 		
-		if (untyped __call__("is_array", v)) v = php.Lib.toHaxeArray(v);
-		
-		if (Std.is(v, Array))
+		if (Global.is_array(v))
 		{
-			return "(" + (cast v:Array<Dynamic>).map(db.quote).join(", ") + ")";
+			return "(" + (cast v:TypedArray<Dynamic>).map(db.quote).join(", ") + ")";
 		}
 		
 		return db.quote(v);

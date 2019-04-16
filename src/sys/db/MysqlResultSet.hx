@@ -28,8 +28,8 @@ class MysqlResultSet implements ResultSet
 		return withdrawFetched();
 	}
 
-	public function results() : TypedArray<Int, Dynamic> {
-		var list = new TypedArray<Int, Dynamic>();
+	public function results() : TypedAssoc<Int, Dynamic> {
+		var list = new TypedAssoc<Int, Dynamic>();
 
 		result.data_seek(0);
 		var row = result.fetch_object(hxAnonClassName);
@@ -55,8 +55,8 @@ class MysqlResultSet implements ResultSet
 		return Syntax.float(getResult(n));
 	}
 
-	public function getFieldsNames() : TypedArray<Int, String> {
-		var fields : TypedArray<Int, MysqliFieldInfo> = cast result.fetch_fields();
+	public function getFieldsNames() : TypedAssoc<Int, String> {
+		var fields : TypedAssoc<Int, MysqliFieldInfo> = cast result.fetch_fields();
 		return fields.map(function(x) return x.name);
 	}
 

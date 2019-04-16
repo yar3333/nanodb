@@ -6,6 +6,7 @@ import php.Lib;
 import sys.FileSystem;
 import sys.io.File;
 import php.TypedArray;
+import php.TypedAssoc;
 using StringTools;
 
 class OrmModelGenerator 
@@ -37,7 +38,7 @@ class OrmModelGenerator
 		Log.finishSuccess();
 	}
 	
-	function getAutogenModel(table:String, vars:TypedArray<Int, OrmHaxeVar>, modelClassName:String, customOrmClassName:String) : HaxeClass
+	function getAutogenModel(table:String, vars:TypedArray<OrmHaxeVar>, modelClassName:String, customOrmClassName:String) : HaxeClass
 	{
 		var model = new HaxeClass(modelClassName);
 		
@@ -71,7 +72,7 @@ class OrmModelGenerator
 			
 			var savedVars = vars.filter(function(v) return !v.isKey);
 			var whereVars = vars.filter(function(v) return v.isKey);
-			model.addMethod("save", new TypedArray<Int, OrmHaxeVar>(), "Void",
+			model.addMethod("save", new TypedArray<OrmHaxeVar>(), "Void",
 				  "db.query(\n"
 				    + "\t 'UPDATE `" + table + "` SET '\n"
 					+ "\t\t+  '" + savedVars.map(function(v) return "`" + v.name + "` = ' + db.quote(" + v.haxeName + ")").join("\n\t\t+', ")

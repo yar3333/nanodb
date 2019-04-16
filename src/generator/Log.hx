@@ -1,6 +1,9 @@
 package generator;
+import php.Syntax;
+import php.TypedArray;
+import php.TypedAssoc;
 
-using StringTools;
+using php.StringToolsNative;
 
 /**
  * Global log class.
@@ -77,7 +80,7 @@ class Log
     var depth : Int;
 	var ind : Int;
     var inBlock : Bool;
-	var shown : Array<Bool>;
+	var shown : TypedArray<Bool>;
     
     public function new(depthLimit=2147483647, levelLimit=2147483647)
     {
@@ -86,7 +89,7 @@ class Log
         depth = -1;
 		ind = 0;
         inBlock = false;
-		shown = [];
+		shown = Syntax.arrayDecl();
     }
     
     function startInner(message:String, level:Int)

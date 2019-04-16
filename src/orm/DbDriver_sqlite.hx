@@ -3,13 +3,11 @@ package orm;
 import Type;
 import php.Exception;
 import php.Global;
-import php.NativeIndexedArray;
 import php.TypedArray;
 import sys.db.Connection;
 import sys.db.ResultSet;
 import sys.db.Sqlite;
-using Lambda;
-using StringTools;
+using php.StringToolsNative;
 
 class DbDriver_sqlite implements DbDriver
 {
@@ -37,7 +35,7 @@ class DbDriver_sqlite implements DbDriver
 		connection = null;
 	}
 	
-    public function getTables() : TypedArray<Int, String>
+    public function getTables() : TypedArray<String>
     {
         var rows = query("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
 		return rows.results().map(function(row) return row.name);
@@ -77,7 +75,7 @@ class DbDriver_sqlite implements DbDriver
 		return isAuto;
 	}
 	
-	public function getFields(table:String) : TypedArray<Int, DbTableFieldData>
+	public function getFields(table:String) : TypedArray<DbTableFieldData>
     {
         var rows = query("PRAGMA table_info(" + table + ")");
         return rows.results().map(function(row)
@@ -130,9 +128,9 @@ class DbDriver_sqlite implements DbDriver
 		return connection.lastInsertId();
     }
 	
-	public function getForeignKeys(table:String) : TypedArray<Int, DbTableForeignKey>
+	public function getForeignKeys(table:String) : TypedArray<DbTableForeignKey>
     {
-        var r = new TypedArray<Int, DbTableForeignKey>();
+        var r = new TypedArray<DbTableForeignKey>();
 		var sql = query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" + table + "'").getResult(0);
 		var reFK = ~/^CONSTRAINT ".+?" FOREIGN KEY [(]"(.+?)"[)] REFERENCES "(.+?)" [(]"(.+?)"[)]/;
 		for (s in sql.replace("\r", "").split("\n"))
@@ -149,9 +147,9 @@ class DbDriver_sqlite implements DbDriver
 		return r;
     }
 	
-	public function getUniques(table:String) : TypedArray<Int, TypedArray<Int, String>>
+	public function getUniques(table:String) : TypedArray<TypedArray<String>>
 	{
-        var r = new TypedArray<Int, TypedArray<Int, String>>();
+        var r = new TypedArray<TypedArray<String>>();
 		var sql : String = query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" + table + "'").getResult(0);
 		var reUNIQUE = ~/^CONSTRAINT ".+?" UNIQUE [(](.+?)[)]/;
 		for (s in sql.replace("\r", "").split("\n"))
@@ -159,7 +157,7 @@ class DbDriver_sqlite implements DbDriver
 			if (reUNIQUE.match(s))
 			{
 				var fields: String = reUNIQUE.matched(1);
-				r.push((cast Global.explode(",", fields) : TypedArray<Int, String>).map(function(s:String)
+				r.push((cast Global.explode(",", fields) : TypedArray<String>).map(function(s:String)
 				{
 					s = s.trim();
 					if (s.startsWith("\"") && s.endsWith("\"")) s = s.substr(1, s.length - 2);

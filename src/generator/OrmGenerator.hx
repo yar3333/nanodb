@@ -3,11 +3,12 @@ package generator;
 import orm.Db;
 import haxe.io.Path;
 import php.Lib;
-import php.NativeArray;
+import php.Syntax;
 import sys.FileSystem;
 import sys.io.File;
 import php.TypedArray;
-using StringTools;
+import php.TypedAssoc;
+using php.StringToolsNative;
 
 class OrmGenerator
 {
@@ -18,22 +19,23 @@ class OrmGenerator
 		this.srcPath = Path.removeTrailingSlashes(srcPath.replace("\\", "/")) + "/";
 	}
 	
-	public function generate(db:Db, autogenPackage:String, customPackage:String, ignoreTables:Array<String>, noInstantiateManagers:Array<String>, positions:OrmPositions)
+	public function generate(db:Db, autogenPackage:String, customPackage:String, ignoreTables:TypedArray<String>, noInstantiateManagers:Array<String>, positions:OrmPositions)
 	{
 		var autogenOrmClassName = autogenPackage + ".Orm";
 		var customOrmClassName = customPackage + ".Orm";
 		
-		var tables = new TypedArray<Int, OrmTable>();
+		var tables = new TypedArray<OrmTable>();
 		
-		for (tableName in db.connection.getTables())
+		Syntax.foreach(db.connection.getTables(), function(i, tableName)
         {
-			if (ignoreTables.indexOf(tableName) >= 0) continue;
-			
-			var table = new OrmTable(tableName, autogenPackage, customPackage);
-			new OrmModelGenerator().make(db, table, customOrmClassName, srcPath, positions);
-			new OrmManagerGenerator().make(db, table, customOrmClassName, srcPath, positions);
-			tables.push(table);
-        }
+			if (!ignoreTables.hasValue(tableName))
+			{
+				var table = new OrmTable(tableName, autogenPackage, customPackage);
+				new OrmModelGenerator().make(db, table, customOrmClassName, srcPath, positions);
+				new OrmManagerGenerator().make(db, table, customOrmClassName, srcPath, positions);
+				tables.push(table);
+			}
+        });
 		
 		Log.start("MANAGERS => " + customOrmClassName);
 		makeAutogenOrm(tables, autogenOrmClassName, customOrmClassName, noInstantiateManagers);
@@ -42,7 +44,7 @@ class OrmGenerator
     }
 	
 	
-	function makeAutogenOrm(tables:TypedArray<Int, OrmTable>, autogenOrmClassName:String, customOrmClassName:String, noInstantiateManagers:Array<String>)
+	function makeAutogenOrm(tables:TypedArray<OrmTable>, autogenOrmClassName:String, customOrmClassName:String, noInstantiateManagers:Array<String>)
 	{
 		var autogenOrm = getAutogenOrm(tables, autogenOrmClassName, noInstantiateManagers);
 		var destFileName = srcPath + autogenOrmClassName.replace(".", "/") + ".hx";
@@ -64,7 +66,7 @@ class OrmGenerator
 		}
 	}
 	
-	function getAutogenOrm(tables:TypedArray<Int, OrmTable>, fullClassName:String, noInstantiateManagers:Array<String>) : HaxeClass
+	function getAutogenOrm(tables:TypedArray<OrmTable>, fullClassName:String, noInstantiateManagers:Array<String>) : HaxeClass
 	{
 		var clas = new HaxeClass(fullClassName);
 		

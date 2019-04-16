@@ -1,9 +1,8 @@
 package orm;
 
 import Type;
-import php.Syntax;
+import php.TypedAssoc;
 import php.TypedArray;
-import php.db.Mysqli;
 import sys.db.Connection;
 import sys.db.Mysql;
 import sys.db.ResultSet;
@@ -89,9 +88,9 @@ class DbDriver_mysql implements DbDriver
 		connection = null;
 	}
 	
-    public function getTables() : TypedArray<Int, String>
+    public function getTables() : TypedArray<String>
     {
-        var r = new TypedArray<Int, String>();
+        var r = new TypedArray<String>();
         var rows = query("SHOW TABLES FROM `" + database + "`");
         for (row in rows)
         {
@@ -102,9 +101,9 @@ class DbDriver_mysql implements DbDriver
     }
 
 	
-	public function getFields(table:String) : TypedArray<Int, DbTableFieldData>
+	public function getFields(table:String) : TypedArray<DbTableFieldData>
     {
-        var r = new TypedArray<Int, DbTableFieldData>();
+        var r = new TypedArray<DbTableFieldData>();
         var rows = query("SHOW COLUMNS FROM `" + table + "`");
         for (row in rows)
         {
@@ -158,7 +157,7 @@ class DbDriver_mysql implements DbDriver
 		return connection.lastInsertId();
     }
 	
-	public function getForeignKeys(table:String) : TypedArray<Int, DbTableForeignKey>
+	public function getForeignKeys(table:String) : TypedArray<DbTableForeignKey>
     {
         var sql = "
   SELECT
@@ -176,14 +175,14 @@ class DbDriver_mysql implements DbDriver
 		return cast query(sql).results();
     }
 	
-	public function getUniques(table:String) : TypedArray<Int, TypedArray<Int, String>>
+	public function getUniques(table:String) : TypedArray<TypedArray<String>>
 	{
 		var rows : ResultSet = query("SHOW INDEX FROM `" + table + "` WHERE Non_unique=0 AND Key_name<>'PRIMARY'");
-		var r = new TypedArray<String, TypedArray<Int, String>>();
+		var r = new TypedAssoc<String, TypedArray<String>>();
 		for (row in rows)
 		{
 			var key:String = row.Key_name;
-            if (!r.hasKey(key)) r[key] = new TypedArray<Int, String>();
+            if (!r.hasKey(key)) r[key] = new TypedArray<String>();
             r[key].push(row.Column_name);
 		}
 		return r.values();

@@ -10,8 +10,8 @@ interface DbDriver
     function lastInsertId() : Int;
 	function close() : Void;
     
-	function getTables() : TypedArray<Int, String>;
-    function getFields(table:String) : TypedArray<Int, DbTableFieldData>;
-	function getForeignKeys(table:String) : TypedArray<Int, DbTableForeignKey>;
-	function getUniques(table:String) : TypedArray<Int, TypedArray<Int, String>>;
+	function getTables() : TypedArray<String>;
+    function getFields(table:String) : TypedArray<DbTableFieldData>;
+	function getForeignKeys(table:String) : TypedArray<DbTableForeignKey>;
+	function getUniques(table:String) : TypedArray<TypedArray<String>>;
 }
