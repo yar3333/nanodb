@@ -69,7 +69,7 @@ class PhpClass {
 	 * @return void
 	 */
 	public function addImport ($packageName) {
-		array_push($this->imports, "import " . ($packageName??'null') . ";");
+		array_push($this->imports, "import " . $packageName . ";");
 	}
 
 	/**
@@ -90,8 +90,8 @@ class PhpClass {
 			$isStatic = false;
 		}
 		$header = ((($isPrivate ? "" : "public "))??'null') . ((($isStatic ? "static  " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
-			return ($v->haxeName??'null') . ":" . ($v->haxeType??'null') . ((($v->haxeDefVal !== null ? "=" . ($v->haxeDefVal??'null') : ""))??'null');
-		}, $vars))??'null') . ") : " . ($retType??'null');
+			return $v->haxeName . ":" . $v->haxeType . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
+		}, $vars))??'null') . ") : " . $retType;
 		$s = $header . "\x0A" . "\x09{\x0A" . ($this->indent(trim($body, null), "\x09\x09")??'null') . "\x0A" . "\x09}";
 		array_push($this->methods, $s);
 	}
@@ -118,7 +118,7 @@ class PhpClass {
 		if ($v !== null) {
 			$s = (((($allows !== null) && (count($allows) > 0) ? implode("", array_map(function ($s1) {
 				return "@:allow(" . $s1 . ")\x0A";
-			}, $allows)) : ""))??'null') . ((($isPrivate ? "" : "public "))??'null') . ((($isStatic ? "static " : ""))??'null') . "var " . ($v->haxeName??'null') . ((($isReadOnlyProperty ? "(default, null)" : ""))??'null') . " : " . ($v->haxeType??'null') . ";";
+			}, $allows)) : ""))??'null') . ((($isPrivate ? "" : "public "))??'null') . ((($isStatic ? "static " : ""))??'null') . "var " . $v->haxeName . ((($isReadOnlyProperty ? "(default, null)" : ""))??'null') . " : " . $v->haxeType . ";";
 			array_push($this->vars, $s);
 		} else {
 			array_push($this->vars, "");
@@ -143,8 +143,8 @@ class PhpClass {
 		if ($isInline === null) {
 			$isInline = false;
 		}
-		$s = "\x0A\x09" . ((($isPrivate ? "" : "public "))??'null') . ((($isStatic ? "static " : ""))??'null') . "var " . ($v->haxeName??'null') . "(" . ($v->haxeName??'null') . "_getter, null)" . " : " . ($v->haxeType??'null') . ";\x0A";
-		$s = $s . ((($isInline ? "\x09inline " : "\x09"))??'null') . "function " . ($v->haxeName??'null') . "_getter() : " . ($v->haxeType??'null') . "\x0A" . "\x09{\x0A" . ($this->indent(trim($v->haxeBody, null), "\x09\x09")??'null') . "\x0A" . "\x09}";
+		$s = "\x0A\x09" . ((($isPrivate ? "" : "public "))??'null') . ((($isStatic ? "static " : ""))??'null') . "var " . $v->haxeName . "(" . $v->haxeName . "_getter, null)" . " : " . $v->haxeType . ";\x0A";
+		$s = $s . ((($isInline ? "\x09inline " : "\x09"))??'null') . "function " . $v->haxeName . "_getter() : " . $v->haxeType . "\x0A" . "\x09{\x0A" . ($this->indent(trim($v->haxeBody, null), "\x09\x09")??'null') . "\x0A" . "\x09}";
 		array_push($this->vars, $s);
 	}
 
@@ -191,10 +191,10 @@ class PhpClass {
 		$varLines = $this1;
 		$collection = $this->vars;
 		foreach ($collection as $key => $value) {
-			array_push($varLines, $value->replace("\x0A", "\x0A\x09"));
+			array_push($varLines, str_replace("\x0A", "\x0A\x09", $value));
 		}
 
-		$s = "package " . ($clas->packageName??'null') . ";\x0A" . "\x0A" . (implode("\x0A", $this->imports)??'null') . (((count($this->imports) > 0 ? "\x0A\x0A" : ""))??'null') . "class " . ($clas->className??'null') . ((($this->baseFullClassName !== null ? " extends " . ($this->baseFullClassName??'null') : ""))??'null') . "\x0A" . "{\x0A" . (((count($this->vars) > 0 ? "\x09" . (implode("\x0A\x09", $varLines)??'null') . "\x0A\x0A" : ""))??'null') . (((count($this->methods) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->methods)??'null') . "\x0A" : ""))??'null') . (((count($this->customs) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->customs)??'null') . "\x0A" : ""))??'null') . "}";
+		$s = "package " . $clas->packageName . ";\x0A" . "\x0A" . (implode("\x0A", $this->imports)??'null') . (((count($this->imports) > 0 ? "\x0A\x0A" : ""))??'null') . "class " . $clas->className . ((($this->baseFullClassName !== null ? " extends " . $this->baseFullClassName : ""))??'null') . "\x0A" . "{\x0A" . (((count($this->vars) > 0 ? "\x09" . (implode("\x0A\x09", $varLines)??'null') . "\x0A\x0A" : ""))??'null') . (((count($this->methods) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->methods)??'null') . "\x0A" : ""))??'null') . (((count($this->customs) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->customs)??'null') . "\x0A" : ""))??'null') . "}";
 		return $s;
 	}
 

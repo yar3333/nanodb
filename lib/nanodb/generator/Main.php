@@ -10,7 +10,6 @@ use \nanodb\generator\Log as GeneratorLog;
 use \nanodb\generator\OrmGenerator as GeneratorOrmGenerator;
 use \nanodb\generator\CmdOptions as GeneratorCmdOptions;
 use \nanodb\orm\Db;
-use \nanodb\php\_Boot\HxException;
 use \nanodb\generator\OrmPositions as GeneratorOrmPositions;
 
 class Main {
@@ -31,7 +30,7 @@ class Main {
 	 */
 	static public function main () {
 		GeneratorLog::$instance->depthLimit = 2;
-		$args = $argv;
+		$args = $GLOBALS["argv"];
 		$args = array_slice($args, 1, null);
 		$options = new GeneratorCmdOptions();
 		$options->add("databaseConnectionString", "", null, "Database connecting string like 'mysql://user:pass@localhost/mydb'.");
@@ -43,27 +42,18 @@ class Main {
 		$options->addRepeatable("positions", "string", ["-pf", "--position-field"], "Field name treated as record number (1, 2, 3, ...).\x0A" . "Values of such fields will be autocalculated on records creating.\x0A" . "Can be specified in next forms:\x0A" . "\x09`field` or `*.field` - to specify fields in any table;\x0A" . "\x09`table.field` - to specify field in specified table only.\x0A" . "Default is `position`.");
 		$options->parse($args);
 		if (count($args) > 0) {
-			try {
-				$srcPath = $options->get("srcPath");
-				$databaseConnectionString = $options->get("databaseConnectionString");
-				if ($databaseConnectionString !== "") {
-					GeneratorLog::start("Generate object related mapping classes");
-					$positions = $options->get("positions");
-					if (count($positions) === 0) {
-						$positions = ["position"];
-					}
-					(new GeneratorOrmGenerator($srcPath))->generate(new Db($databaseConnectionString), $options->get("autogenPackage"), $options->get("customPackage"), $options->get("ignoreTables"), $options->get("noInstantiateManagers"), new GeneratorOrmPositions($positions));
-					GeneratorLog::finishSuccess();
-				} else {
-					Main::fail("Database connection string must be specified.");
+			$srcPath = $options->get("srcPath");
+			$databaseConnectionString = $options->get("databaseConnectionString");
+			if ($databaseConnectionString !== "") {
+				GeneratorLog::start("Generate object related mapping classes");
+				$positions = $options->get("positions");
+				if (count($positions) === 0) {
+					$positions = ["position"];
 				}
-			} catch (\Throwable $__hx__caught_e) {
-				$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
-				if ($__hx__real_e instanceof \Exception) {
-					$e = $__hx__real_e;
-					GeneratorLog::echo($e->getMessage());
-					Main::fail();
-				} else  throw $__hx__caught_e;
+				(new GeneratorOrmGenerator($srcPath))->generate(new Db($databaseConnectionString), $options->get("autogenPackage"), $options->get("customPackage"), $options->get("ignoreTables"), $options->get("noInstantiateManagers"), new GeneratorOrmPositions($positions));
+				GeneratorLog::finishSuccess();
+			} else {
+				Main::fail("Database connection string must be specified.");
 			}
 		} else {
 			echo("Generating set of the php classes from database tables.\x0A");

@@ -92,13 +92,16 @@ class DbDriver_mysql implements DbDriver
 	
     public function getTables() : TypedArray<String>
     {
+		Global.echo("\n\nSHOW TABLES FROM `" + database + "`\n\n");
         var r = new TypedArray<String>();
-        var rows = query("SHOW TABLES FROM `" + database + "`");
-        Syntax.foreach(rows, function(_, row)
+        var resultSet = query("SHOW TABLES FROM `" + database + "`");
+		Global.var_dump(resultSet.results());
+        Syntax.foreach(resultSet.results(), function(_, row:TypedAssoc<String, Dynamic>)
         {
-			var fields = Global.array_keys(Global.get_object_vars(row));
-			r.push(Syntax.field(row, fields[0]));
+			var fields = Global.array_keys(row);
+			r.push(row[fields[0]]);
 		});
+		//Global.var_dump(r);
         return r;
     }
 
@@ -106,15 +109,15 @@ class DbDriver_mysql implements DbDriver
 	public function getFields(table:String) : TypedArray<DbTableFieldData>
     {
         var r = new TypedArray<DbTableFieldData>();
-        var rows = query("SHOW COLUMNS FROM `" + table + "`");
-        Syntax.foreach(rows, function(_, row)
+        var resultSet = query("SHOW COLUMNS FROM `" + table + "`");
+        Syntax.foreach(resultSet.results(), function(_, row:TypedAssoc<String, Dynamic>)
         {
 			r.push({
-                 name : row.Field
-                ,type : Syntax.field(row, "Type")
-                ,isNull : Syntax.field(row, "Null") == "YES"
-                ,isKey : row.Key == "PRI"
-                ,isAutoInc : row.Extra == "auto_increment"
+                 name : row["Field"]
+                ,type : row["Type"]
+                ,isNull : row["Null"] == "YES"
+                ,isKey : row["Key"] == "PRI"
+                ,isAutoInc : row["Extra"] == "auto_increment"
 			});
         });
         return r;
@@ -152,18 +155,18 @@ class DbDriver_mysql implements DbDriver
     AND c.table_schema = '" + database + "'
     AND u.table_name = '" + table + "';
 ";
-		return cast query(sql).results();
+		return cast query(sql).results().map(function(x) return Syntax.object(x));
     }
 	
 	public function getUniques(table:String) : TypedArray<TypedArray<String>>
 	{
-		var rows : ResultSet = query("SHOW INDEX FROM `" + table + "` WHERE Non_unique=0 AND Key_name<>'PRIMARY'");
+		var resultSet : ResultSet = query("SHOW INDEX FROM `" + table + "` WHERE Non_unique=0 AND Key_name<>'PRIMARY'");
 		var r = new TypedAssoc<String, TypedArray<String>>();
-        Syntax.foreach(rows, function(_, row)
+        Syntax.foreach(resultSet.results(), function(_, row:TypedAssoc<String, Dynamic>)
 		{
-			var key:String = row.Key_name;
+			var key:String = row['Key_name'];
             if (!r.hasKey(key)) r[key] = new TypedArray<String>();
-            r[key].push(row.Column_name);
+            r[key].push(row['Column_name']);
 		});
 		return r.values();
 	}

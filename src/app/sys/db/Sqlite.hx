@@ -105,7 +105,7 @@ private class SQLiteResultSet implements ResultSet {
 
 	var loaded:Bool = false;
 	var currentIndex:Int = 0;
-	var rows:NativeIndexedArray<NativeAssocArray<Scalar>>;
+	var rows:NativeIndexedArray<TypedAssoc<String, Dynamic>>;
 	var result:SQLite3Result;
 	var fetchedRow:NativeArray;
 	var fieldsInfo:NativeAssocArray<Int>;
@@ -125,10 +125,10 @@ private class SQLiteResultSet implements ResultSet {
 		return Boot.createAnon(correctArrayTypes(next));
 	}
 
-	public function results() : TypedArray<Dynamic> {
+	public function results() : TypedArray<TypedAssoc<String, Dynamic>> {
 		if (!loaded) load();
-		var list = new TypedArray<Dynamic>();
-		Syntax.foreach(rows, function(_, row) list.push(Boot.createAnon(correctArrayTypes(row))));
+		var list = new TypedArray<TypedAssoc<String, Dynamic>>();
+		Syntax.foreach(rows, function(_, row) list.push(correctArrayTypes(row)));
 		return list;
 	}
 
@@ -151,7 +151,7 @@ private class SQLiteResultSet implements ResultSet {
 		return Global.array_keys(fieldsInfo);
 	}
 
-	function correctArrayTypes(row:NativeAssocArray<String>):NativeAssocArray<Scalar> {
+	function correctArrayTypes(row:NativeAssocArray<String>):TypedAssoc<String, Dynamic> {
 		var fieldsInfo = getFieldsInfo();
 		Syntax.foreach(row, function(field:String, value:String) {
 			row[field] = correctType(value, fieldsInfo[field]);

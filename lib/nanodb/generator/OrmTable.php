@@ -45,10 +45,10 @@ class OrmTable {
 		$this->tableName = $tableName;
 		$this->varName = $this->getVarName();
 		$className = $this->getClassName();
-		$this->autogenManagerClassName = ($autogenPackage??'null') . "." . ($className??'null') . "Manager";
-		$this->customManagerClassName = ($customPackage??'null') . "." . ($className??'null') . "Manager";
-		$this->autogenModelClassName = ($autogenPackage??'null') . "." . ($className??'null');
-		$this->customModelClassName = ($customPackage??'null') . "." . ($className??'null');
+		$this->autogenManagerClassName = $autogenPackage . "." . $className . "Manager";
+		$this->customManagerClassName = $customPackage . "." . $className . "Manager";
+		$this->autogenModelClassName = $autogenPackage . "." . $className;
+		$this->customModelClassName = $customPackage . "." . $className;
 	}
 
 	/**

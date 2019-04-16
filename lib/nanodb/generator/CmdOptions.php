@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\_Boot\HxDynamicStr;
 use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
 use \nanodb\php\_Boot\HxException;
@@ -156,18 +155,19 @@ class CmdOptions {
 		$maxSwitchLength = 0;
 		$collection = $this->options;
 		foreach ($collection as $key => $value) {
-			if (($value->switches !== null) && (HxDynamicStr::wrap($value->switches)->length > 0)) {
-				$maxSwitchLength = ($maxSwitchLength > HxDynamicStr::wrap($value->switches->join(", "))->length ? $maxSwitchLength : HxDynamicStr::wrap($value->switches->join(", "))->length);
+			if (($value->switches !== null) && (count($value->switches) > 0)) {
+				$maxSwitchLength1 = implode(", ", $value->switches);
+				$maxSwitchLength = ($maxSwitchLength > mb_strlen($maxSwitchLength1) ? $maxSwitchLength : mb_strlen(implode(", ", $value->switches)));
 			} else {
-				$maxSwitchLength = ($maxSwitchLength > (HxDynamicStr::wrap($value->name)->length + 2) ? $maxSwitchLength : HxDynamicStr::wrap($value->name)->length + 2);
+				$maxSwitchLength = ($maxSwitchLength > (mb_strlen($value->name) + 2) ? $maxSwitchLength : mb_strlen($value->name) + 2);
 			}
 		}
 
 		$s = "";
 		$collection1 = $this->options;
 		foreach ($collection1 as $key1 => $value1) {
-			if (($value1->switches !== null) && (HxDynamicStr::wrap($value1->switches)->length > 0)) {
-				$s1 = $value1->switches->join(", ")->rpad(" ", $maxSwitchLength + 1);
+			if (($value1->switches !== null) && (count($value1->switches) > 0)) {
+				$s1 = str_pad(implode(", ", $value1->switches), $maxSwitchLength + 1, " ");
 				$s = $s . $prefix . $s1;
 			} else {
 				$s2 = str_pad("<" . $value1->name . ">", $maxSwitchLength + 1, " ");

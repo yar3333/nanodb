@@ -52,16 +52,16 @@ class DbDriver_sqlite implements OrmDbDriver {
 		$_gthis = $this;
 		$rows = $this->query("PRAGMA table_info(" . $table . ")");
 		return array_map(function ($row)  use (&$table, &$_gthis) {
-			$row1 = $row->name;
-			$row2 = $row->type;
-			$tmp = $row->notnull === 0;
-			$row3 = $row->pk;
+			$row1 = $row["name"];
+			$row2 = $row["type"];
+			$tmp = Boot::equal($row["notnull"], 0);
+			$row3 = $row["pk"];
 			return new HxAnon([
 				"name" => $row1,
 				"type" => $row2,
 				"isNull" => $tmp,
 				"isKey" => $row3,
-				"isAutoInc" => $_gthis->isAutoincrement($table, $row->name),
+				"isAutoInc" => $_gthis->isAutoincrement($table, $row["name"]),
 			]);
 		}, $rows->results());
 	}
@@ -98,7 +98,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 	public function getTables () {
 		$rows = $this->query("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
 		return array_map(function ($row) {
-			return $row->name;
+			return $row["name"];
 		}, $rows->results());
 	}
 

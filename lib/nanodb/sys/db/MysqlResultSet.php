@@ -11,11 +11,6 @@ use \nanodb\sys\db\ResultSet as DbResultSet;
 
 class MysqlResultSet implements DbResultSet {
 	/**
-	 * @var string
-	 */
-	static public $hxAnonClassName;
-
-	/**
 	 * @var mixed
 	 */
 	public $fetchedRow;
@@ -48,7 +43,7 @@ class MysqlResultSet implements DbResultSet {
 	/**
 	 * @param mixed $row
 	 * 
-	 * @return mixed
+	 * @return void
 	 */
 	public function correctArrayTypes ($row) {
 		$_gthis = $this;
@@ -65,34 +60,6 @@ class MysqlResultSet implements DbResultSet {
 		foreach ($row as $key1 => $value1) {
 			$row[$key1] = $_gthis->correctType($value1, $fieldsInfo[$key1]->type);
 		}
-		return $row;
-	}
-
-	/**
-	 * @param object $row
-	 * 
-	 * @return object
-	 */
-	public function correctObjectTypes ($row) {
-		$_gthis = $this;
-		$_gthis1 = $this;
-		if ($this->fieldsInfo === null) {
-			$this->fieldsInfo = [];
-			$collection = $this->result->fetch_fields();
-			foreach ($collection as $key => $value) {
-				$_gthis1->fieldsInfo[$value->name] = $value;
-			}
-
-		}
-		$fieldsInfo = $this->fieldsInfo;
-		foreach ($row as $key1 => $value1) {
-			$value2 = $value1;
-			$value2 = $_gthis->correctType($value2, $fieldsInfo[$key1]->type);
-			$tmp = $row;
-			$tmp->{$key1} = $value2;
-
-		}
-		return $row;
 	}
 
 	/**
@@ -120,7 +87,8 @@ class MysqlResultSet implements DbResultSet {
 	public function fetchNext () {
 		$row = $this->result->fetch_assoc();
 		if ($row !== null) {
-			$this->fetchedRow = $this->correctArrayTypes($row);
+			$this->correctArrayTypes($row);
+			$this->fetchedRow = $row;
 		}
 	}
 
@@ -221,11 +189,11 @@ class MysqlResultSet implements DbResultSet {
 		$this1 = [];
 		$list = $this1;
 		$this->result->data_seek(0);
-		$row = $this->result->fetch_object(MysqlResultSet::$hxAnonClassName);
+		$row = $this->result->fetch_assoc();
 		while ($row !== null) {
-			$row = $this->correctObjectTypes($row);
+			$this->correctArrayTypes($row);
 			array_push($list, $row);
-			$row = $this->result->fetch_object(MysqlResultSet::$hxAnonClassName);
+			$row = $this->result->fetch_assoc();
 		}
 		return $list;
 	}
@@ -241,20 +209,6 @@ class MysqlResultSet implements DbResultSet {
 		$this->fetchedRow = null;
 		return new HxAnon($row);
 	}
-
-	/**
-	 * @internal
-	 * @access private
-	 */
-	static public function __hx__init ()
-	{
-		static $called = false;
-		if ($called) return;
-		$called = true;
-
-
-		self::$hxAnonClassName = Boot::getClass(HxAnon::class)->phpClassName;
-	}
 }
 
 Boot::registerClass(MysqlResultSet::class, 'sys.db.MysqlResultSet');
@@ -262,4 +216,3 @@ Boot::registerGetters('nanodb\\sys\\db\\MysqlResultSet', [
 	'nfields' => true,
 	'length' => true
 ]);
-MysqlResultSet::__hx__init();

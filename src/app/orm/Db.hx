@@ -32,7 +32,7 @@ class Db
 		var dbparams = connectionString.substr(n + "://".length);
 		
 		#if profiler Profiler.begin("Db.open"); #end
-		var klassName = "nanodb.orm.DbDriver_" + dbtype;
+		var klassName = "\\nanodb\\orm\\DbDriver_" + dbtype;
 		connection = Syntax.construct(klassName, dbparams);
 		#if profiler Profiler.end(); #end
 		

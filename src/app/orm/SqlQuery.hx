@@ -3,6 +3,7 @@ package orm;
 import php.Global;
 import php.Syntax;
 import php.TypedArray;
+import php.TypedAssoc;
 
 private typedef Manager<T> =
 {
@@ -66,12 +67,12 @@ class SqlQuery<T>
 		return null;
 	}
 	
-	public function update(fields:Map<String, Dynamic>, ?limit:Int, ?offset:Int) : Void
+	public function update(fields:TypedAssoc<String, Dynamic>, ?limit:Int, ?offset:Int) : Void
 	{
 		var sets: TypedArray<String> = Syntax.arrayDecl();
-		Syntax.foreach(fields.keys(), function(_, name)
+		Syntax.foreach(fields, function(name:String, value:Dynamic)
 		{
-			sets.push("`" + name + "` = " + quoteValue(fields.get(name)));
+			sets.push("`" + name + "` = " + quoteValue(value));
 		});
 		db.query("UPDATE `" + table + "`\nSET\n\t" + sets.join("\n\t") + getWhereSql() + getLimitSql(limit) + getOffsetSql(offset));
 	}

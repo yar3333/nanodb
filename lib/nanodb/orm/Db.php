@@ -47,7 +47,7 @@ class Db {
 		}
 		$dbtype = mb_substr($connectionString, 0, $n);
 		$dbparams = mb_substr($connectionString, $n + mb_strlen("://"), null);
-		$klassName = "nanodb.orm.DbDriver_" . $dbtype;
+		$klassName = "\\nanodb\\orm\\DbDriver_" . $dbtype;
 		$tmp = $klassName;
 		$this->connection = new $tmp($dbparams);
 	}

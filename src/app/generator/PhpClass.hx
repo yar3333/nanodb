@@ -88,7 +88,7 @@ class PhpClass
 		var clas = splitFullClassName(fullClassName);
 		
 		var varLines = new TypedArray<String>();
-		Syntax.foreach(vars, function(_, v)
+		Syntax.foreach(vars, function(_, v:String)
 		{
 			varLines.push(v.replace("\n", "\n\t"));
 		});

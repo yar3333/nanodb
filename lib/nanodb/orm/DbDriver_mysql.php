@@ -90,22 +90,18 @@ class DbDriver_mysql implements OrmDbDriver {
 	public function getFields ($table) {
 		$this1 = [];
 		$r = $this1;
-		$rows = $this->query("SHOW COLUMNS FROM `" . $table . "`");
-		foreach ($rows as $key => $value) {
-			$value1 = $value->Field;
-			$tmp = $value;
-			$v = $tmp->{"Type"};
-			$tmp1 = $value;
-			$v1 = $tmp1->{"Null"} === "YES";
+		$resultSet = $this->query("SHOW COLUMNS FROM `" . $table . "`");
+		$collection = $resultSet->results();
+		foreach ($collection as $key => $value) {
 			array_push($r, new HxAnon([
-				"name" => $value1,
-				"type" => $v,
-				"isNull" => $v1,
-				"isKey" => $value->Key === "PRI",
-				"isAutoInc" => $value->Extra === "auto_increment",
+				"name" => $value["Field"],
+				"type" => $value["Type"],
+				"isNull" => $value["Null"] === "YES",
+				"isKey" => $value["Key"] === "PRI",
+				"isAutoInc" => $value["Extra"] === "auto_increment",
 			]));
-
 		}
+
 		return $r;
 	}
 
@@ -115,24 +111,28 @@ class DbDriver_mysql implements OrmDbDriver {
 	 * @return mixed
 	 */
 	public function getForeignKeys ($table) {
-		$sql = "\x0D\x0A  SELECT\x0D\x0A   u.table_name AS 'table',\x0D\x0A   u.column_name AS 'key',\x0D\x0A   u.referenced_table_name AS 'parentTable',\x0D\x0A   u.referenced_column_name AS 'parentKey'\x0D\x0A  FROM information_schema.table_constraints AS c\x0D\x0A  INNER JOIN information_schema.key_column_usage AS u\x0D\x0A  USING( constraint_schema, constraint_name )\x0D\x0A  WHERE c.constraint_type = 'FOREIGN KEY'\x0D\x0A    AND c.table_schema = '" . $this->database . "'\x0D\x0A    AND u.table_name = '" . $table . "';\x0D\x0A";
-		return $this->query($sql)->results();
+		$sql = "\x0A  SELECT\x0A   u.table_name AS 'table',\x0A   u.column_name AS 'key',\x0A   u.referenced_table_name AS 'parentTable',\x0A   u.referenced_column_name AS 'parentKey'\x0A  FROM information_schema.table_constraints AS c\x0A  INNER JOIN information_schema.key_column_usage AS u\x0A  USING( constraint_schema, constraint_name )\x0A  WHERE c.constraint_type = 'FOREIGN KEY'\x0A    AND c.table_schema = '" . $this->database . "'\x0A    AND u.table_name = '" . $table . "';\x0A";
+		return array_map(function ($x) {
+			return (object)($x);
+		}, $this->query($sql)->results());
 	}
 
 	/**
 	 * @return mixed
 	 */
 	public function getTables () {
+		echo("\x0A\x0ASHOW TABLES FROM `" . $this->database . "`\x0A\x0A");
 		$this1 = [];
 		$r = $this1;
-		$rows = $this->query("SHOW TABLES FROM `" . $this->database . "`");
-		foreach ($rows as $key => $value) {
-			$fields = array_keys(get_object_vars($value));
-			$tmp = $value;
-			array_push($r, $tmp->{$fields[0]});
-
+		$resultSet = $this->query("SHOW TABLES FROM `" . $this->database . "`");
+		var_dump($resultSet->results());
+		$collection = $resultSet->results();
+		foreach ($collection as $key => $value) {
+			$fields = array_keys($value);
+			array_push($r, $value[$fields[0]]);
 
 		}
+
 		return $r;
 	}
 
@@ -142,18 +142,20 @@ class DbDriver_mysql implements OrmDbDriver {
 	 * @return mixed
 	 */
 	public function getUniques ($table) {
-		$rows = $this->query("SHOW INDEX FROM `" . $table . "` WHERE Non_unique=0 AND Key_name<>'PRIMARY'");
+		$resultSet = $this->query("SHOW INDEX FROM `" . $table . "` WHERE Non_unique=0 AND Key_name<>'PRIMARY'");
 		$this1 = [];
 		$r = $this1;
-		foreach ($rows as $key => $value) {
-			$key1 = $value->Key_name;
+		$collection = $resultSet->results();
+		foreach ($collection as $key => $value) {
+			$key1 = $value["Key_name"];
 			if (!array_key_exists($key1, $r)) {
 				$this2 = [];
 				$r[$key1] = $this2;
 			}
-			array_push($r[$key1], $value->Column_name);
+			array_push($r[$key1], $value["Column_name"]);
 
 		}
+
 		return array_values($r);
 	}
 

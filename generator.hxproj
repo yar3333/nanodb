@@ -42,7 +42,7 @@
   <!-- Executed before build -->
   <preBuildCommand />
   <!-- Executed after build -->
-  <postBuildCommand alwaysRun="False">haxelib run refactor -v replace lib *.php !\((\$[_a-z][_a-z0-9]*(?:-&gt;[_a-z][_a-z0-9]*)?)\?\?'null'\)!$1!</postBuildCommand>
+  <postBuildCommand alwaysRun="False">haxelib run refactor -v replace lib *.php "!\((\$[_a-z][_a-z0-9]*(?:-&gt;[_a-z][_a-z0-9]*)?)\?\?'null'\)!$1!i"</postBuildCommand>
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />

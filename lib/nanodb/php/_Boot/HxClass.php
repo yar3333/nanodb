@@ -48,8 +48,8 @@ class HxClass {
 	 * @return mixed
 	 */
 	public function __get ($property) {
-		if (defined("" . ($this->phpClassName??'null') . "::" . $property)) {
-			return constant("" . ($this->phpClassName??'null') . "::" . $property);
+		if (defined("" . $this->phpClassName . "::" . $property)) {
+			return constant("" . $this->phpClassName . "::" . $property);
 		} else if (Boot::hasGetter($this->phpClassName, $property)) {
 			$tmp = $this->phpClassName;
 			return $tmp::{"get_" . $property}();

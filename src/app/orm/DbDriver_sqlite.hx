@@ -39,7 +39,7 @@ class DbDriver_sqlite implements DbDriver
     public function getTables() : TypedArray<String>
     {
         var rows = query("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
-		return rows.results().map(function(row) return row.name);
+		return rows.results().map(function(row) return row['name']);
     }
 	
 	public function isAutoincrement(table:String, field:String) : Bool
@@ -82,11 +82,11 @@ class DbDriver_sqlite implements DbDriver
         return rows.results().map(function(row)
 			return
 			{
-                 name : row.name
-                ,type : row.type
-                ,isNull : row.notnull == 0
-                ,isKey : row.pk
-                ,isAutoInc : isAutoincrement(table, row.name)
+                 name : row['name']
+                ,type : row['type']
+                ,isNull : row['notnull'] == 0
+                ,isKey : row['pk']
+                ,isAutoInc : isAutoincrement(table, row['name'])
 			}
 		);
     }
@@ -114,7 +114,7 @@ class DbDriver_sqlite implements DbDriver
 		var sql = query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" + table + "'").getResult(0);
 		var reFK = ~/^CONSTRAINT ".+?" FOREIGN KEY [(]"(.+?)"[)] REFERENCES "(.+?)" [(]"(.+?)"[)]/;
 		
-        Syntax.foreach(sql.replace("\r", "").splitNative("\n"), function(_, s)
+        Syntax.foreach(sql.replace("\r", "").splitNative("\n"), function(_, s:String)
 		{
 			if (reFK.match(s))
 			{
@@ -133,7 +133,7 @@ class DbDriver_sqlite implements DbDriver
         var r = new TypedArray<TypedArray<String>>();
 		var sql : String = query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" + table + "'").getResult(0);
 		var reUNIQUE = ~/^CONSTRAINT ".+?" UNIQUE [(](.+?)[)]/;
-		Syntax.foreach(sql.replace("\r", "").splitNative("\n"), function(_, s)
+		Syntax.foreach(sql.replace("\r", "").splitNative("\n"), function(_, s:String)
 		{
 			if (reUNIQUE.match(s))
 			{

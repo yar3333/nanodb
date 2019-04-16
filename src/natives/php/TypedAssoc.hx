@@ -30,7 +30,18 @@ extern abstract TypedAssoc<K, V>(NativeArray) from NativeArray to NativeArray
 		return cast arr;
 	}
 	
-	 public inline function toIndexedArray() : NativeIndexedArray<V>
+	@:to
+	public inline function toAssocArray() : NativeAssocArray<V>
+	{
+		return this;
+	}
+	
+	public static inline function fromAssocArray<K, V>(arr:NativeAssocArray<V>) : TypedAssoc<K, V>
+	{
+		return cast arr;
+	}
+	
+	public inline function toIndexedArray() : NativeIndexedArray<V>
 	{
 		return cast this;
 	}

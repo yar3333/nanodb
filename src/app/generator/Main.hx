@@ -3,6 +3,7 @@ package generator;
 import php.Exception;
 import php.Global;
 import orm.Db;
+import php.SuperGlobal;
 import php.Syntax;
 import php.TypedArray;
 
@@ -12,7 +13,7 @@ class Main
 	{
 		Log.instance.depthLimit = 2;
 		
-		var args : TypedArray<String> = untyped __php__("$argv");
+		var args : TypedArray<String> = SuperGlobal.GLOBALS["argv"];
 		args = args.slice(1);
 		
 		var options = new CmdOptions();
@@ -54,8 +55,8 @@ class Main
         
 		if (args.length > 0)
 		{
-			try
-			{
+			//try
+			//{
 				var srcPath = options.get("srcPath");
 				
 				var databaseConnectionString = options.get("databaseConnectionString");
@@ -75,12 +76,12 @@ class Main
 					fail("Database connection string must be specified.");
 				}
 					
-			}
-			catch (e:Exception)
-			{
-				Log.echo(e.getMessage());
-				fail();
-			}
+			//}
+			//catch (e:Exception)
+			//{
+			//	Log.echo(e.getMessage());
+			//	fail();
+			//}
         }
 		else
 		{

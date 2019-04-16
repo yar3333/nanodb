@@ -5,14 +5,12 @@ import php.db.Mysqli_result;
 
 class MysqlResultSet implements ResultSet
 {
-	static var hxAnonClassName = Boot.getHxAnon().phpClassName;
-
 	public var length(get,null) : Int;
 	public var nfields(get,null) : Int;
 
 	var result:Mysqli_result;
-	var fetchedRow:NativeAssocArray<Scalar>;
-	var fieldsInfo:NativeAssocArray<MysqliFieldInfo>;
+	var fetchedRow:TypedAssoc<String, Scalar>;
+	var fieldsInfo:TypedAssoc<String, MysqliFieldInfo>;
 
 	public function new( result:Mysqli_result ) {
 		this.result = result;
@@ -28,15 +26,15 @@ class MysqlResultSet implements ResultSet
 		return withdrawFetched();
 	}
 
-	public function results() : TypedArray<Dynamic> {
-		var list = new TypedArray<Dynamic>();
+	public function results() : TypedArray<TypedAssoc<String, Scalar>> {
+		var list = new TypedArray<TypedAssoc<String, Scalar>>();
 
 		result.data_seek(0);
-		var row = result.fetch_object(hxAnonClassName);
+		var row : TypedAssoc<String, Scalar> = cast result.fetch_assoc();
 		while (row != null) {
-			row = correctObjectTypes(row);
+			correctArrayTypes(row);
 			list.push(row);
-			row = result.fetch_object(hxAnonClassName);
+			row = cast result.fetch_assoc();
 		}
 
 		return list;
@@ -61,8 +59,12 @@ class MysqlResultSet implements ResultSet
 	}
 
 	function fetchNext() {
-		var row = result.fetch_assoc();
-		if (row != null) fetchedRow = correctArrayTypes(row);
+		var row: TypedAssoc<String, Scalar> = cast result.fetch_assoc();
+		if (row != null)
+		{
+			correctArrayTypes(row);
+			fetchedRow = row;
+		}
 	}
 
 	function withdrawFetched() : Dynamic {
@@ -72,27 +74,17 @@ class MysqlResultSet implements ResultSet
 		return Boot.createAnon(row);
 	}
 
-	function correctArrayTypes(row:NativeAssocArray<String>):NativeAssocArray<Scalar> {
+	function correctArrayTypes(row:TypedAssoc<String, Scalar>) {
 		var fieldsInfo = getFieldsInfo();
 		Syntax.foreach(row, function(field:String, value:String) {
 			row[field] = correctType(value, fieldsInfo[field].type);
 		});
-		return cast row;
 	}
 
-	function correctObjectTypes(row:{}):{} {
-		var fieldsInfo = getFieldsInfo();
-		Syntax.foreach(row, function(field:String, value:String) {
-			value = correctType(value, fieldsInfo[field].type);
-			Syntax.setField(row, field, value);
-		});
-		return row;
-	}
-
-	inline function getFieldsInfo():NativeAssocArray<MysqliFieldInfo> {
+	inline function getFieldsInfo():TypedAssoc<String, MysqliFieldInfo> {
 		if (fieldsInfo == null) {
 			fieldsInfo = cast Syntax.arrayDecl();
-			Syntax.foreach(result.fetch_fields(), function(_, info) {
+			Syntax.foreach(result.fetch_fields(), function(_, info:MysqliFieldInfo) {
 				fieldsInfo[info.name] = info;
 			});
 		}
