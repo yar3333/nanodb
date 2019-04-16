@@ -1,6 +1,7 @@
 package orm;
 
 import Type;
+import php.Syntax;
 import php.TypedAssoc;
 import php.TypedArray;
 import sys.db.Connection;
@@ -92,11 +93,11 @@ class DbDriver_mysql implements DbDriver
     {
         var r = new TypedArray<String>();
         var rows = query("SHOW TABLES FROM `" + database + "`");
-        for (row in rows)
+        Syntax.foreach(rows, function(_, row)
         {
 			var fields = Reflect.fields(row);
 			r.push(Reflect.field(row, fields[0]));
-		}
+		});
         return r;
     }
 
@@ -105,7 +106,7 @@ class DbDriver_mysql implements DbDriver
     {
         var r = new TypedArray<DbTableFieldData>();
         var rows = query("SHOW COLUMNS FROM `" + table + "`");
-        for (row in rows)
+        Syntax.foreach(rows, function(_, row)
         {
 			r.push({
                  name : row.Field
@@ -114,7 +115,7 @@ class DbDriver_mysql implements DbDriver
                 ,isKey : row.Key == "PRI"
                 ,isAutoInc : row.Extra == "auto_increment"
 			});
-        }
+        });
         return r;
     }
 
@@ -179,12 +180,12 @@ class DbDriver_mysql implements DbDriver
 	{
 		var rows : ResultSet = query("SHOW INDEX FROM `" + table + "` WHERE Non_unique=0 AND Key_name<>'PRIMARY'");
 		var r = new TypedAssoc<String, TypedArray<String>>();
-		for (row in rows)
+        Syntax.foreach(rows, function(_, row)
 		{
 			var key:String = row.Key_name;
             if (!r.hasKey(key)) r[key] = new TypedArray<String>();
             r[key].push(row.Column_name);
-		}
+		});
 		return r.values();
 	}
 }

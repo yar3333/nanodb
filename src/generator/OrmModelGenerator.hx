@@ -44,10 +44,10 @@ class OrmModelGenerator
 		model.addVar({ haxeName:"db", haxeType:"orm.Db", haxeDefVal:null }, true);
 		model.addVar({ haxeName:"orm", haxeType:customOrmClassName, haxeDefVal:null }, true);
 		
-		for (v in vars)
+		Syntax.foreach(vars, function(_, v)
 		{
 			model.addVar(v);
-		}
+		});
 		
 		model.addMethod(
 			  "new"

@@ -68,10 +68,10 @@ class OrmGenerator
 	{
 		var clas = new HaxeClass(fullClassName);
 		
-		for (t in tables)
+		Syntax.foreach(tables, function(_, t)
 		{
 			clas.addVar( { haxeName:t.varName, haxeType:t.customManagerClassName, haxeDefVal:null }, false, false, true);
-		}
+		});
 		
 		clas.addMethod(
 			  "new"

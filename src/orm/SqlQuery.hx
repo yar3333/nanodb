@@ -69,10 +69,10 @@ class SqlQuery<T>
 	public function update(fields:Map<String, Dynamic>, ?limit:Int, ?offset:Int) : Void
 	{
 		var sets: TypedArray<String> = Syntax.arrayDecl();
-		for (name in fields.keys())
+		Syntax.foreach(fields.keys(), function(_, name)
 		{
 			sets.push("`" + name + "` = " + quoteValue(fields.get(name)));
-		}
+		});
 		db.query("UPDATE `" + table + "`\nSET\n\t" + sets.join("\n\t") + getWhereSql() + getLimitSql(limit) + getOffsetSql(offset));
 	}
 	
@@ -99,7 +99,7 @@ class SqlQuery<T>
 		
 		if (fields != null)
 		{
-			for (name in Reflect.fields(fields)) f.push("`" + name + "`");
+			Syntax.foreach(Reflect.fields(fields), function(_, name) f.push("`" + name + "`"));
 		}
 		else
 		{

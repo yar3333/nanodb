@@ -238,16 +238,16 @@ class OrmManagerGenerator
 			+"return list;"
 		);
 		
-        for (fields in db.connection.getUniques(table))
+        Syntax.foreach(db.connection.getUniques(table), function(_, fields)
 		{
             var vs = vars.filter(function(x) return fields.hasValue(x.name));
 			createGetByMethodOne(table, vars, modelClassName, vs, model);
-		}
+		});
 		
-        for (v in getForeignKeyVars(db, table, vars))
+        Syntax.foreach(getForeignKeyVars(db, table, vars), function(_, v)
         {
             createGetByMethodMany(table, vars, modelClassName, Syntax.arrayDecl(v), model, positions);
-        }
+        });
 		
 		return model;
 	}

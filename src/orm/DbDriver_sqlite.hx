@@ -2,7 +2,7 @@ package orm;
 
 import Type;
 import php.Exception;
-import php.Global;
+import php.Syntax;
 import php.TypedArray;
 import sys.db.Connection;
 import sys.db.ResultSet;
@@ -133,7 +133,8 @@ class DbDriver_sqlite implements DbDriver
         var r = new TypedArray<DbTableForeignKey>();
 		var sql = query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" + table + "'").getResult(0);
 		var reFK = ~/^CONSTRAINT ".+?" FOREIGN KEY [(]"(.+?)"[)] REFERENCES "(.+?)" [(]"(.+?)"[)]/;
-		for (s in sql.replace("\r", "").splitNative("\n"))
+		
+        Syntax.foreach(sql.replace("\r", "").splitNative("\n"), function(_, s)
 		{
 			if (reFK.match(s))
 			{
@@ -143,7 +144,7 @@ class DbDriver_sqlite implements DbDriver
 					 , parentKey: reFK.matched(3)
 				});
 			}
-		}
+		});
 		return r;
     }
 	
@@ -152,19 +153,19 @@ class DbDriver_sqlite implements DbDriver
         var r = new TypedArray<TypedArray<String>>();
 		var sql : String = query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" + table + "'").getResult(0);
 		var reUNIQUE = ~/^CONSTRAINT ".+?" UNIQUE [(](.+?)[)]/;
-		for (s in sql.replace("\r", "").splitNative("\n"))
+		Syntax.foreach(sql.replace("\r", "").splitNative("\n"), function(_, s)
 		{
 			if (reUNIQUE.match(s))
 			{
 				var fields: String = reUNIQUE.matched(1);
-				r.push((cast Global.explode(",", fields) : TypedArray<String>).map(function(s:String)
+				r.push(fields.splitNative(",").map(function(s:String)
 				{
 					s = s.trim();
 					if (s.startsWith("\"") && s.endsWith("\"")) s = s.substr(1, s.length - 2);
 					return s;
 				}));
 			}
-		}
+		});
 		return r;
 	}
 }

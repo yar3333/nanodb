@@ -1,5 +1,6 @@
 package generator;
 
+import php.Syntax;
 import php.TypedArray;
 using php.StringToolsNative;
 
@@ -87,10 +88,10 @@ class HaxeClass
 		var clas = splitFullClassName(fullClassName);
 		
 		var varLines = new TypedArray<String>();
-		for (v in vars)
+		Syntax.foreach(vars, function(_, v)
 		{
 			varLines.push(v.replace("\n", "\n\t"));
-		}
+		});
 		
 		var s = 'package ' + clas.packageName + ';\n'
 			  + '\n'

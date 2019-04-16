@@ -78,7 +78,7 @@ class CmdOptions
 	public function getHelpMessage(prefix="\t") : String
 	{
 		var maxSwitchLength = 0;
-		for (opt in options)
+		Syntax.foreach(options, function(_, opt)
 		{
 			if (opt.switches != null && opt.switches.length > 0)
 			{
@@ -88,10 +88,10 @@ class CmdOptions
 			{
 				maxSwitchLength = maxSwitchLength > opt.name.length + 2 ? maxSwitchLength : opt.name.length + 2;
 			}
-		}
+		});
 		
 		var s = "";
-		Syntax.foreach(options, function(i, opt) 
+		Syntax.foreach(options, function(_, opt) 
 		{
 			if (opt.switches != null && opt.switches.length > 0)
 			{
@@ -125,10 +125,10 @@ class CmdOptions
 		paramWoSwitchIndex = 0;
 		
 		params = new TypedAssoc<String,Dynamic>();
-		for (opt in options)
+		Syntax.foreach(options, function(_, opt)
 		{
 			params.set(opt.name, opt.defaultValue);
-		}
+		});
 		
 		while (this.args.length > 0)
 		{
