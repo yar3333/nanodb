@@ -443,7 +443,7 @@ class ImageNatives
 	public static var IMG_TRIANGLE(get, never) : Int; private static inline function get_IMG_TRIANGLE() : Int return untyped __php__("IMG_TRIANGLE");
 	
 	
-	public static inline function gd_info() : TypedArray<String, Dynamic> return untyped __call__('gd_info');
+	public static inline function gd_info() : TypedAssoc<String, Dynamic> return untyped __call__('gd_info');
 	
 	public static function getimagesize(filename:String, ?imageinfo:NativeArray) : NativeArray
 	{

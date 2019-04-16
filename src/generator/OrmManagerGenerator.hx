@@ -2,14 +2,11 @@ package generator;
 
 import haxe.io.Path;
 import orm.Db;
-import php.Lib;
-import php.TypedAssoc;
+import php.Syntax;
 import sys.FileSystem;
 import sys.io.File;
 import php.TypedArray;
-import php.TypedAssoc;
-using StringTools;
-using Lambda;
+using php.StringToolsNative;
 
 class OrmManagerGenerator 
 {
@@ -60,10 +57,10 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			  "new"
-			, Lib.toPhpArray([ 
+			, Syntax.arrayDecl( 
 				  { haxeName:"db", haxeType:"orm.Db", haxeDefVal:null } 
 				, { haxeName:"orm", haxeType:customOrmClassName, haxeDefVal:null } 
-			  ])
+			  )
 			, "Void"
 			, "this.db = db;\nthis.orm = orm;"
 		);
@@ -82,7 +79,7 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			'newModelFromRow',
-			Lib.toPhpArray([ OrmTools.createVar('d', 'Dynamic') ]),
+			Syntax.arrayDecl(OrmTools.createVar('d', 'Dynamic')),
 			modelClassName,
 			  "var _obj = new " + modelClassName + "(db, orm);\n"
 			+ vars.map(function(x) return '_obj.' + x.haxeName + " = Reflect.field(d, '" + x.haxeName + "');").join('\n') + "\n"
@@ -93,7 +90,7 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			'where',
-			Lib.toPhpArray([ OrmTools.createVar('field', 'String'), OrmTools.createVar('op', 'String'), OrmTools.createVar('value', 'Dynamic') ]),
+			Syntax.arrayDecl(OrmTools.createVar('field', 'String'), OrmTools.createVar('op', 'String'), OrmTools.createVar('value', 'Dynamic')),
 			'orm.SqlQuery<' + modelClassName + '>',
 			"return query.where(field, op, value);"
 		);
@@ -138,7 +135,7 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			'createNamed',
-			Lib.toPhpArray([ OrmTools.createVar("data", "{ " + createVars.map(function(x) return x.haxeName + ":" + x.haxeType).join(", ") + " }") ]),
+			Syntax.arrayDecl(OrmTools.createVar("data", "{ " + createVars.map(function(x) return x.haxeName + ":" + x.haxeType).join(", ") + " }")),
 			modelClassName,
 			createVars.filter(function(x) return positions.is(x)).map
 			(
@@ -158,7 +155,7 @@ class OrmManagerGenerator
 			+"return newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? 'db.lastInsertId()' : "data." + x.haxeName).join(", ") + ");"
 		);
 		
-		var dataVars: TypedArray<HaxeVar> = Lib.toPhpArray([ OrmTools.createVar("data", "{ " + createVars.map(function(x) return (x.isKey ? "" : "?") + x.haxeName + ":" + x.haxeType).join(", ") + " }") ]);
+		var dataVars: TypedArray<HaxeVar> = Syntax.arrayDecl(OrmTools.createVar("data", "{ " + createVars.map(function(x) return (x.isKey ? "" : "?") + x.haxeName + ":" + x.haxeType).join(", ") + " }"));
 		
 		if (vars.exists(function(x) return x.isKey))
 		{
@@ -212,7 +209,7 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			'getAll',
-			Lib.toPhpArray([ OrmTools.createVar('_order', 'String', getOrderDefVal(vars, positions)) ]),
+			Syntax.arrayDecl(OrmTools.createVar('_order', 'String', getOrderDefVal(vars, positions))),
 			'Array<' + modelClassName + '>',
 			"return getBySqlMany('SELECT * FROM `" + table + "`' + (_order != null ? ' ORDER BY ' + _order : ''));"
 		);
@@ -220,7 +217,7 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			'getBySqlOne',
-			Lib.toPhpArray([ OrmTools.createVar('sql', 'String') ]),
+			Syntax.arrayDecl(OrmTools.createVar('sql', 'String')),
 			modelClassName,
 			 "var rows = db.query(sql + ' LIMIT 1');\n"
 			+"if (rows.length == 0) return null;\n"
@@ -230,7 +227,7 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			'getBySqlMany',
-			Lib.toPhpArray([ OrmTools.createVar('sql', 'String') ]),
+			Syntax.arrayDecl(OrmTools.createVar('sql', 'String')),
 			'Array<' + modelClassName + '>',
 			 "var rows = db.query(sql);\n"
 			+"var list : Array<" + modelClassName + "> = [];\n"
@@ -249,7 +246,7 @@ class OrmManagerGenerator
 		
         for (v in getForeignKeyVars(db, table, vars))
         {
-            createGetByMethodMany(table, vars, modelClassName, Lib.toPhpArray([v]), model, positions);
+            createGetByMethodMany(table, vars, modelClassName, Syntax.arrayDecl(v), model, positions);
         }
 		
 		return model;
@@ -284,7 +281,7 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			'getBy' + whereVars.map(function(v) return StringToolsEx.capitalize(v.haxeName)).join('And'),
-			(cast whereVars:TypedArray<HaxeVar>).concat(Lib.toPhpArray([ OrmTools.createVar('_order', 'String', getOrderDefVal(vars, positions)) ])), 
+			(cast whereVars:TypedArray<HaxeVar>).concat(Syntax.arrayDecl(OrmTools.createVar('_order', 'String', getOrderDefVal(vars, positions)))), 
 			'Array<' + modelClassName + '>',
 			"return getBySqlMany('SELECT * FROM `" + table + "`" + getWhereSql(whereVars) + " + (_order != null ? ' ORDER BY ' + _order : ''));"
 		);

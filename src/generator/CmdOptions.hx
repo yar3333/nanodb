@@ -1,18 +1,16 @@
 package generator;
 
-import php.Lib;
+import php.Global;
 import php.Syntax;
 import php.TypedAssoc;
 import php.TypedArray;
-import Type;
-import php.ArrayNatives;
 using php.StringToolsNative;
 
 private typedef Option = 
 {
 	var name : String;
 	var defaultValue : Dynamic;
-	var type : ValueType;
+	var type : String;
 	var switches : TypedArray<String>;
 	var help : String;
 	var repeatable : Bool;
@@ -47,24 +45,25 @@ class CmdOptions
 	
 	public function add(name:String, defaultValue:Dynamic, ?switches:TypedArray<String>, help="")
 	{
-		var type = Type.typeof(defaultValue);
-		if (type == ValueType.TNull) type = ValueType.TClass(String);
+		var type = getValueType(defaultValue);
+		if (type == null) type = "string";
 		addInner(name, defaultValue, type, switches, help, false);
 	}
 	
-	public function addRepeatable(name:String, typeName:String, ?switches:TypedArray<String>, help="")
+	/**
+	   @param type Next types are supported: string, int, float, bool.
+	**/
+	public function addRepeatable(name:String, type:String, ?switches:TypedArray<String>, help="")
 	{
-		var type : ValueType = switch(typeName)
+		if (type != "string" && type != "int" && type != "float")
 		{
-			case "string": ValueType.TClass(String);
-			case "int": ValueType.TInt;
-			case "float": ValueType.TFloat;
-			default: throw "Type '" + typeName + "' can not be used for repeatable option '" + name + "'.";
+			throw "Type '" + type + "' can not be used for repeatable option '" + name + "'.";
 		}
-		addInner(name, [], type, switches, help, true);
+		
+		addInner(name, Syntax.arrayDecl(), type, switches, help, true);
 	}
 	
-	function addInner(name:String, defaultValue:Dynamic, type:ValueType, switches:TypedArray<String>, help:String, repeatable:Bool)
+	function addInner(name:String, defaultValue:Dynamic, type:String, switches:TypedArray<String>, help:String, repeatable:Bool)
 	{
 		if (!hasOption(name))
 		{
@@ -105,7 +104,7 @@ class CmdOptions
 			
 			if (opt.help != null && opt.help != "") 
 			{
-				var helpLines = StringToolsNative.split(opt.help, "\n");
+				var helpLines = opt.help.splitNative("\n");
 				s += helpLines.shift() + "\n";
 				s += helpLines.map(function(s) return prefix + "".lpad(" ", maxSwitchLength + 1) + s + "\n").join("");
 			}
@@ -186,30 +185,23 @@ class CmdOptions
 	{
 		switch (opt.type)
 		{
-			case ValueType.TInt:
+			case "int":
 				ensureValueExist(s);
 				if (!opt.repeatable) params.set(opt.name, Std.parseInt(args.shift()));
 				else                 addRepeatableValue(opt.name, Std.parseInt(args.shift()));
 			
-			case ValueType.TFloat:
+			case "float":
 				ensureValueExist(s);
 				if (!opt.repeatable) params.set(opt.name, Std.parseFloat(args.shift()));
 				else                 addRepeatableValue(opt.name, Std.parseFloat(args.shift()));
 				
-			case ValueType.TBool:
+			case "bool":
 				params.set(opt.name, !opt.defaultValue);
 			
-			case ValueType.TClass(c):
-				if (c == String)
-				{
-					ensureValueExist(s);
-					if (!opt.repeatable) params.set(opt.name, args.shift());
-					else                 addRepeatableValue(opt.name, args.shift());
-				}
-				else
-				{
-					throw "Option type of class '" + Type.getClassName(c) + "' not supported.";
-				}
+			case "string":
+				ensureValueExist(s);
+				if (!opt.repeatable) params.set(opt.name, args.shift());
+				else                 addRepeatableValue(opt.name, args.shift());
 			
 			default:
 				throw "Option type '" + opt.type + "' not supported.";
@@ -246,7 +238,15 @@ class CmdOptions
 	
 	function addRepeatableValue(name:String, value:Dynamic)
 	{
-		if (params.get(name) == null) params.set(name, []);
+		if (params.get(name) == null) params.set(name, Syntax.arrayDecl());
 		params.get(name).push(value);
+	}
+	
+	function getValueType(v:Dynamic) : String
+	{
+		if (Global.is_int(v)) return "int";
+		if (Global.is_float(v)) return "float";
+		if (Global.is_string(v)) return "string";
+		return null;
 	}
 }

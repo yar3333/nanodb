@@ -2,12 +2,10 @@ package generator;
 
 import orm.Db;
 import haxe.io.Path;
-import php.Lib;
 import php.Syntax;
 import sys.FileSystem;
 import sys.io.File;
 import php.TypedArray;
-import php.TypedAssoc;
 using php.StringToolsNative;
 
 class OrmGenerator
@@ -19,7 +17,7 @@ class OrmGenerator
 		this.srcPath = Path.removeTrailingSlashes(srcPath.replace("\\", "/")) + "/";
 	}
 	
-	public function generate(db:Db, autogenPackage:String, customPackage:String, ignoreTables:TypedArray<String>, noInstantiateManagers:Array<String>, positions:OrmPositions)
+	public function generate(db:Db, autogenPackage:String, customPackage:String, ignoreTables:TypedArray<String>, noInstantiateManagers:TypedArray<String>, positions:OrmPositions)
 	{
 		var autogenOrmClassName = autogenPackage + ".Orm";
 		var customOrmClassName = customPackage + ".Orm";
@@ -44,7 +42,7 @@ class OrmGenerator
     }
 	
 	
-	function makeAutogenOrm(tables:TypedArray<OrmTable>, autogenOrmClassName:String, customOrmClassName:String, noInstantiateManagers:Array<String>)
+	function makeAutogenOrm(tables:TypedArray<OrmTable>, autogenOrmClassName:String, customOrmClassName:String, noInstantiateManagers:TypedArray<String>)
 	{
 		var autogenOrm = getAutogenOrm(tables, autogenOrmClassName, noInstantiateManagers);
 		var destFileName = srcPath + autogenOrmClassName.replace(".", "/") + ".hx";
@@ -66,7 +64,7 @@ class OrmGenerator
 		}
 	}
 	
-	function getAutogenOrm(tables:TypedArray<OrmTable>, fullClassName:String, noInstantiateManagers:Array<String>) : HaxeClass
+	function getAutogenOrm(tables:TypedArray<OrmTable>, fullClassName:String, noInstantiateManagers:TypedArray<String>) : HaxeClass
 	{
 		var clas = new HaxeClass(fullClassName);
 		
@@ -77,12 +75,12 @@ class OrmGenerator
 		
 		clas.addMethod(
 			  "new"
-			, Lib.toPhpArray([
+			, Syntax.arrayDecl(
 				{ haxeName:"db", haxeType:"orm.Db", haxeDefVal:null } 
-			  ])
+			  )
 			, "Void"
 			, tables
-				.filter(function(t) return noInstantiateManagers.indexOf(t.tableName) < 0)
+				.filter(function(t) return !noInstantiateManagers.hasValue(t.tableName))
 				.map(function(t) return "this." + t.varName + " = new " + t.customManagerClassName + "(db, cast this);")
 				.join("\n")
 		);

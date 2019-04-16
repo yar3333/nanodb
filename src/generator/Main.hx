@@ -5,7 +5,6 @@ import php.Lib;
 import orm.Db;
 import php.Syntax;
 import php.TypedArray;
-import php.TypedAssoc;
 
 class Main 
 {

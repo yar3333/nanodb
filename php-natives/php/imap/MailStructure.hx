@@ -70,7 +70,7 @@ typedef MailStructure =
 	/**
 	 * An array of objects where each object has an "attribute" and a "value" property corresponding to the parameters on the Content-disposition MIME header.
 	 */
-	var dparameters : TypedArray<Int, { attribute:String, value:Dynamic }>;
+	var dparameters : TypedArray<{ attribute:String, value:Dynamic }>;
 	
 	/**
 	 * TRUE if the parameters array exists
@@ -80,10 +80,10 @@ typedef MailStructure =
 	/**
 	 * An array of objects where each object has an "attribute" and a "value" property.
 	 */
-	var parameters : TypedArray<Int, { attribute:String, value:Dynamic }>;
+	var parameters : TypedArray<{ attribute:String, value:Dynamic }>;
 	
 	/**
 	 * An array of objects identical in structure to the top-level object, each of which corresponds to a MIME body part.
 	 */
-	var parts : TypedArray<Int, Dynamic>;
+	var parts : TypedArray<Dynamic>;
 }

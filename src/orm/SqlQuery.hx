@@ -1,6 +1,7 @@
 package orm;
 
 import php.Global;
+import php.Syntax;
 import php.TypedArray;
 
 private typedef Manager<T> =
@@ -67,7 +68,7 @@ class SqlQuery<T>
 	
 	public function update(fields:Map<String, Dynamic>, ?limit:Int, ?offset:Int) : Void
 	{
-		var sets = [];
+		var sets: TypedArray<String> = Syntax.arrayDecl();
 		for (name in fields.keys())
 		{
 			sets.push("`" + name + "` = " + quoteValue(fields.get(name)));
@@ -94,7 +95,7 @@ class SqlQuery<T>
 	
 	function getSelectSql<TT:{}>(fields:TT) : String
 	{
-		var f = []; 
+		var f: TypedArray<String> = Syntax.arrayDecl(); 
 		
 		if (fields != null)
 		{

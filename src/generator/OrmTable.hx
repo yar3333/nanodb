@@ -1,5 +1,7 @@
 package generator;
 
+using php.StringToolsNative;
+
 class OrmTable
 {
 	public var tableName(default, null) : String;
@@ -29,17 +31,17 @@ class OrmTable
 	{
 		var s = "";
 		
-		var packs = tableName.toLowerCase().split("__");
+		var packs = tableName.toLowerCase().splitNative("__");
 		while (packs.length > 1)
 		{
 			var pack = packs.shift();
-			var words = pack.split("_");
+			var words = pack.splitNative("_");
 			s += words.shift();
 			s += words.map(function(v) return StringToolsEx.capitalize(v)).join("");
 			s += "_";
 		}
 		
-		var parts = packs[0].split("_");
+		var parts = packs[0].splitNative("_");
 		
 		s += parts[0] + parts.slice(1).map(function(w) return StringToolsEx.capitalize(w)).join("");
 		
@@ -50,17 +52,17 @@ class OrmTable
     {
 		var s = "";
 		
-		var packs = tableName.toLowerCase().split("__");
+		var packs = tableName.toLowerCase().splitNative("__");
 		while (packs.length > 1)
 		{
 			var pack = packs.shift();
-			var words = pack.split("_");
+			var words = pack.splitNative("_");
 			s += words.shift();
 			s += words.map(function(x) return StringToolsEx.capitalize(x)).join("");
 			s += ".";
 		}
 		
-		s += packs[0].split("_").map(function(x) return StringToolsEx.capitalize(x)).join("");
+		s += packs[0].splitNative("_").map(function(x) return StringToolsEx.capitalize(x)).join("");
 		
 		return s;
     }

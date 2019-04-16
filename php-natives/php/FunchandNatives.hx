@@ -23,7 +23,7 @@ class FunchandNatives
 		}
 	}
 	
-	public static inline function call_user_func_array(callback:Function, param_arr:TypedArray<Int, Dynamic>) : Dynamic return untyped __call__('call_user_func_array', callback, param_arr);
+	public static inline function call_user_func_array(callback:Function, param_arr:TypedArray<Dynamic>) : Dynamic return untyped __call__('call_user_func_array', callback, param_arr);
 	
 	public static function call_user_func(callback:Function, ?parameter:Dynamic, ?restArgs:Dynamic) : Dynamic
 	{

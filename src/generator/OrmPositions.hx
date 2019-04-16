@@ -1,7 +1,6 @@
 package generator;
 
 import php.TypedArray;
-import php.TypedAssoc;
 
 class OrmPositions
 {

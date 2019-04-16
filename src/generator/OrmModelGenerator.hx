@@ -2,11 +2,10 @@ package generator;
 
 import haxe.io.Path;
 import orm.Db;
-import php.Lib;
 import sys.FileSystem;
 import sys.io.File;
 import php.TypedArray;
-import php.TypedAssoc;
+import php.Syntax;
 using StringTools;
 
 class OrmModelGenerator 
@@ -52,10 +51,10 @@ class OrmModelGenerator
 		
 		model.addMethod(
 			  "new"
-			, Lib.toPhpArray([
+			, Syntax.arrayDecl(
 				  { haxeName:"db", haxeType:"orm.Db", haxeDefVal:null }
 				, { haxeName:"orm", haxeType:customOrmClassName, haxeDefVal:null } 
-			  ])
+			  )
 			, "Void"
 			, "this.db = db;\nthis.orm = orm;"
 		);

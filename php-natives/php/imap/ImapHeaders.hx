@@ -3,19 +3,19 @@ package php.imap;
 typedef ImapHeaders =
 {
 	var toaddress : String;
-	var to : TypedArray<Int, MailAddress>;
+	var to : TypedArray<MailAddress>;
 	var fromaddress : String;
-	var from : TypedArray<Int, MailAddress>; // an array of objects from the From: line, with the following properties: personal, adl, mailbox, and host
+	var from : TypedArray<MailAddress>; // an array of objects from the From: line, with the following properties: personal, adl, mailbox, and host
 	var ccaddress : String;
-	var cc : TypedArray<Int, MailAddress>;
+	var cc : TypedArray<MailAddress>;
 	var bccaddress : String; // full bcc: line, up to 1024 characters
-	var bcc : TypedArray<Int, MailAddress>;
+	var bcc : TypedArray<MailAddress>;
 	var reply_toaddress : String;
-	var reply_to : TypedArray<Int, MailAddress>;
+	var reply_to : TypedArray<MailAddress>;
 	var senderaddress : String;
-	var sender : TypedArray<Int, MailAddress>;
+	var sender : TypedArray<MailAddress>;
 	var return_pathaddress : String;
-	var return_path : TypedArray<Int, MailAddress>;
+	var return_path : TypedArray<MailAddress>;
 	var remail : String;
 	var date : String;
 	var Date : String; // Same as date

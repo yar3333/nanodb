@@ -52,7 +52,7 @@ class ImapNatives
 	
 	public static inline function imap_expunge(imap_stream:ImapStream) : Bool return untyped __call__('imap_expunge', imap_stream);
 	
-	public static inline function imap_fetch_overview(imap_stream:ImapStream, sequence:String, options=0) : TypedArray<Int,ImapOverview> return untyped __call__('imap_fetch_overview', imap_stream, sequence, options);
+	public static inline function imap_fetch_overview(imap_stream:ImapStream, sequence:String, options=0) : TypedArray<ImapOverview> return untyped __call__('imap_fetch_overview', imap_stream, sequence, options);
 	
 	public static inline function imap_fetchbody(imap_stream:ImapStream, msg_number:Int, section:String, options=0) : String return untyped __call__('imap_fetchbody', imap_stream, msg_number, section, options);
 	
@@ -91,7 +91,7 @@ class ImapNatives
 	
 	public static inline function imap_last_error() : String return untyped __call__('imap_last_error');
 	
-	public static inline function imap_list(imap_stream:ImapStream, ref:String, pattern:String) : TypedArray<Int,String> return untyped __call__('imap_list', imap_stream, ref, pattern);
+	public static inline function imap_list(imap_stream:ImapStream, ref:String, pattern:String) : TypedArray<String> return untyped __call__('imap_list', imap_stream, ref, pattern);
 	
 	public static inline function imap_listscan(imap_stream:ImapStream, ref:String, pattern:String, content:String) : NativeArray return untyped __call__('imap_listscan', imap_stream, ref, pattern, content);
 	
@@ -139,7 +139,7 @@ class ImapNatives
 	
 	public static inline function imap_mailboxmsginfo(imap_stream:ImapStream) : MailboxInfo return untyped __call__('imap_mailboxmsginfo', imap_stream);
 	
-	public static inline function imap_mime_header_decode(text:String) : TypedArray<Int, { charset:String, text:String }> return untyped __call__('imap_mime_header_decode', text);
+	public static inline function imap_mime_header_decode(text:String) : TypedArray<{ charset:String, text:String }> return untyped __call__('imap_mime_header_decode', text);
 	
 	public static inline function imap_msgno(imap_stream:ImapStream, uid:Int) : Int return untyped __call__('imap_msgno', imap_stream, uid);
 	

@@ -1,8 +1,7 @@
 package generator;
+
 import php.Syntax;
 import php.TypedArray;
-import php.TypedAssoc;
-
 using php.StringToolsNative;
 
 /**

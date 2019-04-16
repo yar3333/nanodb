@@ -49,12 +49,12 @@ class DbDriver_sqlite implements DbDriver
 		if (!inner.match(sql)) return throw 'Unhandled syntax of "sqlite_master" for table "$table".';
 		
 		var statement = inner.matched(1).trim();
-		var fields = statement.split(",");
+		var fields = statement.splitNative(",");
 		
 		var delim = '\\[\\]"\'`';
 		var named = fields.filter(function(fld)
 		{
-			fld = fld.trim().split(" ")[0];//first word in case of field declaration 
+			fld = fld.trim().splitNative(" ")[0];//first word in case of field declaration 
 			var reg 		= '[$delim]?$field[$delim]?';//maybe delimited
 			var fld_reg 	= new EReg(reg, "gm");//multiline
 			var matching 	= fld_reg.match(fld);
@@ -69,7 +69,7 @@ class DbDriver_sqlite implements DbDriver
 			throw 'Unhandled syntax of "sqlite_master" for table "$table".';
 		}		
 		
-		var isAuto = named[0].split(" ").map(StringTools.trim).indexOf("AUTOINCREMENT") > -1;
+		var isAuto = named[0].splitNative(" ").map(function(x) return StringToolsNative.trim(x)).hasValue("AUTOINCREMENT");
 		
 		//trace('field $field isAuto $isAuto');
 		return isAuto;
@@ -133,7 +133,7 @@ class DbDriver_sqlite implements DbDriver
         var r = new TypedArray<DbTableForeignKey>();
 		var sql = query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" + table + "'").getResult(0);
 		var reFK = ~/^CONSTRAINT ".+?" FOREIGN KEY [(]"(.+?)"[)] REFERENCES "(.+?)" [(]"(.+?)"[)]/;
-		for (s in sql.replace("\r", "").split("\n"))
+		for (s in sql.replace("\r", "").splitNative("\n"))
 		{
 			if (reFK.match(s))
 			{
@@ -152,7 +152,7 @@ class DbDriver_sqlite implements DbDriver
         var r = new TypedArray<TypedArray<String>>();
 		var sql : String = query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" + table + "'").getResult(0);
 		var reUNIQUE = ~/^CONSTRAINT ".+?" UNIQUE [(](.+?)[)]/;
-		for (s in sql.replace("\r", "").split("\n"))
+		for (s in sql.replace("\r", "").splitNative("\n"))
 		{
 			if (reUNIQUE.match(s))
 			{

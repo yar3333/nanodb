@@ -2,7 +2,7 @@ package php;
 
 class StringToolsNative
 {
-	public static inline function split(s:String, delimiter:String): TypedAssoc<Int, String> return cast Global.explode(delimiter, s);
+	public static inline function splitNative(s:String, delimiter:String): TypedAssoc<Int, String> return cast Global.explode(delimiter, s);
 	public static inline function lpad(s:String, char:String, count:Int): String return Global.str_pad(s, count, char, Const.STR_PAD_LEFT);
 	public static inline function rpad(s:String, char:String, count:Int): String return Global.str_pad(s, count, char);
 	public static inline function ltrim(s:String, ?chars:String): String return Global.ltrim(s, chars);
