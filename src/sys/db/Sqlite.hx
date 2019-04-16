@@ -57,14 +57,22 @@ private class SQLiteConnection implements Connection {
 		return "'" + SQLite3.escapeString(s) + "'";
 	}
 
-	public function addValue( s : StringBuf, v : Dynamic ) : Void {
-		if (Global.is_int(v) || Global.is_null(v)) {
-			s.add(v);
-		} else if (Global.is_bool(v)) {
-			s.add(v ? 1 : 0);
-		} else {
-			s.add(quote(Std.string(v)));
+	public function addValue2( s : String, v : Dynamic ) : String
+	{
+		if (Global.is_int(v) || Global.is_null(v))
+		{
+			s += (cast v : String);
 		}
+		else if (Global.is_bool(v))
+		{
+			s += v ? 1 : 0;
+		}
+		else
+		{
+			//s += quote(Std.string(v));
+			s += quote(v);
+		}
+		return s;
 	}
 
 	public function lastInsertId() : Int {

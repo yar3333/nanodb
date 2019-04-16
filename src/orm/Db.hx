@@ -38,7 +38,7 @@ class Db
 		
     }
 
-	public function query(sql:String, ?params:Dynamic) : ResultSet
+	public function query(sql:String, ?params:TypedAssoc<String, Dynamic>) : ResultSet
     {
 		try
 		{
@@ -89,13 +89,13 @@ class Db
 		});
 	}
 	
-	public function expression(s:String) : SqlValues
+	public function sqlTextRaw(sqlText:String) : SqlText
 	{
-		return SqlValues.SqlExpression(s);
+		return SqlText.raw(sqlText);
 	}
 	
-	public function field(s:String) : SqlValues
+	public function sqlTextField(fieldName:String) : SqlText
 	{
-		return SqlValues.SqlField(s);
+		return SqlText.field(fieldName);
 	}
 }

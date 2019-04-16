@@ -187,13 +187,13 @@ class CmdOptions
 		{
 			case "int":
 				ensureValueExist(s);
-				if (!opt.repeatable) params.set(opt.name, Std.parseInt(args.shift()));
-				else                 addRepeatableValue(opt.name, Std.parseInt(args.shift()));
+				if (!opt.repeatable) params.set(opt.name, Syntax.int(args.shift()));
+				else                 addRepeatableValue(opt.name, Syntax.int(args.shift()));
 			
 			case "float":
 				ensureValueExist(s);
-				if (!opt.repeatable) params.set(opt.name, Std.parseFloat(args.shift()));
-				else                 addRepeatableValue(opt.name, Std.parseFloat(args.shift()));
+				if (!opt.repeatable) params.set(opt.name, Syntax.float(args.shift()));
+				else                 addRepeatableValue(opt.name, Syntax.float(args.shift()));
 				
 			case "bool":
 				params.set(opt.name, !opt.defaultValue);

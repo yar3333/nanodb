@@ -1,7 +1,7 @@
 package generator;
 
 import php.Exception;
-import php.Lib;
+import php.Global;
 import orm.Db;
 import php.Syntax;
 import php.TypedArray;
@@ -85,10 +85,10 @@ class Main
 		else
 		{
 			
-			Lib.print("Generating set of the php classes from database tables.\n");
-			Lib.print("\nUsage:\n\tbin\\nanodb <databaseConnectionString> [options]\n");
-			Lib.print("\nOptions:\n\n");
-			Lib.print(options.getHelpMessage() + "\n");
+			Global.echo("Generating set of the php classes from database tables.\n");
+			Global.echo("\nUsage:\n\tbin\\nanodb <databaseConnectionString> [options]\n");
+			Global.echo("\nOptions:\n\n");
+			Global.echo(options.getHelpMessage() + "\n");
 		}
         
         Sys.exit(0);
@@ -98,7 +98,7 @@ class Main
 	{
 		if (message != null)
 		{
-			Lib.print("ERROR: " + message + "\n");
+			Global.echo("ERROR: " + message + "\n");
 		}
 		Sys.exit(1);
 	}

@@ -100,7 +100,7 @@ class DbDriver_sqlite implements DbDriver
         if (Syntax.strictEqual(v, null)) return "NULL";
 		if (Syntax.instanceof(v, DateTime)) return "'" + (cast v:DateTime).format("Y-m-d H:i:s") + "'";
         
-        throw new Exception("Unsupported parameter type '" + v + "'.");
+        throw new Exception("Unsupported parameter type '" + (cast v:String) + "'.");
     }
 	
     public function lastInsertId() : Int

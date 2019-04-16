@@ -1,5 +1,6 @@
 package generator;
 
+import php.Global;
 import php.Syntax;
 import php.TypedArray;
 using php.StringToolsNative;
@@ -117,7 +118,6 @@ class Log
         {
             if (shown.pop())
 			{
-				text = Std.string(text);
 				if (!inBlock) print(indent(ind));
 				ind--;
 				if (text.indexOf("\n") < 0)	println("[" + text + "]");
@@ -134,7 +134,6 @@ class Log
         {
 			if (shown.pop())
 			{
-				text = Std.string(text);
 				if (!inBlock) print(indent(ind));
 				ind--;
 				if (text.indexOf("\n") < 0)	println("[" + text + "]");
@@ -151,7 +150,6 @@ class Log
 		{
             if (level <= levelLimit)
 			{
-				text = Std.string(text);
 				if (inBlock) println("");
 				println(indent(ind) + text.replace("\n", "\n" + indent(ind)));
 				inBlock = false;
@@ -166,12 +164,12 @@ class Log
 	
 	function print(s:String)
 	{
-		Sys.print(s);
+		Global.echo(s);
 	}
 	
 	function println(s:String)
 	{
-		Sys.print(s + "\n");
+		Global.echo(s + "\n");
 	}
 	
 	//}

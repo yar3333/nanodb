@@ -36,7 +36,7 @@ class DbDriver_mysql implements DbDriver
 		this.user = re.matched(1);
 		this.pass = re.matched(2);
 		this.database = re.matched(5);
-		this.port = re.matched(4) != null && re.matched(4) != "" ? Std.parseInt(re.matched(4)) : 0;
+		this.port = re.matched(4) != null && re.matched(4) != "" ? Syntax.int(re.matched(4)) : 0;
 		
 		renew();
     }
@@ -129,7 +129,7 @@ class DbDriver_mysql implements DbDriver
         if (Syntax.strictEqual(v, null)) return "NULL";
 		if (Syntax.instanceof(v, DateTime)) return "'" + (cast v:DateTime).format("Y-m-d H:i:s") + "'";
         
-        throw new Exception("Unsupported parameter type '" + v + "'.");
+        throw new Exception("Unsupported parameter type '" + (cast v:String) + "'.");
     }
 
     public function lastInsertId() : Int

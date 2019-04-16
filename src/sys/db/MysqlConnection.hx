@@ -17,7 +17,7 @@ class MysqlConnection implements Connection
 			?database : String
 		}
 	) : Void {
-		if (params.port == null) params.port = Std.parseInt(Global.ini_get('mysqli.default_port'));
+		if (params.port == null) params.port = Syntax.int(Global.ini_get('mysqli.default_port'));
 		if (params.socket == null) params.socket = Global.ini_get('mysqli.default_socket');
 		if (params.database == null) params.database = "";
 
@@ -45,15 +45,20 @@ class MysqlConnection implements Connection
 		return "'" + db.escape_string(s) + "'";
 	}
 
-	public function addValue( s : StringBuf, v : Dynamic ) : Void {
+	public function addValue2( s : String, v : Dynamic ) : String {
 		if (Global.is_int(v)
-		|| Global.is_null(v)) {
-			s.add(v);
-		} else if (Global.is_bool(v)) {
-			s.add(v ? 1 : 0);
-		} else {
-			s.add(quote(Std.string(v)));
+		 || Global.is_null(v))
+		{
+			s += (cast v : String);
 		}
+		else if (Global.is_bool(v)) {
+			s += v ? 1 : 0;
+		}
+		else {
+			//s += quote(Std.string(v));
+			s += quote(v);
+		}
+		return s;
 	}
 
 	public function lastInsertId() : Int {
