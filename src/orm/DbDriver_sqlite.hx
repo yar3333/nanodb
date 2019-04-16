@@ -2,8 +2,10 @@ package orm;
 
 import Type;
 import php.Exception;
+import php.Global;
 import php.Syntax;
 import php.TypedArray;
+import php.calendar.DateTime;
 import sys.db.Connection;
 import sys.db.ResultSet;
 import sys.db.Sqlite;
@@ -92,35 +94,14 @@ class DbDriver_sqlite implements DbDriver
 	
     public function quote(v:Dynamic) : String
     {
-		switch (Type.typeof(v))
-        {
-            case ValueType.TClass(cls):
-                if (Std.is(v, String))
-                {
-					return connection.quote(v);
-                }
-                else
-                if (Std.is(v, Date))
-                {
-                    return "'" + v.toString() + "'";
-                }
-            
-            case ValueType.TInt:
-                return Std.string(v);
-            
-            case ValueType.TFloat:
-                return Std.string(v);
-            
-            case ValueType.TNull:
-                return "NULL";
-            
-            case ValueType.TBool:
-                return cast(v, Bool) ? "1" : "0";
-            
-            default:
-        }
+		if (Global.is_string(v)) return connection.quote(v);
+        if (Global.is_int(v)) return connection.quote(v);
+        if (Global.is_float(v)) return connection.quote(v);
+        if (Global.is_bool(v)) return v ? "1" : "0";
+        if (Syntax.strictEqual(v, null)) return "NULL";
+		if (Syntax.instanceof(v, DateTime)) return "'" + (cast v:DateTime).format("Y-m-d H:i:s") + "'";
         
-        throw new Exception("Unsupported parameter type '" + Type.getClassName(Type.getClass(v)) + "'.");
+        throw new Exception("Unsupported parameter type '" + v + "'.");
     }
 	
     public function lastInsertId() : Int

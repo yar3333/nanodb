@@ -11,26 +11,26 @@ class OrmTools
 		return re.match(checked);
 	}
 	
-	public static function sqlType2haxeType(sqlType:String) : String
+	public static function sqlType2phpType(sqlType:String) : String
 	{
 		sqlType = sqlType.toUpperCase();
-		if (sqlType == "TINYINT(1)")            return "Bool";
-		if (sqlTypeCheck(sqlType, "TINYINT"))   return "Int";
-		if (sqlTypeCheck(sqlType, "SMALLINT"))  return "Int";
-		if (sqlTypeCheck(sqlType, "MEDIUMINT")) return "Int";
-		if (sqlTypeCheck(sqlType, "SHORT"))     return "Int";
-		if (sqlTypeCheck(sqlType, "LONG"))      return "Int";
-		if (sqlTypeCheck(sqlType, "INT"))       return "Int";
-		if (sqlTypeCheck(sqlType, "INTEGER"))   return "Int";
-		if (sqlTypeCheck(sqlType, "INT24"))     return "Int";
-		if (sqlTypeCheck(sqlType, "BIGINT"))    return "Float";
-		if (sqlTypeCheck(sqlType, "LONGLONG"))  return "Float";
-		if (sqlTypeCheck(sqlType, "DECIMAL"))   return "Float";
-		if (sqlTypeCheck(sqlType, "FLOAT"))     return "Float";
-		if (sqlTypeCheck(sqlType, "DOUBLE"))    return "Float";
-		if (sqlTypeCheck(sqlType, "REAL"))      return "Float";
-		if (sqlTypeCheck(sqlType, "DATE"))      return "Date";
-		if (sqlTypeCheck(sqlType, "DATETIME"))  return "Date";
+		if (sqlType == "TINYINT(1)")            return "bool";
+		if (sqlTypeCheck(sqlType, "TINYINT"))   return "int";
+		if (sqlTypeCheck(sqlType, "SMALLINT"))  return "int";
+		if (sqlTypeCheck(sqlType, "MEDIUMINT")) return "int";
+		if (sqlTypeCheck(sqlType, "SHORT"))     return "int";
+		if (sqlTypeCheck(sqlType, "LONG"))      return "int";
+		if (sqlTypeCheck(sqlType, "INT"))       return "int";
+		if (sqlTypeCheck(sqlType, "INTEGER"))   return "int";
+		if (sqlTypeCheck(sqlType, "INT24"))     return "int";
+		if (sqlTypeCheck(sqlType, "BIGINT"))    return "float";
+		if (sqlTypeCheck(sqlType, "LONGLONG"))  return "float";
+		if (sqlTypeCheck(sqlType, "DECIMAL"))   return "float";
+		if (sqlTypeCheck(sqlType, "FLOAT"))     return "float";
+		if (sqlTypeCheck(sqlType, "DOUBLE"))    return "float";
+		if (sqlTypeCheck(sqlType, "REAL"))      return "float";
+		if (sqlTypeCheck(sqlType, "DATE"))      return "DateTime";
+		if (sqlTypeCheck(sqlType, "DATETIME"))  return "DateTime";
 		return "String";
 	}
 	
@@ -50,7 +50,7 @@ class OrmTools
 		{
 			 table : table
 			,haxeName : f.name
-			,haxeType : sqlType2haxeType(f.type)
+			,haxeType : sqlType2phpType(f.type)
 			,haxeDefVal : positions.is({ table:table, name:f.name}) ? "null" : null
 			
 			,name : f.name
