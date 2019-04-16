@@ -4,7 +4,7 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="lib" />
+    <movie path="." />
     <movie fps="0" />
     <movie width="0" />
     <movie height="0" />
@@ -15,8 +15,8 @@
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
-    <class path="php-natives" />
-    <class path="src" />
+    <class path="src\natives" />
+    <class path="src\app" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -25,7 +25,7 @@
     <option noInlineOnDebug="False" />
     <option mainClass="generator.Main" />
     <option enabledebug="False" />
-    <option additional="--dce std&#xA;--no-traces&#xA;-D real-position&#xA;-D php-prefix=nanodb" />
+    <option additional="--dce std&#xA;--no-traces&#xA;-D real-position&#xA;-D php-prefix=nanodb&#xA;-D php-front=cli.php" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
