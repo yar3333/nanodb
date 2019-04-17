@@ -121,8 +121,8 @@ class OrmManagerGenerator {
 		}
 		$model->addMethod("delete", $deleteVars, "void", "\$db->query('DELETE FROM `" . $table . "`" . ($this->getWhereSql($deleteVars)??'null') . " . ' LIMIT 1');");
 		$model->addMethod("getAll", [new GeneratorPhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "return \$this->getBySqlMany('SELECT * FROM `" . $table . "`' . (\$_order != null ? ' ORDER BY ' . \$_order : ''));");
-		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName), "\$rows = db.query(\$sql . ' LIMIT 1');\x0A" . "if (\$rows->length == 0) return null;\x0A" . "return self::newModelFromAssoc(\$rows->next());");
-		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "\$rows = \$db->query(\$sql);\x0A" . "\$r = [];\x0A" . "foreach (\$rows as \$row)\x0A" . "{\x0A" . "\x09array_push(\$r, self::newModelFromAssoc(\$row));\x0A" . "}\x0A" . "return \$r;");
+		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\x0A" . "if (\$rows->length == 0) return null;\x0A" . "return self::newModelFromAssoc(\$rows->next());");
+		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "\$rows = \$this->db->query(\$sql);\x0A" . "\$r = [];\x0A" . "foreach (\$rows as \$row)\x0A" . "{\x0A" . "\x09array_push(\$r, self::newModelFromAssoc(\$row));\x0A" . "}\x0A" . "return \$r;");
 		$collection = $db->connection->getUniques($table);
 		foreach ($collection as $key => $value) {
 			unset($fields);

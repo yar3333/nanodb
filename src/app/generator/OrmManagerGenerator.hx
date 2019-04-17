@@ -215,7 +215,7 @@ class OrmManagerGenerator
 			'getBySqlOne',
 			Syntax.arrayDecl(new PhpVar('sql', 'string')),
 			Tools.toPhpType(modelClassName),
-			 "$rows = db.query($sql . ' LIMIT 1');\n"
+			 "$rows = $this->db->query($sql . ' LIMIT 1');\n"
 			+"if ($rows->length == 0) return null;\n"
 			+"return self::newModelFromAssoc($rows->next());"
 		);
@@ -225,7 +225,7 @@ class OrmManagerGenerator
 			'getBySqlMany',
 			Syntax.arrayDecl(new PhpVar('sql', 'string')),
 			Tools.toPhpType(modelClassName) + '[]',
-			 "$rows = $db->query($sql);\n"
+			 "$rows = $this->db->query($sql);\n"
 			+"$r = [];\n"
 			+"foreach ($rows as $row)\n"
 			+"{\n"

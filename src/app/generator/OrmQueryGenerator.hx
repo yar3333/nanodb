@@ -39,7 +39,7 @@ class OrmQueryGenerator
 				new PhpVar("manager", Tools.toPhpType(customManagerClassName))
 			  )
 			, null
-			, "super('" + table + "', $db, $manager);"
+			, "parent::__construct('" + table + "', $db, $manager);"
 		);
 		
 		// function where(field:String, op:String, value:Dynamic) : SqlQuery<T>
@@ -51,7 +51,7 @@ class OrmQueryGenerator
 				new PhpVar("value", null)
 			),
 			Tools.toPhpType(queryClassName),
-			"return parent::where($field, $op, $value);"
+			"parent::where($field, $op, $value);\nreturn $this;"
 		);
 		
 		//function orderAsc(value:Dynamic) : SqlQuery<T>
@@ -61,7 +61,7 @@ class OrmQueryGenerator
 				new PhpVar("value", null)
 			),
 			Tools.toPhpType(queryClassName),
-			"return parent::orderAsc($value);"
+			"parent::orderAsc($value);\nreturn $this;"
 		);
 		
 		//function orderDesc(value:Dynamic) : SqlQuery<T>
@@ -71,7 +71,7 @@ class OrmQueryGenerator
 				new PhpVar("value", null)
 			),
 			Tools.toPhpType(queryClassName),
-			"return parent::orderDesc($value);"
+			"parent::orderDesc($value);\nreturn $this;"
 		);
 		
 		//function findMany(?limit:Int, ?offset:Int) : TypedArray<T>
@@ -82,7 +82,7 @@ class OrmQueryGenerator
 				new PhpVar("offset", "int", "null")
 			),
 			Tools.toPhpType(customModelClassName) + "[]",
-			"return parent::findMany($value);"
+			"parent::findMany($limit, $offset);\nreturn $this;"
 		);
 
 		//function findOne() : T

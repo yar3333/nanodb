@@ -32,11 +32,11 @@ class OrmQueryGenerator {
 	 */
 	public function getQueryClass ($table, $vars, $queryClassName, $customModelClassName, $customManagerClassName) {
 		$model = new GeneratorPhpClass($queryClassName, "nanodb.orm.SqlQuery");
-		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("manager", GeneratorTools::toPhpType($customManagerClassName))], null, "super('" . $table . "', \$db, \$manager);");
-		$model->addMethod("where", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return parent::where(\$field, \$op, \$value);");
-		$model->addMethod("orderAsc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return parent::orderAsc(\$value);");
-		$model->addMethod("orderDesc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return parent::orderDesc(\$value);");
-		$model->addMethod("findMany", [new GeneratorPhpVar("limit", "int", "null"), new GeneratorPhpVar("offset", "int", "null")], (GeneratorTools::toPhpType($customModelClassName)??'null') . "[]", "return parent::findMany(\$value);");
+		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("manager", GeneratorTools::toPhpType($customManagerClassName))], null, "parent::__construct('" . $table . "', \$db, \$manager);");
+		$model->addMethod("where", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::where(\$field, \$op, \$value);\x0Areturn \$this;");
+		$model->addMethod("orderAsc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::orderAsc(\$value);\x0Areturn \$this;");
+		$model->addMethod("orderDesc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::orderDesc(\$value);\x0Areturn \$this;");
+		$model->addMethod("findMany", [new GeneratorPhpVar("limit", "int", "null"), new GeneratorPhpVar("offset", "int", "null")], (GeneratorTools::toPhpType($customModelClassName)??'null') . "[]", "parent::findMany(\$limit, \$offset);\x0Areturn \$this;");
 		$model->addMethod("findOne", [], GeneratorTools::toPhpType($customModelClassName), "return parent::findOne();");
 		return $model;
 	}
