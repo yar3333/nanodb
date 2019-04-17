@@ -229,7 +229,7 @@ class OrmManagerGenerator {
 			$customManager = $this->getCustomManager($table->tableName, $vars, $table->customModelClassName, $table->customManagerClassName, $table->autogenManagerClassName);
 			$destFileName1 = $outPath . (str_replace(".", "/", $table->customManagerClassName)??'null') . ".php";
 			GeneratorTools::mkdir(dirname($destFileName1));
-			file_put_contents($destFileName1, $customManager->toString());
+			file_put_contents($destFileName1, "<?php\x0A\x0A" . ($customManager->toString()??'null'));
 		}
 		GeneratorLog::finishSuccess();
 	}

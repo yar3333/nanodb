@@ -29,7 +29,7 @@ class OrmManagerGenerator
 			var customManager = getCustomManager(table.tableName, vars, table.customModelClassName, table.customManagerClassName, table.autogenManagerClassName);
 			var destFileName = outPath + table.customManagerClassName.replace('.', '/') + '.php';
 			Tools.mkdir(Global.dirname(destFileName));
-			Global.file_put_contents(destFileName, customManager.toString());
+			Global.file_put_contents(destFileName, "<?php\n\n" + customManager.toString());
 		}
 		
 		Log.finishSuccess();

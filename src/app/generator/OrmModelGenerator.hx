@@ -29,7 +29,7 @@ class OrmModelGenerator
 			var customModel = getCustomModel(table.customModelClassName, table.autogenModelClassName);
 			var destFileName = outPath + table.customModelClassName.replace(".", "/") + ".php";
 			Tools.mkdir(Global.dirname(destFileName));
-			Global.file_put_contents(destFileName, customModel.toString());
+			Global.file_put_contents(destFileName, "<?php\n\n" + customModel.toString());
 		}
 		
 		Log.finishSuccess();

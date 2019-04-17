@@ -120,7 +120,7 @@ class OrmGenerator {
 			$customOrm = $this->getCustomOrm($customOrmClassName, $autogenOrmClassName);
 			$destFileName = $this->outPath . (str_replace(".", "/", $customOrmClassName)??'null') . ".php";
 			GeneratorTools::mkdir(dirname($destFileName));
-			file_put_contents($destFileName, $customOrm->toString());
+			file_put_contents($destFileName, "<?php\x0A\x0A" . ($customOrm->toString()??'null'));
 		}
 	}
 }

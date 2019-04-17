@@ -99,7 +99,7 @@ class OrmModelGenerator {
 			$customModel = $this->getCustomModel($table->customModelClassName, $table->autogenModelClassName);
 			$destFileName1 = $outPath . (str_replace(".", "/", $table->customModelClassName)??'null') . ".php";
 			GeneratorTools::mkdir(dirname($destFileName1));
-			file_put_contents($destFileName1, $customModel->toString());
+			file_put_contents($destFileName1, "<?php\x0A\x0A" . ($customModel->toString()??'null'));
 		}
 		GeneratorLog::finishSuccess();
 	}
