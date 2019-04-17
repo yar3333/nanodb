@@ -17,10 +17,7 @@ class OrmModelGenerator
 		var vars = OrmTools.fields2vars(table.tableName, db.connection.getFields(table.tableName), positions);
 		
 		var autogenModel = getAutogenModel(table.tableName, vars, table.autogenModelClassName, customOrmClassName);
-		Global.echo("\n\nsrcPath = " + srcPath + "\n\n");
-		Global.echo("\n\ntable.autogenModelClassName: " + table.autogenModelClassName + "\n\n");
 		var destFileName = srcPath + table.autogenModelClassName.replace(".", "/") + ".hx";
-		Global.echo("\n\nCREATE DIR: " + destFileName + "\n\n");
 		Tools.mkdir(Global.dirname(destFileName));
 		Global.file_put_contents(
 			  destFileName

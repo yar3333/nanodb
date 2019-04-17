@@ -92,16 +92,13 @@ class DbDriver_mysql implements DbDriver
 	
     public function getTables() : TypedArray<String>
     {
-		Global.echo("\n\nSHOW TABLES FROM `" + database + "`\n\n");
         var r = new TypedArray<String>();
         var resultSet = query("SHOW TABLES FROM `" + database + "`");
-		Global.var_dump(resultSet.results());
         Syntax.foreach(resultSet.results(), function(_, row:TypedAssoc<String, Dynamic>)
         {
 			var fields = Global.array_keys(row);
 			r.push(row[fields[0]]);
 		});
-		//Global.var_dump(r);
         return r;
     }
 

@@ -121,11 +121,9 @@ class DbDriver_mysql implements OrmDbDriver {
 	 * @return mixed
 	 */
 	public function getTables () {
-		echo("\x0A\x0ASHOW TABLES FROM `" . $this->database . "`\x0A\x0A");
 		$this1 = [];
 		$r = $this1;
 		$resultSet = $this->query("SHOW TABLES FROM `" . $this->database . "`");
-		var_dump($resultSet->results());
 		$collection = $resultSet->results();
 		foreach ($collection as $key => $value) {
 			$fields = array_keys($value);
