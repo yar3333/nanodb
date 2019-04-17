@@ -37,23 +37,6 @@ class MysqlConnection implements DbConnection {
 	}
 
 	/**
-	 * @param string $s
-	 * @param mixed $v
-	 * 
-	 * @return string
-	 */
-	public function addValue2 ($s, $v) {
-		if (is_int($v) || is_null($v)) {
-			$s = $s . $v;
-		} else if (is_bool($v)) {
-			$s = $s . (($v ? 1 : 0)??'null');
-		} else {
-			$s = $s . ($this->quote($v)??'null');
-		}
-		return $s;
-	}
-
-	/**
 	 * @return void
 	 */
 	public function close () {

@@ -26,17 +26,17 @@ class PhpClass
 	
 	public function addImport(packageName:String) : Void
 	{
-		imports.push("import " + packageName + ";");
+		imports.push("use " + Tools.toPhpType(packageName) + ";");
 	}
 	
-	public function addVar(v:PhpVar, isPrivate=false, isStatic=false, isReadOnlyProperty=false, ?allows:TypedArray<String>) : Void
+	public function addVar(v:PhpVar, access:String="public", isStatic:Bool=false) : Void
 	{
 		if (v != null)
 		{
-			var s = (allows != null && allows.length > 0 ? allows.map(function(s) return "@:allow(" + s + ")\n").join("") : "")
-				  + (isPrivate ? "" : "public ")
+			var s = (v.haxeType != null ? "/**\n * @var " + v.haxeType + "\n */\n" : "")
+				  + (access + " ")
 				  + (isStatic ? "static " : "")
-				  + "var " + v.haxeName + (isReadOnlyProperty ? "(default, null)" : "") + " : " + v.haxeType
+				  + "$" + v.haxeName
 				  + ";";
 			vars.push(s);
 		}
@@ -46,31 +46,41 @@ class PhpClass
 		}
  	}
 	
-	public function addVarGetter(v:PhpVarGetter, isPrivate = false, isStatic = false, isInline = false) : Void
+	public function addProperty(v:PhpVar, isStatic = false) : Void
 	{
-		var s = "\n\t"
-		      + (isPrivate ? "" : "public ")
-			  + (isStatic ? "static " : "")
-			  + "var " + v.haxeName + "(" + v.haxeName + "_getter, null)" + " : " + v.haxeType
-			  + ";\n";
+		addVar(v, "protected", isStatic);
 		
-		s += (isInline ? "\tinline " : "\t")
-		   + "function " + v.haxeName + "_getter() : " + v.haxeType + "\n"
-		   + "\t{\n"
-		   + indent(v.haxeBody.trim(), "\t\t") + "\n"
-		   + "\t}";
+		addMethod(
+			"get" + Tools.capitalize(v.haxeName),
+			Syntax.arrayDecl(),
+			v.haxeType,
+			"{ return $this->" + v.haxeName + "; }",
+			"public",
+			isStatic
+		);
 		
-		vars.push(s);
+		addMethod(
+			"set" + Tools.capitalize(v.haxeName),
+			Syntax.arrayDecl(
+				new PhpVar(v.haxeName, v.haxeType)
+			),
+			v.haxeType,
+			"{ $this->" + v.haxeName + " = " + v.haxeName + "; }",
+			"public",
+			isStatic
+		);
+		
 	}
 	
-	public function addMethod(name:String, vars:TypedArray<PhpVar>, retType:String, body:String, isPrivate=false, isStatic=false) : Void
+	public function addMethod(name:String, vars:TypedArray<PhpVar>, retType:String, body:String, access="public", isStatic=false) : Void
 	{
-		var header = 
-				(isPrivate ? '' : 'public ')
-			  + (isStatic ? 'static  ' : '')
-			  + 'function ' + name + '('
-			  + vars.map(function(v:PhpVar) { return v.haxeName + ":" + v.haxeType + (v.haxeDefVal != null ? '=' + v.haxeDefVal : ''); } ).join(', ')
-			  + ') : ' + retType;
+		var header = (retType != null && retType.indexOf("[]") >= 0 ? "/**\n\t * @return " + retType + "\n\t */\n\t" : "")
+				   + (access + " ")
+				   + (isStatic ? 'static ' : '')
+				   + 'function ' + name + '('
+				   + vars.map(function(v:PhpVar) { return (v.haxeType != null ? v.haxeType + " " : "") + "$" + v.haxeName + (v.haxeDefVal != null ? '=' + v.haxeDefVal : ''); } ).join(', ')
+				   + ')'
+				   + (retType != null ? " : " + (retType.indexOf("[]") < 0 ? retType : "array") : "");
 		var s = header + '\n'
 			  + '\t{\n'
 			  + indent(body.trim(), '\t\t') + '\n'
@@ -93,12 +103,12 @@ class PhpClass
 			varLines.push(v.replace("\n", "\n\t"));
 		});
 		
-		var s = 'package ' + clas.packageName + ';\n'
+		var s = 'namespace ' + Tools.toPhpType(clas.packageName, false) + ';\n'
 			  + '\n'
 			  + imports.join('\n') + (imports.length > 0 ? '\n\n' : '')
-			  + 'class ' + clas.className + (baseFullClassName != null ? ' extends ' + baseFullClassName : '') + '\n'
+			  + 'class ' + clas.className + (baseFullClassName != null ? ' extends ' + Tools.toPhpType(baseFullClassName) : '') + '\n'
 			  + '{\n'
-			  + (vars.length > 0 ? '\t' + varLines.join('\n\t') + '\n\n' : '')
+			  + (vars.length > 0 ? '\t' + varLines.join('\n\t\n\t') + '\n\n' : '')
 			  + (methods.length > 0 ? '\t' + methods.join('\n\n\t') + '\n' : '')
 			  + (customs.length > 0 ? '\t' + customs.join('\n\n\t') + '\n' : '')
 			  + '}';

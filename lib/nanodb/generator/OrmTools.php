@@ -7,50 +7,32 @@ namespace nanodb\generator;
 
 use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
+use \nanodb\generator\OrmPhpVar as GeneratorOrmPhpVar;
 use \nanodb\EReg;
 use \nanodb\generator\OrmPositions as GeneratorOrmPositions;
 
 class OrmTools {
 	/**
-	 * @param string $haxeName
-	 * @param string $haxeType
-	 * @param string $haxeDefVal
-	 * 
-	 * @return object
-	 */
-	static public function createVar ($haxeName, $haxeType, $haxeDefVal = null) {
-		return new HxAnon([
-			"haxeName" => $haxeName,
-			"haxeType" => $haxeType,
-			"haxeDefVal" => $haxeDefVal,
-		]);
-	}
-
-	/**
 	 * @param string $table
 	 * @param object $f
 	 * @param GeneratorOrmPositions $positions
 	 * 
-	 * @return object
+	 * @return GeneratorOrmPhpVar
 	 */
 	static public function field2var ($table, $f, $positions) {
 		$f1 = $f->name;
-		$tmp = OrmTools::sqlType2phpType($f->type);
-		$tmp1 = ($positions->is(new HxAnon([
+		$r = OrmTools::sqlType2phpType($f->type);
+		$r1 = new GeneratorOrmPhpVar($f1, $r, ($positions->is(new HxAnon([
 			"table" => $table,
 			"name" => $f->name,
-		])) ? "null" : null);
-		return new HxAnon([
-			"table" => $table,
-			"haxeName" => $f1,
-			"haxeType" => $tmp,
-			"haxeDefVal" => $tmp1,
-			"name" => $f->name,
-			"type" => $f->type,
-			"isNull" => $f->isNull,
-			"isKey" => $f->isKey,
-			"isAutoInc" => $f->isAutoInc,
-		]);
+		])) ? "null" : null));
+		$r1->table = $table;
+		$r1->name = $f->name;
+		$r1->type = $f->type;
+		$r1->isNull = $f->isNull;
+		$r1->isKey = $f->isKey;
+		$r1->isAutoInc = $f->isAutoInc;
+		return $r1;
 	}
 
 	/**
@@ -124,7 +106,7 @@ class OrmTools {
 		if (OrmTools::sqlTypeCheck($sqlType, "DATETIME")) {
 			return "DateTime";
 		}
-		return "String";
+		return "string";
 	}
 
 	/**

@@ -5,7 +5,6 @@
 
 namespace nanodb\sys\db;
 
-use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
 use \nanodb\sys\db\ResultSet as DbResultSet;
 
@@ -207,7 +206,7 @@ class MysqlResultSet implements DbResultSet {
 		}
 		$row = $this->fetchedRow;
 		$this->fetchedRow = null;
-		return new HxAnon($row);
+		return $row;
 	}
 }
 

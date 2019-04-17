@@ -4,6 +4,7 @@ import php.Global;
 import php.Syntax;
 import php.TypedArray;
 import php.TypedAssoc;
+import sys.db.ResultSet;
 
 private typedef Manager<T> =
 {
@@ -55,12 +56,12 @@ class SqlQuery<T>
 		return manager.getBySqlOne(getSelectSql(null));
 	}
 	
-	public function findManyFields<TT:{}>(fields:TT, ?limit:Int, ?offset:Int) : TypedResultSet<TT>
+	public function findManyFields(fields:TypedArray<String>, ?limit:Int, ?offset:Int) : ResultSet
 	{
-		return cast db.query(getSelectSql(fields) + getLimitSql(limit) + getOffsetSql(offset));
+		return db.query(getSelectSql(fields) + getLimitSql(limit) + getOffsetSql(offset));
 	}
 	
-	public function findOneFields<TT:{}>(fields:TT) : TT
+	public function findOneFields(fields:TypedArray<String>) : TypedAssoc<String, Dynamic>
 	{
 		var rr = db.query(getSelectSql(fields) + "\nLIMIT 1");
 		if (rr.hasNext()) return cast rr.next();
@@ -69,7 +70,7 @@ class SqlQuery<T>
 	
 	public function update(fields:TypedAssoc<String, Dynamic>, ?limit:Int, ?offset:Int) : Void
 	{
-		var sets: TypedArray<String> = Syntax.arrayDecl();
+		var sets : TypedArray<String> = Syntax.arrayDecl();
 		Syntax.foreach(fields, function(name:String, value:Dynamic)
 		{
 			sets.push("`" + name + "` = " + quoteValue(value));
@@ -91,16 +92,16 @@ class SqlQuery<T>
 	
 	public function exists() : Bool
 	{
-		return findOneFields({ "1":"" }) != null;
+		return findOneFields(Syntax.arrayDecl("1")) != null;
 	}
 	
-	function getSelectSql<TT:{}>(fields:TT) : String
+	function getSelectSql(fields:TypedArray<String>) : String
 	{
 		var f: TypedArray<String> = Syntax.arrayDecl(); 
 		
 		if (fields != null)
 		{
-			Syntax.foreach(Global.array_keys(Global.get_object_vars(fields)), function(_, name) f.push("`" + name + "`"));
+			Syntax.foreach(fields, function(_, name) f.push("`" + name + "`"));
 		}
 		else
 		{
@@ -124,14 +125,16 @@ class SqlQuery<T>
 	{
 		return limit != null ? "\nLIMIT " + limit : "";
 	}
+	
 	function getOffsetSql(offset:Int) : String
 	{
 		return offset != null ? "\nOFFSET " + offset : "";
 	}
+	
 	function quoteValue(v:Dynamic) : String
 	{
-		if (Syntax.instanceof(v, SqlRaw)) return (cast v : SqlRaw).text;
-		if (Syntax.instanceof(v, SqlField)) return "`" + (cast v : SqlField).text + "`";
+		if (Syntax.instanceof(v, SqlTextRaw)) return (cast v : SqlTextRaw).text;
+		if (Syntax.instanceof(v, SqlTextField)) return "`" + (cast v : SqlTextField).text + "`";
 		if (Global.is_array(v))
 		{
 			return "(" + (cast v:TypedArray<Dynamic>).map(function(x) return db.quote(x)).join(", ") + ")";

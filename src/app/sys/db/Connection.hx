@@ -27,7 +27,6 @@ interface Connection {
 	function close() : Void;
 	function escape( s : String ) : String;
 	function quote( s : String ) : String;
-	function addValue2( s : String, v : Dynamic ) : String;
 	function lastInsertId() : Int;
 	function dbName() : String;
 	function startTransaction() : Void;

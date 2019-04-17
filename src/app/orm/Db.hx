@@ -3,9 +3,11 @@ package orm;
 import php.Syntax;
 import php.TypedAssoc;
 import sys.db.ResultSet;
+import php.Exception;
+
 import orm.DbDriver_mysql;
 import orm.DbDriver_sqlite;
-import php.Exception;
+import orm.SqlQuery;
 
 class Db
 {

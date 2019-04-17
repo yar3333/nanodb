@@ -10,14 +10,6 @@ use \nanodb\sys\db\ResultSet as DbResultSet;
 
 interface Connection {
 	/**
-	 * @param string $s
-	 * @param mixed $v
-	 * 
-	 * @return string
-	 */
-	public function addValue2 ($s, $v) ;
-
-	/**
 	 * @return void
 	 */
 	public function close () ;

@@ -6,6 +6,8 @@
 namespace nanodb\generator;
 
 use \nanodb\php\Boot;
+use \nanodb\php\_Boot\HxString;
+use \nanodb\EReg;
 
 class Tools {
 	/**
@@ -22,6 +24,17 @@ class Tools {
 	}
 
 	/**
+	 * @param string $field
+	 * 
+	 * @return string
+	 */
+	static public function fieldAsFunctionNamePart ($field) {
+		return Tools::capitalize((new EReg("_[a-z]", "g"))->map($field, function ($re) {
+			return mb_strtoupper(HxString::substring($re->matched(0), 1));
+		}));
+	}
+
+	/**
 	 * @param string $path
 	 * 
 	 * @return void
@@ -30,6 +43,37 @@ class Tools {
 		if (!file_exists($path)) {
 			mkdir($path, 511, true);
 		}
+	}
+
+	/**
+	 * @param string $word
+	 * 
+	 * @return string
+	 */
+	static public function pluralToSingular ($word) {
+		if ($word === "person") {
+			return "people";
+		}
+		if ((substr($word, -mb_strlen("xes")) === "xes") || (substr($word, -mb_strlen("ses")) === "ses") || (substr($word, -mb_strlen("zes")) === "zes") || (substr($word, -mb_strlen("shes")) === "shes") || (substr($word, -mb_strlen("ches")) === "ches")) {
+			return HxString::substring($word, 0, mb_strlen($word) - 2);
+		}
+		if (substr($word, -mb_strlen("s")) === "s") {
+			return HxString::substring($word, 0, mb_strlen($word) - 1);
+		}
+		return $word;
+	}
+
+	/**
+	 * @param string $longType
+	 * @param bool $fromRoot
+	 * 
+	 * @return string
+	 */
+	static public function toPhpType ($longType, $fromRoot = true) {
+		if ($fromRoot === null) {
+			$fromRoot = true;
+		}
+		return ((($fromRoot ? "\\" : ""))??'null') . (str_replace(".", "\\", $longType)??'null');
 	}
 }
 

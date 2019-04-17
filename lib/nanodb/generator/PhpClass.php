@@ -7,7 +7,9 @@ namespace nanodb\generator;
 
 use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
+use \nanodb\generator\Tools as GeneratorTools;
 use \nanodb\php\_Boot\HxString;
+use \nanodb\generator\PhpVar as GeneratorPhpVar;
 
 class PhpClass {
 	/**
@@ -69,7 +71,7 @@ class PhpClass {
 	 * @return void
 	 */
 	public function addImport ($packageName) {
-		array_push($this->imports, "import " . $packageName . ";");
+		array_push($this->imports, "use " . (GeneratorTools::toPhpType($packageName)??'null') . ";");
 	}
 
 	/**
@@ -77,75 +79,60 @@ class PhpClass {
 	 * @param mixed $vars
 	 * @param string $retType
 	 * @param string $body
-	 * @param bool $isPrivate
+	 * @param string $access
 	 * @param bool $isStatic
 	 * 
 	 * @return void
 	 */
-	public function addMethod ($name, $vars, $retType, $body, $isPrivate = false, $isStatic = false) {
-		if ($isPrivate === null) {
-			$isPrivate = false;
+	public function addMethod ($name, $vars, $retType, $body, $access = "public", $isStatic = false) {
+		if ($access === null) {
+			$access = "public";
 		}
 		if ($isStatic === null) {
 			$isStatic = false;
 		}
-		$header = ((($isPrivate ? "" : "public "))??'null') . ((($isStatic ? "static  " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
-			return $v->haxeName . ":" . $v->haxeType . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
-		}, $vars))??'null') . ") : " . $retType;
+		$header = (((($retType !== null) && (HxString::indexOf($retType, "[]") >= 0) ? "/**\x0A\x09 * @return " . $retType . "\x0A\x09 */\x0A\x09" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
+			return ((($v->haxeType !== null ? $v->haxeType . " " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
+		}, $vars))??'null') . ")" . ((($retType !== null ? " : " . (((HxString::indexOf($retType, "[]") < 0 ? $retType : "array"))??'null') : ""))??'null');
 		$s = $header . "\x0A" . "\x09{\x0A" . ($this->indent(trim($body, null), "\x09\x09")??'null') . "\x0A" . "\x09}";
 		array_push($this->methods, $s);
 	}
 
 	/**
-	 * @param object $v
-	 * @param bool $isPrivate
+	 * @param GeneratorPhpVar $v
 	 * @param bool $isStatic
-	 * @param bool $isReadOnlyProperty
-	 * @param mixed $allows
 	 * 
 	 * @return void
 	 */
-	public function addVar ($v, $isPrivate = false, $isStatic = false, $isReadOnlyProperty = false, $allows = null) {
-		if ($isPrivate === null) {
-			$isPrivate = false;
+	public function addProperty ($v, $isStatic = false) {
+		if ($isStatic === null) {
+			$isStatic = false;
+		}
+		$this->addVar($v, "protected", $isStatic);
+		$this->addMethod("get" . (GeneratorTools::capitalize($v->haxeName)??'null'), [], $v->haxeType, "{ return \$this->" . $v->haxeName . "; }", "public", $isStatic);
+		$this->addMethod("set" . (GeneratorTools::capitalize($v->haxeName)??'null'), [new GeneratorPhpVar($v->haxeName, $v->haxeType)], $v->haxeType, "{ \$this->" . $v->haxeName . " = " . $v->haxeName . "; }", "public", $isStatic);
+	}
+
+	/**
+	 * @param GeneratorPhpVar $v
+	 * @param string $access
+	 * @param bool $isStatic
+	 * 
+	 * @return void
+	 */
+	public function addVar ($v, $access = "public", $isStatic = false) {
+		if ($access === null) {
+			$access = "public";
 		}
 		if ($isStatic === null) {
 			$isStatic = false;
 		}
-		if ($isReadOnlyProperty === null) {
-			$isReadOnlyProperty = false;
-		}
 		if ($v !== null) {
-			$s = (((($allows !== null) && (count($allows) > 0) ? implode("", array_map(function ($s1) {
-				return "@:allow(" . $s1 . ")\x0A";
-			}, $allows)) : ""))??'null') . ((($isPrivate ? "" : "public "))??'null') . ((($isStatic ? "static " : ""))??'null') . "var " . $v->haxeName . ((($isReadOnlyProperty ? "(default, null)" : ""))??'null') . " : " . $v->haxeType . ";";
+			$s = ((($v->haxeType !== null ? "/**\x0A * @var " . $v->haxeType . "\x0A */\x0A" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "\$" . $v->haxeName . ";";
 			array_push($this->vars, $s);
 		} else {
 			array_push($this->vars, "");
 		}
-	}
-
-	/**
-	 * @param object $v
-	 * @param bool $isPrivate
-	 * @param bool $isStatic
-	 * @param bool $isInline
-	 * 
-	 * @return void
-	 */
-	public function addVarGetter ($v, $isPrivate = false, $isStatic = false, $isInline = false) {
-		if ($isPrivate === null) {
-			$isPrivate = false;
-		}
-		if ($isStatic === null) {
-			$isStatic = false;
-		}
-		if ($isInline === null) {
-			$isInline = false;
-		}
-		$s = "\x0A\x09" . ((($isPrivate ? "" : "public "))??'null') . ((($isStatic ? "static " : ""))??'null') . "var " . $v->haxeName . "(" . $v->haxeName . "_getter, null)" . " : " . $v->haxeType . ";\x0A";
-		$s = $s . ((($isInline ? "\x09inline " : "\x09"))??'null') . "function " . $v->haxeName . "_getter() : " . $v->haxeType . "\x0A" . "\x09{\x0A" . ($this->indent(trim($v->haxeBody, null), "\x09\x09")??'null') . "\x0A" . "\x09}";
-		array_push($this->vars, $s);
 	}
 
 	/**
@@ -194,7 +181,7 @@ class PhpClass {
 			array_push($varLines, str_replace("\x0A", "\x0A\x09", $value));
 		}
 
-		$s = "package " . $clas->packageName . ";\x0A" . "\x0A" . (implode("\x0A", $this->imports)??'null') . (((count($this->imports) > 0 ? "\x0A\x0A" : ""))??'null') . "class " . $clas->className . ((($this->baseFullClassName !== null ? " extends " . $this->baseFullClassName : ""))??'null') . "\x0A" . "{\x0A" . (((count($this->vars) > 0 ? "\x09" . (implode("\x0A\x09", $varLines)??'null') . "\x0A\x0A" : ""))??'null') . (((count($this->methods) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->methods)??'null') . "\x0A" : ""))??'null') . (((count($this->customs) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->customs)??'null') . "\x0A" : ""))??'null') . "}";
+		$s = "namespace " . (GeneratorTools::toPhpType($clas->packageName, false)??'null') . ";\x0A" . "\x0A" . (implode("\x0A", $this->imports)??'null') . (((count($this->imports) > 0 ? "\x0A\x0A" : ""))??'null') . "class " . $clas->className . ((($this->baseFullClassName !== null ? " extends " . (GeneratorTools::toPhpType($this->baseFullClassName)??'null') : ""))??'null') . "\x0A" . "{\x0A" . (((count($this->vars) > 0 ? "\x09" . (implode("\x0A\x09\x0A\x09", $varLines)??'null') . "\x0A\x0A" : ""))??'null') . (((count($this->methods) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->methods)??'null') . "\x0A" : ""))??'null') . (((count($this->customs) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->customs)??'null') . "\x0A" : ""))??'null') . "}";
 		return $s;
 	}
 

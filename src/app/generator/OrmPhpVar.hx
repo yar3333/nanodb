@@ -1,11 +1,11 @@
 package generator;
 
-typedef OrmPhpVar =
-{>PhpVar,
-	var table: String;
-	var name : String;
-	var type : String;
-	var isNull : Bool;
-	var isKey : Bool;
-	var isAutoInc : Bool;
+class OrmPhpVar extends PhpVar
+{
+	public var table: String;
+	public var name : String;
+	public var type : String;
+	public var isNull : Bool;
+	public var isKey : Bool;
+	public var isAutoInc : Bool;
 }

@@ -9,7 +9,7 @@ class MysqlResultSet implements ResultSet
 	public var nfields(get,null) : Int;
 
 	var result:Mysqli_result;
-	var fetchedRow:TypedAssoc<String, Scalar>;
+	var fetchedRow:TypedAssoc<String, Dynamic>;
 	var fieldsInfo:TypedAssoc<String, MysqliFieldInfo>;
 
 	public function new( result:Mysqli_result ) {
@@ -26,11 +26,11 @@ class MysqlResultSet implements ResultSet
 		return withdrawFetched();
 	}
 
-	public function results() : TypedArray<TypedAssoc<String, Scalar>> {
-		var list = new TypedArray<TypedAssoc<String, Scalar>>();
+	public function results() : TypedArray<TypedAssoc<String, Dynamic>> {
+		var list = new TypedArray<TypedAssoc<String, Dynamic>>();
 
 		result.data_seek(0);
-		var row : TypedAssoc<String, Scalar> = cast result.fetch_assoc();
+		var row : TypedAssoc<String, Dynamic> = cast result.fetch_assoc();
 		while (row != null) {
 			correctArrayTypes(row);
 			list.push(row);
@@ -59,7 +59,7 @@ class MysqlResultSet implements ResultSet
 	}
 
 	function fetchNext() {
-		var row: TypedAssoc<String, Scalar> = cast result.fetch_assoc();
+		var row: TypedAssoc<String, Dynamic> = cast result.fetch_assoc();
 		if (row != null)
 		{
 			correctArrayTypes(row);
@@ -67,14 +67,14 @@ class MysqlResultSet implements ResultSet
 		}
 	}
 
-	function withdrawFetched() : Dynamic {
+	function withdrawFetched() : TypedAssoc<String, Dynamic> {
 		if (fetchedRow == null) return null;
 		var row = fetchedRow;
 		fetchedRow = null;
-		return Boot.createAnon(row);
+		return row;
 	}
 
-	function correctArrayTypes(row:TypedAssoc<String, Scalar>) {
+	function correctArrayTypes(row:TypedAssoc<String, Dynamic>) {
 		var fieldsInfo = getFieldsInfo();
 		Syntax.foreach(row, function(field:String, value:String) {
 			row[field] = correctType(value, fieldsInfo[field].type);
@@ -91,7 +91,7 @@ class MysqlResultSet implements ResultSet
 		return fieldsInfo;
 	}
 
-	function correctType(value:String, type:Int):Scalar {
+	function correctType(value:String, type:Int) : Scalar {
 		if (value == null) return null;
 		if (
 			type == Const.MYSQLI_TYPE_BIT

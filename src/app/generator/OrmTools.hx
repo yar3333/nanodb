@@ -31,34 +31,21 @@ class OrmTools
 		if (sqlTypeCheck(sqlType, "REAL"))      return "float";
 		if (sqlTypeCheck(sqlType, "DATE"))      return "DateTime";
 		if (sqlTypeCheck(sqlType, "DATETIME"))  return "DateTime";
-		return "String";
-	}
-	
-	public static function createVar(haxeName:String, haxeType:String, ?haxeDefVal:String) : PhpVar
-	{
-		return
-		{
-			 haxeName : haxeName
-			,haxeType : haxeType
-			,haxeDefVal : haxeDefVal
-		};
+		return "string";
 	}
 	
 	static function field2var(table:String, f:DbTableFieldData, positions:OrmPositions) : OrmPhpVar
-	{ 
-		return
-		{
-			 table : table
-			,haxeName : f.name
-			,haxeType : sqlType2phpType(f.type)
-			,haxeDefVal : positions.is({ table:table, name:f.name}) ? "null" : null
-			
-			,name : f.name
-			,type : f.type
-			,isNull : f.isNull
-			,isKey : f.isKey
-			,isAutoInc : f.isAutoInc
-		};
+	{
+		var r = new OrmPhpVar(f.name, sqlType2phpType(f.type), positions.is({ table:table, name:f.name}) ? "null" : null);
+		
+		r.table = table;
+		r.name = f.name;
+		r.type = f.type;
+		r.isNull = f.isNull;
+		r.isKey = f.isKey;
+		r.isAutoInc = f.isAutoInc;
+		
+		return r;
 	}
 	
 	public static function fields2vars(table:String, fields:TypedArray<DbTableFieldData>, positions:OrmPositions) : TypedArray<OrmPhpVar>

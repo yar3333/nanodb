@@ -13,18 +13,22 @@ class OrmTable
 	public var autogenModelClassName(default, null) : String;
 	public var customModelClassName(default, null) : String;
 	
+	public var queryClassName(default, null) : String;
+	
 	public function new(tableName:String, autogenPackage:String, customPackage:String)
 	{
 		this.tableName = tableName;
 		this.varName = getVarName();
 		
-		var className = getClassName();
+		var className = Tools.pluralToSingular(getClassName());
 		
 		this.autogenManagerClassName = autogenPackage + "." + className + "Manager";
 		this.customManagerClassName = customPackage + "." + className + "Manager";
 		
 		this.autogenModelClassName = autogenPackage + "." + className;
 		this.customModelClassName = customPackage + "." + className;
+		
+		this.queryClassName = autogenPackage + "." + className + "Query";
 	}
 	
 	function getVarName() : String

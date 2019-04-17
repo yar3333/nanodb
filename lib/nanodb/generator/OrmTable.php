@@ -28,6 +28,10 @@ class OrmTable {
 	/**
 	 * @var string
 	 */
+	public $queryClassName;
+	/**
+	 * @var string
+	 */
 	public $tableName;
 	/**
 	 * @var string
@@ -44,11 +48,12 @@ class OrmTable {
 	public function __construct ($tableName, $autogenPackage, $customPackage) {
 		$this->tableName = $tableName;
 		$this->varName = $this->getVarName();
-		$className = $this->getClassName();
+		$className = GeneratorTools::pluralToSingular($this->getClassName());
 		$this->autogenManagerClassName = $autogenPackage . "." . $className . "Manager";
 		$this->customManagerClassName = $customPackage . "." . $className . "Manager";
 		$this->autogenModelClassName = $autogenPackage . "." . $className;
 		$this->customModelClassName = $customPackage . "." . $className;
+		$this->queryClassName = $autogenPackage . "." . $className . "Query";
 	}
 
 	/**
