@@ -32,7 +32,7 @@ class OrmQueryGenerator {
 	 */
 	public function getQueryClass ($table, $vars, $queryClassName, $customModelClassName, $customManagerClassName) {
 		$model = new GeneratorPhpClass($queryClassName, "nanodb.orm.SqlQuery");
-		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("manager", GeneratorTools::toPhpType($customManagerClassName))], "void", "super('" . $table . "', \$db, \$manager);");
+		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("manager", GeneratorTools::toPhpType($customManagerClassName))], null, "super('" . $table . "', \$db, \$manager);");
 		$model->addMethod("where", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return parent::where(\$field, \$op, \$value);");
 		$model->addMethod("orderAsc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return parent::orderAsc(\$value);");
 		$model->addMethod("orderDesc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return parent::orderDesc(\$value);");

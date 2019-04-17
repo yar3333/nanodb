@@ -36,7 +36,7 @@ class OrmModelGenerator {
 		foreach ($vars as $key => $value) {
 			$model->addVar($value);
 		}
-		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName))], "void", "\$this->db = \$db;\x0A\$this->orm = \$orm;");
+		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName))], null, "\$this->db = \$db;\x0A\$this->orm = \$orm;");
 		if (current(array_filter($vars, function ($v) {
 			return $v->isKey;
 		})) && current(array_filter($vars, function ($v1) {

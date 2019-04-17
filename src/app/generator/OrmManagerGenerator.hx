@@ -57,7 +57,7 @@ class OrmManagerGenerator
 				 new PhpVar("db", Tools.toPhpType("nanodb.orm.Db")),
 				 new PhpVar("orm", Tools.toPhpType(customOrmClassName))
 			  )
-			, "void"
+			, null
 			, "$this->db = $db;\n$this->orm = $orm;"
 		);
         

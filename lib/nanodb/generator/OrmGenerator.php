@@ -77,7 +77,7 @@ class OrmGenerator {
 			$value1 = $value->varName;
 			$clas->addVar(new GeneratorPhpVar($value1, GeneratorTools::toPhpType($value->customManagerClassName)));
 		}
-		$clas->addMethod("new", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("orm.Db"))], "Void", implode("\x0A", array_map(function ($t) {
+		$clas->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db"))], null, implode("\x0A", array_map(function ($t) {
 			return "\$this->" . $t->varName . " = new " . (GeneratorTools::toPhpType($t->customManagerClassName)??'null') . "(\$db, \$this);";
 		}, array_filter($tables, function ($t1)  use (&$noInstantiateManagers) {
 			return !in_array($t1->tableName, $noInstantiateManagers, false);

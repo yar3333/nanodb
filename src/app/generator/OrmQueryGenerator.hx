@@ -38,7 +38,7 @@ class OrmQueryGenerator
 				new PhpVar("db", Tools.toPhpType("nanodb.orm.Db")),
 				new PhpVar("manager", Tools.toPhpType(customManagerClassName))
 			  )
-			, "void"
+			, null
 			, "super('" + table + "', $db, $manager);"
 		);
 		

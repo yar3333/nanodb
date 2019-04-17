@@ -73,9 +73,9 @@ class OrmGenerator
 		});
 		
 		clas.addMethod(
-			  "new"
-			, Syntax.arrayDecl(new PhpVar("db", Tools.toPhpType("orm.Db")))
-			, "Void"
+			  "__construct"
+			, Syntax.arrayDecl(new PhpVar("db", Tools.toPhpType("nanodb.orm.Db")))
+			, null
 			, tables
 				.filter(function(t) return !noInstantiateManagers.hasValue(t.tableName))
 				.map(function(t) return "$this->" + t.varName + " = new " + Tools.toPhpType(t.customManagerClassName) + "($db, $this);")

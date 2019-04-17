@@ -77,7 +77,7 @@ class OrmManagerGenerator {
 		$model->addVar(new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName)), "protected");
 		$this1 = [];
 		$model->addMethod("query", $this1, GeneratorTools::toPhpType($queryClassName), "return new " . (GeneratorTools::toPhpType($queryClassName)??'null') . "(\$this->db, \$this);");
-		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName))], "void", "\$this->db = \$db;\x0A\$this->orm = \$orm;");
+		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName))], null, "\$this->db = \$db;\x0A\$this->orm = \$orm;");
 		$tmp = GeneratorTools::toPhpType($modelClassName);
 		$tmp1 = "\$_obj = new " . (GeneratorTools::toPhpType($modelClassName)??'null') . "(\$this->db, \$this->orm);\x0A" . (implode("\x0A", array_map(function ($x) {
 			return "\$_obj->" . $x->haxeName . " = \$" . $x->haxeName . ";";
