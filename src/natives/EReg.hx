@@ -1,5 +1,6 @@
 import haxe.extern.EitherType;
 import php.*;
+using php.StringToolsNative;
 
 class EReg {
 
@@ -57,7 +58,7 @@ class EReg {
 	}
 
 	public function matchSub( s : String, pos : Int, len : Int = -1):Bool {
-		var subject = len < 0 ? s : s.substr(0, pos + len);
+		var subject = len < 0 ? s : s.substrNative(0, pos + len);
 		var p : Int = Global.preg_match(re, subject, matches, Const.PREG_OFFSET_CAPTURE, pos);
 		if(p > 0) {
 			last = s;
@@ -89,14 +90,14 @@ class EReg {
 			if (offset >= length) {
 				break;
 			} else if (!matchSub(s, offset)) {
-				buf += s.substr(offset);
+				buf += s.substrNative(offset);
 				break;
 			}
 			var p = matchedPosAssoc();
 			buf += s.substr(offset, p['pos'] - offset);
 			buf += f(this);
 			if (p['len'] == 0) {
-				buf += s.substr(p['pos'], 1);
+				buf += s.substrNative(p['pos'], 1);
 				offset = p['pos'] + 1;
 			}
 			else {
@@ -104,7 +105,7 @@ class EReg {
 			}
 		} while (global);
 		if (!global && offset > 0 && offset < length) {
-			buf += s.substr(offset);
+			buf += s.substrNative(offset);
 		}
 		return buf;
 	}

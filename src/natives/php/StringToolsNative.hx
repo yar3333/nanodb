@@ -1,4 +1,5 @@
 package php;
+import haxe.extern.EitherType;
 
 extern class StringToolsNative
 {
@@ -12,4 +13,6 @@ extern class StringToolsNative
 	public static inline function startsWith(s:String, start:String): Bool return Syntax.strictEqual(Global.strpos(s, start), 0);
 	public static inline function endsWith(s:String, end:String): Bool return Global.substr(s, -end.length) == end;
 	public static inline function contains(s:String, sub:String): Bool return Syntax.strictNotEqual(Global.mb_strpos(s, sub), false);
+	public static inline function lastIndexOfNative(str:String, search:String): EitherType<Int, Bool> return Global.mb_strrpos(str, search);
+	public static inline function substrNative(str:String, start:Int, len:Int=null): String return Global.mb_substr(str, start, len);
 }

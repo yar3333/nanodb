@@ -10,5 +10,4 @@ spl_autoload_register(
 		}
 	}
 );
-\nanodb\php\Boot::__hx__init();
 Main::main();

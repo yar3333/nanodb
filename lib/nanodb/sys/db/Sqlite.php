@@ -5,7 +5,7 @@
 
 namespace nanodb\sys\db;
 
-use \nanodb\sys\db\_Sqlite\SQLiteConnection;
+use \nanodb\sys\db\SQLiteConnection as DbSQLiteConnection;
 use \nanodb\sys\db\Connection as DbConnection;
 
 class Sqlite {
@@ -15,7 +15,7 @@ class Sqlite {
 	 * @return DbConnection
 	 */
 	static public function open ($file) {
-		return new SQLiteConnection($file);
+		return new DbSQLiteConnection($file);
 	}
 }
 

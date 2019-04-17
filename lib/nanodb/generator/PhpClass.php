@@ -6,7 +6,6 @@
 namespace nanodb\generator;
 
 use \nanodb\generator\Tools as GeneratorTools;
-use \nanodb\php\_Boot\HxString;
 use \nanodb\generator\PhpVar as GeneratorPhpVar;
 
 class PhpClass {
@@ -89,9 +88,9 @@ class PhpClass {
 		if ($isStatic === null) {
 			$isStatic = false;
 		}
-		$header = (((($retType !== null) && (HxString::indexOf($retType, "[]") >= 0) ? "/**\x0A\x09 * @return " . $retType . "\x0A\x09 */\x0A\x09" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
+		$header = (((($retType !== null) && (mb_strpos($retType, "[]") !== false) ? "/**\x0A\x09 * @return " . $retType . "\x0A\x09 */\x0A\x09" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
 			return ((($v->haxeType !== null ? $v->haxeType . " " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
-		}, $vars))??'null') . ")" . ((($retType !== null ? " : " . (((HxString::indexOf($retType, "[]") < 0 ? $retType : "array"))??'null') : ""))??'null');
+		}, $vars))??'null') . ")" . ((($retType !== null ? " : " . (((!(mb_strpos($retType, "[]") !== false) ? $retType : "array"))??'null') : ""))??'null');
 		$s = $header . "\x0A" . "\x09{\x0A" . ($this->indent(trim($body, null), "\x09\x09")??'null') . "\x0A" . "\x09}";
 		array_push($this->methods, $s);
 	}
@@ -139,8 +138,8 @@ class PhpClass {
 	 * @return string
 	 */
 	public function getPackageName ($fullClassName) {
-		if (HxString::lastIndexOf($fullClassName, ".") !== -1) {
-			return mb_substr($fullClassName, 0, HxString::lastIndexOf($fullClassName, "."));
+		if ((mb_strpos($fullClassName, ".") !== false)) {
+			return mb_substr($fullClassName, 0, mb_strrpos($fullClassName, "."));
 		}
 		return "";
 	}
@@ -151,8 +150,8 @@ class PhpClass {
 	 * @return string
 	 */
 	public function getShortClassName ($fullClassName) {
-		if (HxString::lastIndexOf($fullClassName, ".") !== -1) {
-			return mb_substr($fullClassName, HxString::lastIndexOf($fullClassName, ".") + 1, null);
+		if ((mb_strpos($fullClassName, ".") !== false)) {
+			return mb_substr($fullClassName, mb_strrpos($fullClassName, ".") + 1, null);
 		}
 		return $fullClassName;
 	}

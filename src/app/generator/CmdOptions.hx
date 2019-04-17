@@ -134,7 +134,7 @@ class CmdOptions
 		
 		if (arg != "--")
 		{
-			if (arg.substr(0, 1) == "-" && arg != "-")
+			if (arg.substrNative(0, 1) == "-" && arg != "-")
 			{
 				arg = ~/^(--?.+)=(.+)$/.map(arg, function(r)
 				{

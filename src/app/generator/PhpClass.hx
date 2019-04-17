@@ -74,13 +74,13 @@ class PhpClass
 	
 	public function addMethod(name:String, vars:TypedArray<PhpVar>, retType:String, body:String, access="public", isStatic=false) : Void
 	{
-		var header = (retType != null && retType.indexOf("[]") >= 0 ? "/**\n\t * @return " + retType + "\n\t */\n\t" : "")
+		var header = (retType != null && retType.contains("[]") ? "/**\n\t * @return " + retType + "\n\t */\n\t" : "")
 				   + (access + " ")
 				   + (isStatic ? 'static ' : '')
 				   + 'function ' + name + '('
 				   + vars.map(function(v:PhpVar) { return (v.haxeType != null ? v.haxeType + " " : "") + "$" + v.haxeName + (v.haxeDefVal != null ? '=' + v.haxeDefVal : ''); } ).join(', ')
 				   + ')'
-				   + (retType != null ? " : " + (retType.indexOf("[]") < 0 ? retType : "array") : "");
+				   + (retType != null ? " : " + (!retType.contains("[]") ? retType : "array") : "");
 		var s = header + '\n'
 			  + '\t{\n'
 			  + indent(body.trim(), '\t\t') + '\n'
@@ -121,18 +121,18 @@ class PhpClass
 	
 	function getShortClassName(fullClassName:String) : String
 	{
-		if (fullClassName.lastIndexOf('.') != -1)
+		if (fullClassName.contains('.'))
 		{
-			return  fullClassName.substr(fullClassName.lastIndexOf('.') + 1);
+			return  fullClassName.substr(fullClassName.lastIndexOfNative('.') + 1);
 		}
 		return fullClassName;
 	}
 	
 	function getPackageName(fullClassName:String) : String
 	{
-		if (fullClassName.lastIndexOf('.') != -1)
+		if (fullClassName.contains('.'))
 		{
-			return fullClassName.substr(0, fullClassName.lastIndexOf('.'));
+			return fullClassName.substr(0, fullClassName.lastIndexOfNative('.'));
 		}
 		return '';
 	}

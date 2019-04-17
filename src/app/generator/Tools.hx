@@ -27,7 +27,7 @@ class Tools
 	{
 		return capitalize(~/_[a-z]/g.map(field, function(re:EReg)
 		{
-			return re.matched(0).substring(1).toUpperCase();
+			return re.matched(0).substrNative(1).toUpperCase();
 		}));
 	}
 	
@@ -45,9 +45,9 @@ class Tools
 		 || word.endsWith("zes")
 		 || word.endsWith("shes")
 		 || word.endsWith("ches")
-		) return word.substring(0, word.length - 2);
+		) return word.substrNative(0, word.length - 2);
 		
-		if (word.endsWith("s")) return word.substring(0, word.length - 1);
+		if (word.endsWith("s")) return word.substrNative(0, word.length - 1);
 		
 		return word;
 	}

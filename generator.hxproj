@@ -45,7 +45,11 @@
   <postBuildCommand alwaysRun="False">haxelib run refactor -v replace lib *.php "!\((\$[_a-z][_a-z0-9]*(?:-&gt;[_a-z][_a-z0-9]*)?)\?\?'null'\)!$1!i"
 haxelib run refactor -v replace lib *.php "!use \\nanodb\\php\\Boot;\n!!"
 haxelib run refactor -v replace lib *.php "!Boot::registerClass\([_a-zA-Z]+::[a-z]+, '[_a-zA-Z.]+'\);\n!!"
-haxelib run refactor -v replace lib *.php "!\n\n\n!\n\n!"</postBuildCommand>
+haxelib run refactor -v replace lib *.php "!\n\n\n!\n\n!"
+haxelib run refactor -v replaceInFile cli.php "!\\nanodb\\php\\Boot::__hx__init\(\);\n!!"
+cmd /C del lib\nanodb\Array_hx.php
+cmd /C rmdir /q /s lib\nanodb\_Array
+cmd /C rmdir /q /s lib\nanodb\php</postBuildCommand>
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />

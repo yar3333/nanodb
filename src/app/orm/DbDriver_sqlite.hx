@@ -140,7 +140,7 @@ class DbDriver_sqlite implements DbDriver
 				r.push(fields.splitNative(",").map(function(s:String)
 				{
 					s = s.trim();
-					if (s.startsWith("\"") && s.endsWith("\"")) s = s.substr(1, s.length - 2);
+					if (s.startsWith("\"") && s.endsWith("\"")) s = s.substrNative(1, s.length - 2);
 					return s;
 				}));
 			}

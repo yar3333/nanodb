@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\_Boot\HxString;
 use \nanodb\EReg;
 
 class Tools {
@@ -29,7 +28,7 @@ class Tools {
 	 */
 	static public function fieldAsFunctionNamePart ($field) {
 		return Tools::capitalize((new EReg("_[a-z]", "g"))->map($field, function ($re) {
-			return mb_strtoupper(HxString::substring($re->matched(0), 1));
+			return mb_strtoupper(mb_substr($re->matched(0), 1, null));
 		}));
 	}
 
@@ -54,10 +53,10 @@ class Tools {
 			return "people";
 		}
 		if ((substr($word, -mb_strlen("xes")) === "xes") || (substr($word, -mb_strlen("ses")) === "ses") || (substr($word, -mb_strlen("zes")) === "zes") || (substr($word, -mb_strlen("shes")) === "shes") || (substr($word, -mb_strlen("ches")) === "ches")) {
-			return HxString::substring($word, 0, mb_strlen($word) - 2);
+			return mb_substr($word, 0, mb_strlen($word) - 2);
 		}
 		if (substr($word, -mb_strlen("s")) === "s") {
-			return HxString::substring($word, 0, mb_strlen($word) - 1);
+			return mb_substr($word, 0, mb_strlen($word) - 1);
 		}
 		return $word;
 	}
