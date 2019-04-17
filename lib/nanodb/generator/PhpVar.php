@@ -5,8 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
-
 class PhpVar {
 	/**
 	 * @var string
@@ -35,4 +33,3 @@ class PhpVar {
 	}
 }
 
-Boot::registerClass(PhpVar::class, 'generator.PhpVar');

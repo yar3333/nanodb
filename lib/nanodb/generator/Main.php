@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
 use \nanodb\generator\Log as GeneratorLog;
 use \nanodb\generator\OrmGenerator as GeneratorOrmGenerator;
 use \nanodb\generator\CmdOptions as GeneratorCmdOptions;
@@ -65,4 +64,3 @@ class Main {
 	}
 }
 
-Boot::registerClass(Main::class, 'generator.Main');

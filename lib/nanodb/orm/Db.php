@@ -6,10 +6,8 @@
 namespace nanodb\orm;
 
 use \nanodb\orm\DbException as OrmDbException;
-use \nanodb\php\Boot;
 use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\ResultSet;
-use \nanodb\php\_Boot\HxString;
 use \nanodb\orm\SqlText as OrmSqlText;
 use \nanodb\php\_Boot\HxException;
 use \nanodb\EReg;
@@ -41,12 +39,12 @@ class Db {
 	public function __construct ($connectionString, $logLevel = null) {
 		$this->connectionString = $connectionString;
 		$this->logLevel = ($logLevel !== null ? $logLevel : 0);
-		$n = HxString::indexOf($connectionString, "://");
-		if ($n < 0) {
+		$n = mb_strpos($connectionString, "://");
+		if (($n === false)) {
 			throw new \Exception("Connection string format must be 'dbtype://params'.");
 		}
 		$dbtype = mb_substr($connectionString, 0, $n);
-		$dbparams = mb_substr($connectionString, $n + mb_strlen("://"), null);
+		$dbparams = mb_substr($connectionString, $n + mb_strlen("://"));
 		$klassName = "\\nanodb\\orm\\DbDriver_" . $dbtype;
 		$tmp = $klassName;
 		$this->connection = new $tmp($dbparams);
@@ -145,4 +143,3 @@ class Db {
 	}
 }
 
-Boot::registerClass(Db::class, 'orm.Db');

@@ -11,4 +11,5 @@ extern class StringToolsNative
 	public static inline function replace(s:String, from:String, to:String): String return Global.str_replace(from, to, s);
 	public static inline function startsWith(s:String, start:String): Bool return Syntax.strictEqual(Global.strpos(s, start), 0);
 	public static inline function endsWith(s:String, end:String): Bool return Global.substr(s, -end.length) == end;
+	public static inline function contains(s:String, sub:String): Bool return Syntax.strictNotEqual(Global.mb_strpos(s, sub), false);
 }

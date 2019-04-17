@@ -5,7 +5,6 @@
 
 namespace nanodb\sys\db\_Sqlite;
 
-use \nanodb\php\Boot;
 use \nanodb\sys\db\_Sqlite\SQLiteResultSet as _SqliteSQLiteResultSet;
 use \nanodb\sys\db\Connection;
 use \nanodb\sys\db\ResultSet;
@@ -101,4 +100,3 @@ class SQLiteConnection implements Connection {
 	}
 }
 
-Boot::registerClass(SQLiteConnection::class, 'sys.db._Sqlite.SQLiteConnection');

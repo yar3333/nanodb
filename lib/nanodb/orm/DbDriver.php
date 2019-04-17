@@ -5,7 +5,6 @@
 
 namespace nanodb\orm;
 
-use \nanodb\php\Boot;
 use \nanodb\sys\db\ResultSet;
 
 interface DbDriver {
@@ -60,4 +59,3 @@ interface DbDriver {
 	public function quote ($s) ;
 }
 
-Boot::registerClass(DbDriver::class, 'orm.DbDriver');

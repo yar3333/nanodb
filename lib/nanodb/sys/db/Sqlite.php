@@ -5,7 +5,6 @@
 
 namespace nanodb\sys\db;
 
-use \nanodb\php\Boot;
 use \nanodb\sys\db\_Sqlite\SQLiteConnection;
 use \nanodb\sys\db\Connection as DbConnection;
 
@@ -20,4 +19,3 @@ class Sqlite {
 	}
 }
 
-Boot::registerClass(Sqlite::class, 'sys.db.Sqlite');

@@ -5,8 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
-use \nanodb\php\_Boot\HxString;
 use \nanodb\php\_Boot\HxException;
 
 /**
@@ -209,7 +207,7 @@ class Log {
 					$this->print($this->indent($this->ind));
 				}
 				$this->ind--;
-				if (HxString::indexOf($text, "\x0A") < 0) {
+				if (!(mb_strpos($text, "\x0A") !== false)) {
 					$this->println("[" . $text . "]");
 				} else {
 					$this->println("\x0A" . ($this->indent($this->ind + 1)??'null') . "[\x0A" . ($this->indent($this->ind + 2)??'null') . (str_replace("\x0A", "\x0A" . ($this->indent($this->ind + 2)??'null'), $text)??'null') . "\x0A" . ($this->indent($this->ind + 1)??'null') . "]");
@@ -232,7 +230,7 @@ class Log {
 					$this->print($this->indent($this->ind));
 				}
 				$this->ind--;
-				if (HxString::indexOf($text, "\x0A") < 0) {
+				if (!(mb_strpos($text, "\x0A") !== false)) {
 					$this->println("[" . $text . "]");
 				} else {
 					$this->println("\x0A" . ($this->indent($this->ind + 1)??'null') . "[\x0A" . ($this->indent($this->ind + 2)??'null') . (str_replace("\x0A", "\x0A" . ($this->indent($this->ind + 2)??'null'), $text)??'null') . "\x0A" . ($this->indent($this->ind + 1)??'null') . "]");
@@ -303,10 +301,8 @@ class Log {
 		if ($called) return;
 		$called = true;
 
-
 		self::$instance = new Log();
 	}
 }
 
-Boot::registerClass(Log::class, 'generator.Log');
 Log::__hx__init();

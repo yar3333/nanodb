@@ -5,8 +5,6 @@
 
 namespace nanodb\orm;
 
-use \nanodb\php\Boot;
-
 class DbTableFieldData {
 	/**
 	 * @var bool
@@ -47,4 +45,3 @@ class DbTableFieldData {
 	}
 }
 
-Boot::registerClass(DbTableFieldData::class, 'orm.DbTableFieldData');

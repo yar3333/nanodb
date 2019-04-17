@@ -5,7 +5,6 @@
 
 namespace nanodb\sys\db;
 
-use \nanodb\php\Boot;
 use \nanodb\sys\db\Connection as DbConnection;
 use \nanodb\sys\db\MysqlConnection as DbMysqlConnection;
 
@@ -20,4 +19,3 @@ class Mysql {
 	}
 }
 
-Boot::registerClass(Mysql::class, 'sys.db.Mysql');

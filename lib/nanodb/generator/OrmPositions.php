@@ -5,8 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
-
 class OrmPositions {
 	/**
 	 * @var mixed
@@ -37,4 +35,3 @@ class OrmPositions {
 	}
 }
 
-Boot::registerClass(OrmPositions::class, 'generator.OrmPositions');

@@ -1,5 +1,6 @@
 package orm;
 
+import php.Global;
 import php.Syntax;
 import php.TypedAssoc;
 import sys.db.ResultSet;
@@ -28,10 +29,10 @@ class Db
 		this.connectionString = connectionString;
 		this.logLevel = logLevel != null ? logLevel : 0;
 		
-		var n = connectionString.indexOf("://");
-		if (n < 0) throw new Exception("Connection string format must be 'dbtype://params'.");
-		var dbtype = connectionString.substr(0, n);
-		var dbparams = connectionString.substr(n + "://".length);
+		var n = Global.mb_strpos(connectionString, "://");
+		if (Syntax.strictEqual(n, false)) throw new Exception("Connection string format must be 'dbtype://params'.");
+		var dbtype = Global.mb_substr(connectionString, 0, n);
+		var dbparams = Global.mb_substr(connectionString, n + "://".length);
 		
 		#if profiler Profiler.begin("Db.open"); #end
 		var klassName = "\\nanodb\\orm\\DbDriver_" + dbtype;

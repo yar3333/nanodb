@@ -6,7 +6,6 @@
 namespace nanodb\orm;
 
 use \nanodb\orm\DbException as OrmDbException;
-use \nanodb\php\Boot;
 use \nanodb\sys\db\Connection;
 use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\Sqlite;
@@ -222,4 +221,3 @@ class DbDriver_sqlite implements OrmDbDriver {
 	}
 }
 
-Boot::registerClass(DbDriver_sqlite::class, 'orm.DbDriver_sqlite');

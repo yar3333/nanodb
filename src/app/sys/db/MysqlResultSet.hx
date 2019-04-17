@@ -5,8 +5,8 @@ import php.db.Mysqli_result;
 
 class MysqlResultSet implements ResultSet
 {
-	public var length(get,null) : Int;
-	public var nfields(get,null) : Int;
+	public var length : Int;
+	public var nfields : Int;
 
 	var result:Mysqli_result;
 	var fetchedRow:TypedAssoc<String, Dynamic>;
@@ -14,6 +14,9 @@ class MysqlResultSet implements ResultSet
 
 	public function new( result:Mysqli_result ) {
 		this.result = result;
+		
+		this.length = result.num_rows;
+		this.nfields = result.field_count;
 	}
 
 	public function hasNext() : Bool {
@@ -113,7 +116,4 @@ class MysqlResultSet implements ResultSet
 		}
 		return value;
 	}
-
-	function get_length() return result.num_rows;
-	function get_nfields() return result.field_count;
 }

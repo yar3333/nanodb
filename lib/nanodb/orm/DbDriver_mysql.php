@@ -7,7 +7,6 @@ namespace nanodb\orm;
 
 use \nanodb\orm\DbException as OrmDbException;
 use \nanodb\sys\db\Mysql;
-use \nanodb\php\Boot;
 use \nanodb\sys\db\Connection;
 use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\ResultSet;
@@ -240,4 +239,3 @@ class DbDriver_mysql implements OrmDbDriver {
 	}
 }
 
-Boot::registerClass(DbDriver_mysql::class, 'orm.DbDriver_mysql');

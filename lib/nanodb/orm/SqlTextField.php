@@ -5,7 +5,6 @@
 
 namespace nanodb\orm;
 
-use \nanodb\php\Boot;
 use \nanodb\orm\SqlText as OrmSqlText;
 
 class SqlTextField extends OrmSqlText {
@@ -19,4 +18,3 @@ class SqlTextField extends OrmSqlText {
 	}
 }
 
-Boot::registerClass(SqlTextField::class, 'orm.SqlTextField');

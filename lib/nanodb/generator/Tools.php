@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
 use \nanodb\php\_Boot\HxString;
 use \nanodb\EReg;
 
@@ -77,4 +76,3 @@ class Tools {
 	}
 }
 
-Boot::registerClass(Tools::class, 'generator.Tools');

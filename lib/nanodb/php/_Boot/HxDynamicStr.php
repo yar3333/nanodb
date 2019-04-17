@@ -5,7 +5,6 @@
 
 namespace nanodb\php\_Boot;
 
-use \nanodb\php\Boot;
 use \nanodb\php\_Boot\HxString as _BootHxString;
 use \nanodb\php\_Boot\HxClosure as _BootHxClosure;
 
@@ -136,10 +135,8 @@ class HxDynamicStr extends _BootHxClosure {
 		if ($called) return;
 		$called = true;
 
-
 		self::$hxString = Boot::getClass(_BootHxString::class)->phpClassName;
 	}
 }
 
-Boot::registerClass(HxDynamicStr::class, 'php._Boot.HxDynamicStr');
 HxDynamicStr::__hx__init();

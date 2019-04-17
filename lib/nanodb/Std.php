@@ -5,8 +5,6 @@
 
 namespace nanodb;
 
-use \nanodb\php\Boot;
-
 /**
  * The Std class provides standard methods for manipulating basic types.
  */
@@ -33,4 +31,3 @@ class Std {
 	}
 }
 
-Boot::registerClass(Std::class, 'Std');

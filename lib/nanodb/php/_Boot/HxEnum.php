@@ -5,8 +5,6 @@
 
 namespace nanodb\php\_Boot;
 
-use \nanodb\php\Boot;
-
 /**
  * Base class for enum types
  */
@@ -70,4 +68,3 @@ class HxEnum {
 	}
 }
 
-Boot::registerClass(HxEnum::class, 'php._Boot.HxEnum');

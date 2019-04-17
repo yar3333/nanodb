@@ -5,18 +5,9 @@
 
 namespace nanodb\sys\db\_Sqlite;
 
-use \nanodb\php\Boot;
 use \nanodb\sys\db\ResultSet;
 
 class SQLiteResultSet implements ResultSet {
-	/**
-	 * @var int
-	 */
-	public $_length;
-	/**
-	 * @var int
-	 */
-	public $_nfields;
 	/**
 	 * @var int
 	 */
@@ -58,8 +49,8 @@ class SQLiteResultSet implements ResultSet {
 	public function __construct ($result) {
 		$this->currentIndex = 0;
 		$this->loaded = false;
-		$this->_nfields = 0;
-		$this->_length = 0;
+		$this->nfields = 0;
+		$this->length = 0;
 		$this->result = $result;
 	}
 
@@ -73,7 +64,7 @@ class SQLiteResultSet implements ResultSet {
 		if ($this->fieldsInfo === null) {
 			$this->fieldsInfo = [];
 			$_g = 0;
-			$_g1 = $this->get_nfields();
+			$_g1 = $this->nfields;
 			while ($_g < $_g1) {
 				$i = $_g++;
 				$key = $this->result->columnName($i);
@@ -123,7 +114,7 @@ class SQLiteResultSet implements ResultSet {
 			$row = $this->result->fetchArray(SQLITE3_ASSOC);
 			++$index;
 		}
-		$this->_length = $index;
+		$this->length = $index;
 	}
 
 	/**
@@ -133,7 +124,7 @@ class SQLiteResultSet implements ResultSet {
 		if ($this->fieldsInfo === null) {
 			$this->fieldsInfo = [];
 			$_g = 0;
-			$_g1 = $this->get_nfields();
+			$_g1 = $this->nfields;
 			while ($_g < $_g1) {
 				$i = $_g++;
 				$key = $this->result->columnName($i);
@@ -153,7 +144,7 @@ class SQLiteResultSet implements ResultSet {
 		if ($this->fieldsInfo === null) {
 			$this->fieldsInfo = [];
 			$_g = 0;
-			$_g1 = $this->get_nfields();
+			$_g1 = $this->nfields;
 			while ($_g < $_g1) {
 				$i = $_g++;
 				$key = $this->result->columnName($i);
@@ -201,27 +192,13 @@ class SQLiteResultSet implements ResultSet {
 	}
 
 	/**
-	 * @return int
-	 */
-	public function get_length () {
-		return $this->_length;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function get_nfields () {
-		return $this->_nfields;
-	}
-
-	/**
 	 * @return bool
 	 */
 	public function hasNext () {
 		if (!$this->loaded) {
 			$this->load();
 		}
-		return $this->currentIndex < $this->_length;
+		return $this->currentIndex < $this->length;
 	}
 
 	/**
@@ -229,11 +206,11 @@ class SQLiteResultSet implements ResultSet {
 	 */
 	public function load () {
 		$this->loaded = true;
-		$this->_nfields = $this->result->numColumns();
+		$this->nfields = $this->result->numColumns();
 		if ($this->fieldsInfo === null) {
 			$this->fieldsInfo = [];
 			$_g = 0;
-			$_g1 = $this->get_nfields();
+			$_g1 = $this->nfields;
 			while ($_g < $_g1) {
 				$i = $_g++;
 				$key = $this->result->columnName($i);
@@ -276,8 +253,3 @@ class SQLiteResultSet implements ResultSet {
 	}
 }
 
-Boot::registerClass(SQLiteResultSet::class, 'sys.db._Sqlite.SQLiteResultSet');
-Boot::registerGetters('nanodb\\sys\\db\\_Sqlite\\SQLiteResultSet', [
-	'nfields' => true,
-	'length' => true
-]);

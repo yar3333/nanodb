@@ -79,11 +79,8 @@ private class SQLiteConnection implements Connection {
 }
 
 private class SQLiteResultSet implements ResultSet {
-	public var length(get,null) : Int;
-	public var nfields(get,null) : Int;
-
-	var _length : Int = 0;
-	var _nfields : Int = 0;
+	public var length(default, null) : Int = 0;
+	public var nfields(default, null) : Int = 0;
 
 	var loaded:Bool = false;
 	var currentIndex:Int = 0;
@@ -98,7 +95,7 @@ private class SQLiteResultSet implements ResultSet {
 
 	public function hasNext() : Bool {
 		if (!loaded) load();
-		return currentIndex < _length;
+		return currentIndex < length;
 	}
 
 	public function next() : Dynamic {
@@ -153,7 +150,7 @@ private class SQLiteResultSet implements ResultSet {
 
 	function load() {
 		loaded = true;
-		_nfields = result.numColumns();
+		nfields = result.numColumns();
 		getFieldsInfo();
 		fetchAll();
 	}
@@ -174,9 +171,6 @@ private class SQLiteResultSet implements ResultSet {
 			row = result.fetchArray(Const.SQLITE3_ASSOC);
 			index++;
 		}
-		_length = index;
+		length = index;
 	}
-
-	function get_length() return _length;
-	function get_nfields() return _nfields;
 }

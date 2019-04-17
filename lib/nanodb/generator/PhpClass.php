@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
 use \nanodb\generator\Tools as GeneratorTools;
 use \nanodb\php\_Boot\HxString;
 use \nanodb\generator\PhpVar as GeneratorPhpVar;
@@ -194,4 +193,3 @@ class PhpClass {
 	}
 }
 
-Boot::registerClass(PhpClass::class, 'generator.PhpClass');

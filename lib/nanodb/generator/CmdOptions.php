@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
 use \nanodb\php\_Boot\HxException;
 use \nanodb\generator\CmdOption as GeneratorCmdOption;
 use \nanodb\EReg;
@@ -333,4 +332,3 @@ class CmdOptions {
 	}
 }
 
-Boot::registerClass(CmdOptions::class, 'generator.CmdOptions');

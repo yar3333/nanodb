@@ -873,4 +873,3 @@ class Boot {
 
 require_once __DIR__.'/_polyfills.php';
 Boot::__hx__init();
-Boot::registerClass(Boot::class, 'php.Boot');

@@ -5,8 +5,6 @@
 
 namespace nanodb\php\_Boot;
 
-use \nanodb\php\Boot;
-
 /**
  * Anonymous objects implementation
  */
@@ -47,4 +45,3 @@ class HxAnon extends \StdClass {
 	}
 }
 
-Boot::registerClass(HxAnon::class, 'php._Boot.HxAnon');

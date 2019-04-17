@@ -5,8 +5,6 @@
 
 namespace nanodb;
 
-use \nanodb\php\Boot;
-use \nanodb\Array_hx;
 use \nanodb\php\_Boot\HxException;
 
 class EReg {
@@ -201,12 +199,10 @@ class EReg {
 	/**
 	 * @param string $s
 	 * 
-	 * @return Array_hx
+	 * @return mixed
 	 */
-	public function split ($s) {
-		$parts = preg_split($this->re, $s, ($this->global ? -1 : 2));
-		return Array_hx::wrap($parts);
+	public function splitAssoc ($s) {
+		return preg_split($this->re, $s, ($this->global ? -1 : 2));
 	}
 }
 
-Boot::registerClass(EReg::class, 'EReg');

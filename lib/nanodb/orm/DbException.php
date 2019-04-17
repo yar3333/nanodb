@@ -5,8 +5,6 @@
 
 namespace nanodb\orm;
 
-use \nanodb\php\Boot;
-
 class DbException extends \Exception {
 	/**
 	 * @param string $message
@@ -20,4 +18,3 @@ class DbException extends \Exception {
 	}
 }
 
-Boot::registerClass(DbException::class, 'orm.DbException');

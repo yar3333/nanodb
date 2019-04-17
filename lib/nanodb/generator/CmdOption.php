@@ -5,8 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
-
 class CmdOption {
 	/**
 	 * @var mixed
@@ -53,4 +51,3 @@ class CmdOption {
 	}
 }
 
-Boot::registerClass(CmdOption::class, 'generator.CmdOption');

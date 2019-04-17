@@ -5,7 +5,6 @@
 
 namespace nanodb\php\_Boot;
 
-use \nanodb\php\Boot;
 use \nanodb\Array_hx;
 
 /**
@@ -225,4 +224,3 @@ class HxString {
 	}
 }
 
-Boot::registerClass(HxString::class, 'php._Boot.HxString');

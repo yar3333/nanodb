@@ -5,8 +5,6 @@
 
 namespace nanodb\php\_Boot;
 
-use \nanodb\php\Boot;
-
 /**
  * Special exception which is used to wrap non-throwable values
  */
@@ -27,4 +25,3 @@ class HxException extends \Exception {
 	}
 }
 
-Boot::registerClass(HxException::class, 'php._Boot.HxException');

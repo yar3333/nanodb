@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
 use \nanodb\generator\PhpVar as GeneratorPhpVar;
 
 class OrmPhpVar extends GeneratorPhpVar {
@@ -46,4 +45,3 @@ class OrmPhpVar extends GeneratorPhpVar {
 	}
 }
 
-Boot::registerClass(OrmPhpVar::class, 'generator.OrmPhpVar');

@@ -120,8 +120,14 @@ class Log
 			{
 				if (!inBlock) print(indent(ind));
 				ind--;
-				if (text.indexOf("\n") < 0)	println("[" + text + "]");
-				else						println("\n" + indent(ind + 1) + "[\n" + indent(ind + 2) + text.replace("\n", "\n" + indent(ind + 2)) + "\n" + indent(ind + 1) + "]");
+				if (!text.contains("\n"))
+				{
+					println("[" + text + "]");
+				}
+				else
+				{
+					println("\n" + indent(ind + 1) + "[\n" + indent(ind + 2) + text.replace("\n", "\n" + indent(ind + 2)) + "\n" + indent(ind + 1) + "]");
+				}
 				inBlock = false;
 			}
         }
@@ -136,8 +142,14 @@ class Log
 			{
 				if (!inBlock) print(indent(ind));
 				ind--;
-				if (text.indexOf("\n") < 0)	println("[" + text + "]");
-				else						println("\n" + indent(ind + 1) + "[\n" + indent(ind + 2) + text.replace("\n", "\n" + indent(ind + 2)) + "\n" + indent(ind + 1) + "]");
+				if (!text.contains("\n"))
+				{
+					println("[" + text + "]");
+				}
+				else
+				{
+					println("\n" + indent(ind + 1) + "[\n" + indent(ind + 2) + text.replace("\n", "\n" + indent(ind + 2)) + "\n" + indent(ind + 1) + "]");
+				}
 				inBlock = false;
 			}
         }

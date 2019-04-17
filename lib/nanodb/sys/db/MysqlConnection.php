@@ -5,9 +5,7 @@
 
 namespace nanodb\sys\db;
 
-use \nanodb\php\Boot;
 use \nanodb\sys\db\MysqlResultSet as DbMysqlResultSet;
-use \nanodb\php\_Boot\HxString;
 use \nanodb\php\_Boot\HxException;
 use \nanodb\sys\db\Connection as DbConnection;
 use \nanodb\sys\db\ResultSet as DbResultSet;
@@ -82,7 +80,7 @@ class MysqlConnection implements DbConnection {
 	 * @return string
 	 */
 	public function quote ($s) {
-		if (HxString::indexOf($s, "\x00") >= 0) {
+		if ((mb_strpos($s, "\x00") !== false)) {
 			return "x'" . (bin2hex($s)??'null') . "'";
 		}
 		return "'" . ($this->db->escape_string($s)??'null') . "'";
@@ -125,4 +123,3 @@ class MysqlConnection implements DbConnection {
 	}
 }
 
-Boot::registerClass(MysqlConnection::class, 'sys.db.MysqlConnection');

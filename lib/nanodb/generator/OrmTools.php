@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
 use \nanodb\generator\OrmPhpVar as GeneratorOrmPhpVar;
 use \nanodb\orm\DbTableFieldData;
 use \nanodb\EReg;
@@ -118,4 +117,3 @@ class OrmTools {
 	}
 }
 
-Boot::registerClass(OrmTools::class, 'generator.OrmTools');

@@ -5,7 +5,6 @@
 
 namespace nanodb\php\_Boot;
 
-use \nanodb\php\Boot;
 use \nanodb\php\_Boot\HxException as _BootHxException;
 use \nanodb\php\_Boot\HxAnon as _BootHxAnon;
 
@@ -106,4 +105,3 @@ class HxClosure {
 	}
 }
 
-Boot::registerClass(HxClosure::class, 'php._Boot.HxClosure');

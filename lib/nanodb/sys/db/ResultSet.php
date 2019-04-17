@@ -5,8 +5,6 @@
 
 namespace nanodb\sys\db;
 
-use \nanodb\php\Boot;
-
 interface ResultSet {
 	/**
 	 * @return mixed
@@ -35,16 +33,6 @@ interface ResultSet {
 	public function getResult ($n) ;
 
 	/**
-	 * @return int
-	 */
-	public function get_length () ;
-
-	/**
-	 * @return int
-	 */
-	public function get_nfields () ;
-
-	/**
 	 * @return bool
 	 */
 	public function hasNext () ;
@@ -60,8 +48,3 @@ interface ResultSet {
 	public function results () ;
 }
 
-Boot::registerClass(ResultSet::class, 'sys.db.ResultSet');
-Boot::registerGetters('nanodb\\sys\\db\\ResultSet', [
-	'nfields' => true,
-	'length' => true
-]);

@@ -5,7 +5,6 @@
 
 namespace nanodb;
 
-use \nanodb\php\Boot;
 use \nanodb\php\_Boot\HxClosure;
 use \nanodb\php\_Boot\HxException;
 use \nanodb\_Array\ArrayIterator;
@@ -538,4 +537,3 @@ final class Array_hx implements \ArrayAccess {
 	}
 }
 
-Boot::registerClass(Array_hx::class, 'Array');

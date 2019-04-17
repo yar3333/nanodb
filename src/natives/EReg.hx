@@ -68,9 +68,8 @@ class EReg {
 		return p > 0;
 	}
 
-	public function split( s : String ) : Array<String> {
-		var parts:NativeArray = Global.preg_split(re, s, (global ? -1 : 2));
-		return @:privateAccess Array.wrap(parts);
+	public function splitAssoc( s : String ) : TypedArray<String> {
+		return cast Global.preg_split(re, s, (global ? -1 : 2));
 	}
 
 	public function replace( s : String, by : String ) : String {

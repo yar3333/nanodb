@@ -5,7 +5,6 @@
 
 namespace nanodb\_Array;
 
-use \nanodb\php\Boot;
 use \nanodb\Array_hx;
 use \nanodb\php\_Boot\HxClosure;
 
@@ -62,4 +61,3 @@ class ArrayIterator {
 	}
 }
 
-Boot::registerClass(ArrayIterator::class, '_Array.ArrayIterator');

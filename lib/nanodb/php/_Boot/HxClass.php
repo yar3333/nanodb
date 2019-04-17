@@ -5,7 +5,6 @@
 
 namespace nanodb\php\_Boot;
 
-use \nanodb\php\Boot;
 use \nanodb\php\_Boot\HxString as _BootHxString;
 use \nanodb\php\_Boot\HxClosure as _BootHxClosure;
 
@@ -80,4 +79,3 @@ class HxClass {
 	}
 }
 
-Boot::registerClass(HxClass::class, 'php._Boot.HxClass');

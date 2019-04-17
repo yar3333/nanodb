@@ -5,9 +5,8 @@ import php.TypedAssoc;
 
 interface ResultSet {
 
-	var length(get,null) : Int;
-	var nfields(get,null) : Int;
-
+	var length(default, null) : Int;
+	var nfields(default, null) : Int;
 
 	function hasNext() : Bool;
 	function next() : Dynamic;

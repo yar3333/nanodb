@@ -5,7 +5,6 @@
 
 namespace nanodb\sys\db;
 
-use \nanodb\php\Boot;
 use \nanodb\sys\db\ResultSet as DbResultSet;
 
 interface Connection {
@@ -61,4 +60,3 @@ interface Connection {
 	public function startTransaction () ;
 }
 
-Boot::registerClass(Connection::class, 'sys.db.Connection');

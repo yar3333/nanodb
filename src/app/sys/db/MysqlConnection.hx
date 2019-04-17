@@ -2,6 +2,7 @@ package sys.db;
 
 import php.*;
 import php.db.Mysqli;
+using php.StringToolsNative;
 
 class MysqlConnection implements Connection
 {
@@ -41,7 +42,10 @@ class MysqlConnection implements Connection
 	}
 
 	public function quote( s : String ) : String {
-		if (s.indexOf("\000") >= 0) return "x'" + Global.bin2hex(s) + "'";
+		if (s.contains("\000"))
+		{
+			return "x'" + Global.bin2hex(s) + "'";
+		}
 		return "'" + db.escape_string(s) + "'";
 	}
 

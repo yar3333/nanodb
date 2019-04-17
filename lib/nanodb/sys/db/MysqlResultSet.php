@@ -5,7 +5,6 @@
 
 namespace nanodb\sys\db;
 
-use \nanodb\php\Boot;
 use \nanodb\sys\db\ResultSet as DbResultSet;
 
 class MysqlResultSet implements DbResultSet {
@@ -37,6 +36,8 @@ class MysqlResultSet implements DbResultSet {
 	 */
 	public function __construct ($result) {
 		$this->result = $result;
+		$this->length = $result->num_rows;
+		$this->nfields = $result->field_count;
 	}
 
 	/**
@@ -148,20 +149,6 @@ class MysqlResultSet implements DbResultSet {
 	}
 
 	/**
-	 * @return int
-	 */
-	public function get_length () {
-		return $this->result->num_rows;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function get_nfields () {
-		return $this->result->field_count;
-	}
-
-	/**
 	 * @return bool
 	 */
 	public function hasNext () {
@@ -210,8 +197,3 @@ class MysqlResultSet implements DbResultSet {
 	}
 }
 
-Boot::registerClass(MysqlResultSet::class, 'sys.db.MysqlResultSet');
-Boot::registerGetters('nanodb\\sys\\db\\MysqlResultSet', [
-	'nfields' => true,
-	'length' => true
-]);

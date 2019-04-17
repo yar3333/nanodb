@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
 use \nanodb\generator\OrmManagerGenerator as GeneratorOrmManagerGenerator;
 use \nanodb\generator\OrmQueryGenerator as GeneratorOrmQueryGenerator;
 use \nanodb\generator\Tools as GeneratorTools;
@@ -126,4 +125,3 @@ class OrmGenerator {
 	}
 }
 
-Boot::registerClass(OrmGenerator::class, 'generator.OrmGenerator');

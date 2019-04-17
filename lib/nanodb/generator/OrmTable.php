@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\Boot;
 use \nanodb\generator\Tools as GeneratorTools;
 
 class OrmTable {
@@ -101,4 +100,3 @@ class OrmTable {
 	}
 }
 
-Boot::registerClass(OrmTable::class, 'generator.OrmTable');

@@ -5,7 +5,6 @@
 
 namespace nanodb\orm;
 
-use \nanodb\php\Boot;
 use \nanodb\orm\SqlTextField as OrmSqlTextField;
 use \nanodb\orm\SqlTextRaw as OrmSqlTextRaw;
 use \nanodb\orm\Db as OrmDb;
@@ -256,4 +255,3 @@ class SqlQuery {
 	}
 }
 
-Boot::registerClass(SqlQuery::class, 'orm.SqlQuery');
