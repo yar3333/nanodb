@@ -8,11 +8,11 @@ using php.StringToolsNative;
 
 class OrmGenerator
 {
-	var srcPath : String;
+	var outPath : String;
 	
-	public function new(srcPath:String)
+	public function new(outPath:String)
     {
-		this.srcPath = srcPath != "" ? srcPath.replace("\\", "/").rtrim("\\/") + "/" : "";
+		this.outPath = outPath != "" ? outPath.replace("\\", "/").rtrim("\\/") + "/" : "";
 	}
 	
 	public function generate(db:Db, autogenPackage:String, customPackage:String, ignoreTables:TypedArray<String>, noInstantiateManagers:TypedArray<String>, positions:OrmPositions)
@@ -27,9 +27,9 @@ class OrmGenerator
 			if (!ignoreTables.hasValue(tableName))
 			{
 				var table = new OrmTable(tableName, autogenPackage, customPackage);
-				new OrmModelGenerator().make(db, table, customOrmClassName, srcPath, positions);
-				new OrmManagerGenerator().make(db, table, customOrmClassName, srcPath, positions);
-				new OrmQueryGenerator().make(db, table, srcPath, positions);
+				new OrmModelGenerator().make(db, table, customOrmClassName, outPath, positions);
+				new OrmManagerGenerator().make(db, table, customOrmClassName, outPath, positions);
+				new OrmQueryGenerator().make(db, table, outPath, positions);
 				tables.push(table);
 			}
         });
@@ -44,7 +44,7 @@ class OrmGenerator
 	function makeAutogenOrm(tables:TypedArray<OrmTable>, autogenOrmClassName:String, customOrmClassName:String, noInstantiateManagers:TypedArray<String>)
 	{
 		var autogenOrm = getAutogenOrm(tables, autogenOrmClassName, noInstantiateManagers);
-		var destFileName = srcPath + autogenOrmClassName.replace(".", "/") + ".php";
+		var destFileName = outPath + autogenOrmClassName.replace(".", "/") + ".php";
 		Tools.mkdir(Global.dirname(destFileName));
 		Global.file_put_contents(
 			 destFileName
@@ -54,10 +54,10 @@ class OrmGenerator
 	
 	function makeCustomOrm(customOrmClassName:String, autogenOrmClassName:String)
 	{
-		if (!Global.file_exists(srcPath + "/" + customOrmClassName.replace(".", "/") + ".php"))
+		if (!Global.file_exists(outPath + "/" + customOrmClassName.replace(".", "/") + ".php"))
 		{
 			var customOrm = getCustomOrm(customOrmClassName, autogenOrmClassName);
-			var destFileName = srcPath + customOrmClassName.replace(".", "/") + ".php";
+			var destFileName = outPath + customOrmClassName.replace(".", "/") + ".php";
 			Tools.mkdir(Global.dirname(destFileName));
 			Global.file_put_contents(destFileName, customOrm.toString());
 		}

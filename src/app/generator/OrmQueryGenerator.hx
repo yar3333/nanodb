@@ -10,14 +10,14 @@ class OrmQueryGenerator
 {
 	public function new() {}
 	
-	public function make(db:Db, table:OrmTable, srcPath:String, positions:OrmPositions) : Void
+	public function make(db:Db, table:OrmTable, outPath:String, positions:OrmPositions) : Void
 	{
 		Log.start(table.tableName + " => " + table.queryClassName);
 		
 		var vars = OrmTools.fields2vars(table.tableName, db.connection.getFields(table.tableName), positions);
 		
 		var klass = getQueryClass(table.tableName, vars, table.queryClassName, table.customModelClassName, table.customManagerClassName);
-		var destFileName = srcPath + table.queryClassName.replace(".", "/") + ".php";
+		var destFileName = outPath + table.queryClassName.replace(".", "/") + ".php";
 		Tools.mkdir(Global.dirname(destFileName));
 		Global.file_put_contents(
 			  destFileName
