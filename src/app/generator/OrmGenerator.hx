@@ -69,7 +69,7 @@ class OrmGenerator
 		
 		Syntax.foreach(tables, function(_, t:OrmTable)
 		{
-			clas.addVar(new PhpVar(t.varName, t.customManagerClassName));
+			clas.addVar(new PhpVar(t.varName, Tools.toPhpType(t.customManagerClassName)));
 		});
 		
 		clas.addMethod(

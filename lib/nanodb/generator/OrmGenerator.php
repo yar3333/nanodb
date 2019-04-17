@@ -74,7 +74,8 @@ class OrmGenerator {
 	public function getAutogenOrm ($tables, $fullClassName, $noInstantiateManagers) {
 		$clas = new GeneratorPhpClass($fullClassName);
 		foreach ($tables as $key => $value) {
-			$clas->addVar(new GeneratorPhpVar($value->varName, $value->customManagerClassName));
+			$value1 = $value->varName;
+			$clas->addVar(new GeneratorPhpVar($value1, GeneratorTools::toPhpType($value->customManagerClassName)));
 		}
 		$clas->addMethod("new", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("orm.Db"))], "Void", implode("\x0A", array_map(function ($t) {
 			return "\$this->" . $t->varName . " = new " . (GeneratorTools::toPhpType($t->customManagerClassName)??'null') . "(\$db, \$this);";
