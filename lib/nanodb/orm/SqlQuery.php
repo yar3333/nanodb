@@ -208,14 +208,10 @@ class SqlQuery {
 	 */
 	public function quoteValue ($v) {
 		$_gthis = $this;
-		$tmp = $v;
-		$tmp1 = Boot::getClass(OrmSqlTextRaw::class);
-		if (($tmp instanceof $tmp1->phpClassName)) {
+		if (($v instanceof OrmSqlTextRaw)) {
 			return $v->text;
 		}
-		$tmp2 = $v;
-		$tmp3 = Boot::getClass(OrmSqlTextField::class);
-		if (($tmp2 instanceof $tmp3->phpClassName)) {
+		if (($v instanceof OrmSqlTextField)) {
 			return "`" . $v->text . "`";
 		}
 		if (is_array($v)) {

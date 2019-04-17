@@ -53,7 +53,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 		return array_map(function ($row)  use (&$table, &$_gthis) {
 			$row1 = $row["name"];
 			$row2 = $row["type"];
-			$tmp = Boot::equal($row["notnull"], 0);
+			$tmp = ($row["notnull"] == 0);
 			$row3 = $row["pk"];
 			return new OrmDbTableFieldData($row1, $row2, $tmp, $row3, $_gthis->isAutoincrement($table, $row["name"]));
 		}, $rows->results());
@@ -212,9 +212,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 		if (($v === null)) {
 			return "NULL";
 		}
-		$tmp = $v;
-		$tmp1 = Boot::getClass(\DateTime::class);
-		if (($tmp instanceof $tmp1->phpClassName)) {
+		if (($v instanceof \DateTime)) {
 			return "'" . ($v->format("Y-m-d H:i:s")??'null') . "'";
 		}
 		throw new \Exception("Unsupported parameter type '" . $v . "'.");

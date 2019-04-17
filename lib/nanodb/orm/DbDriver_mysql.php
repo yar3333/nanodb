@@ -198,9 +198,7 @@ class DbDriver_mysql implements OrmDbDriver {
 		if (($v === null)) {
 			return "NULL";
 		}
-		$tmp = $v;
-		$tmp1 = Boot::getClass(\DateTime::class);
-		if (($tmp instanceof $tmp1->phpClassName)) {
+		if (($v instanceof \DateTime)) {
 			return "'" . ($v->format("Y-m-d H:i:s")??'null') . "'";
 		}
 		throw new \Exception("Unsupported parameter type '" . $v . "'.");

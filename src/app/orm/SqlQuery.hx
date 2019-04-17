@@ -133,8 +133,8 @@ class SqlQuery<T>
 	
 	function quoteValue(v:Dynamic) : String
 	{
-		if (Syntax.instanceof(v, SqlTextRaw)) return (cast v : SqlTextRaw).text;
-		if (Syntax.instanceof(v, SqlTextField)) return "`" + (cast v : SqlTextField).text + "`";
+		if (Std.is(v, SqlTextRaw)) return (cast v : SqlTextRaw).text;
+		if (Std.is(v, SqlTextField)) return "`" + (cast v : SqlTextField).text + "`";
 		if (Global.is_array(v))
 		{
 			return "(" + (cast v:TypedArray<Dynamic>).map(function(x) return db.quote(x)).join(", ") + ")";

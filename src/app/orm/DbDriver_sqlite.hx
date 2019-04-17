@@ -83,7 +83,7 @@ class DbDriver_sqlite implements DbDriver
 			return new DbTableFieldData(
 				row['name'],
 				row['type'],
-				row['notnull'] == 0,
+				Syntax.equal(row['notnull'], 0),
 				row['pk'],
 				isAutoincrement(table, row['name'])
 			)
@@ -97,7 +97,7 @@ class DbDriver_sqlite implements DbDriver
         if (Global.is_float(v)) return connection.quote(v);
         if (Global.is_bool(v)) return v ? "1" : "0";
         if (Syntax.strictEqual(v, null)) return "NULL";
-		if (Syntax.instanceof(v, DateTime)) return "'" + (cast v:DateTime).format("Y-m-d H:i:s") + "'";
+		if (Std.is(v, DateTime)) return "'" + (cast v:DateTime).format("Y-m-d H:i:s") + "'";
         
         throw new Exception("Unsupported parameter type '" + (cast v:String) + "'.");
     }
