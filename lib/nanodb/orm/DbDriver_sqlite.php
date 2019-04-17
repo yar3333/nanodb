@@ -6,12 +6,12 @@
 namespace nanodb\orm;
 
 use \nanodb\orm\DbException as OrmDbException;
-use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
 use \nanodb\sys\db\Connection;
 use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\Sqlite;
 use \nanodb\sys\db\ResultSet;
+use \nanodb\orm\DbTableFieldData as OrmDbTableFieldData;
 use \nanodb\php\_Boot\HxException;
 use \nanodb\EReg;
 
@@ -56,13 +56,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 			$row2 = $row["type"];
 			$tmp = Boot::equal($row["notnull"], 0);
 			$row3 = $row["pk"];
-			return new HxAnon([
-				"name" => $row1,
-				"type" => $row2,
-				"isNull" => $tmp,
-				"isKey" => $row3,
-				"isAutoInc" => $_gthis->isAutoincrement($table, $row["name"]),
-			]);
+			return new OrmDbTableFieldData($row1, $row2, $tmp, $row3, $_gthis->isAutoincrement($table, $row["name"]));
 		}, $rows->results());
 	}
 
@@ -79,11 +73,11 @@ class DbDriver_sqlite implements OrmDbDriver {
 		$collection = explode("\x0A", str_replace("\x0D", "", $sql));
 		foreach ($collection as $key => $value) {
 			if ($reFK->match($value)) {
-				$v = $reFK->matched(1);
-				$v1 = $reFK->matched(2);
-				array_push($r, new HxAnon([
-					"key" => $v,
-					"parentTable" => $v1,
+				$value1 = $reFK->matched(1);
+				$value2 = $reFK->matched(2);
+				array_push($r, (object)([
+					"key" => $value1,
+					"parentTable" => $value2,
 					"parentKey" => $reFK->matched(3),
 				]));
 			}

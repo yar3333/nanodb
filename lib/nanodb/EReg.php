@@ -5,24 +5,11 @@
 
 namespace nanodb;
 
-use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
 use \nanodb\Array_hx;
 use \nanodb\php\_Boot\HxException;
 
-/**
- * The EReg class represents regular expressions.
- * While basic usage and patterns consistently work across platforms, some more
- * complex operations may yield different results. This is a necessary trade-
- * off to retain a certain level of performance.
- * EReg instances can be created by calling the constructor, or with the
- * special syntax `~/pattern/modifier`
- * EReg instances maintain an internal state, which is affected by several of
- * its methods.
- * A detailed explanation of the supported operations is available at
- * <https://haxe.org/manual/std-regex.html>
- */
-final class EReg {
+class EReg {
 	/**
 	 * @var bool
 	 */
@@ -53,9 +40,6 @@ final class EReg {
 	public $re;
 
 	/**
-	 * Escape the string `s` for use as a part of regular expression.
-	 * If `s` is null, the result is unspecified.
-	 * 
 	 * @param string $s
 	 * 
 	 * @return string
@@ -65,10 +49,6 @@ final class EReg {
 	}
 
 	/**
-	 * Creates a new regular expression with pattern `r` and modifiers `opt`.
-	 * This is equivalent to the shorthand syntax `~/r/opt`
-	 * If `r` or `opt` are null, the result is unspecified.
-	 * 
 	 * @param string $r
 	 * @param string $opt
 	 * 
@@ -82,15 +62,6 @@ final class EReg {
 	}
 
 	/**
-	 * Calls the function `f` for the substring of `s` which `this` EReg matches
-	 * and replaces that substring with the result of `f` call.
-	 * The `f` function takes `this` EReg object as its first argument and should
-	 * return a replacement string for the substring matched.
-	 * If `this` EReg does not match any substring, the result is `s`.
-	 * By default, this method replaces only the first matched substring. If
-	 * the global g modifier is in place, all matched substrings are replaced.
-	 * If `s` or `f` are null, the result is unspecified.
-	 * 
 	 * @param string $s
 	 * @param \Closure $f
 	 * 
@@ -107,14 +78,14 @@ final class EReg {
 				$buf = $buf . (mb_substr($s, $offset, null)??'null');
 				break;
 			}
-			$p = $this->matchedPos();
-			$buf = $buf . (mb_substr($s, $offset, $p->pos - $offset)??'null');
+			$p = $this->matchedPosAssoc();
+			$buf = $buf . (mb_substr($s, $offset, $p["pos"] - $offset)??'null');
 			$buf = $buf . ($f($this)??'null');
-			if ($p->len === 0) {
-				$buf = $buf . (mb_substr($s, $p->pos, 1)??'null');
-				$offset = $p->pos + 1;
+			if ($p["len"] === 0) {
+				$buf = $buf . (mb_substr($s, $p["pos"], 1)??'null');
+				$offset = $p["pos"] + 1;
 			} else {
-				$offset = $p->pos + $p->len;
+				$offset = $p["pos"] + $p["len"];
 			}
 			if (!$this->global) {
 				break;
@@ -127,10 +98,6 @@ final class EReg {
 	}
 
 	/**
-	 * Tells if `this` regular expression matches String `s`.
-	 * This method modifies the internal state.
-	 * If `s` is `null`, the result is unspecified.
-	 * 
 	 * @param string $s
 	 * 
 	 * @return bool
@@ -146,13 +113,6 @@ final class EReg {
 	}
 
 	/**
-	 * Tells if `this` regular expression matches a substring of String `s`.
-	 * This function expects `pos` and `len` to describe a valid substring of
-	 * `s`, or else the result is unspecified. To get more robust behavior,
-	 * `this.match(s.substr(pos,len))` can be used instead.
-	 * This method modifies the internal state.
-	 * If `s` is null, the result is unspecified.
-	 * 
 	 * @param string $s
 	 * @param int $pos
 	 * @param int $len
@@ -174,13 +134,6 @@ final class EReg {
 	}
 
 	/**
-	 * Returns the matched sub-group `n` of `this` EReg.
-	 * This method should only be called after `this.match` or
-	 * `this.matchSub`, and then operates on the String of that operation.
-	 * The index `n` corresponds to the n-th set of parentheses in the pattern
-	 * of `this` EReg. If no such sub-group exists, the result is unspecified.
-	 * If `n` equals 0, the whole matched substring is returned.
-	 * 
 	 * @param int $n
 	 * 
 	 * @return string
@@ -199,13 +152,6 @@ final class EReg {
 	}
 
 	/**
-	 * Returns the part to the left of the last matched substring.
-	 * If the most recent call to `this.match` or `this.matchSub` did not
-	 * match anything, the result is unspecified.
-	 * If the global g modifier was in place for the matching, only the
-	 * substring to the left of the leftmost match is returned.
-	 * The result does not include the matched part.
-	 * 
 	 * @return string
 	 */
 	public function matchedLeft () {
@@ -216,32 +162,17 @@ final class EReg {
 	}
 
 	/**
-	 * Returns the position and length of the last matched substring, within
-	 * the String which was last used as argument to `this.match` or
-	 * `this.matchSub`.
-	 * If the most recent call to `this.match` or `this.matchSub` did not
-	 * match anything, the result is unspecified.
-	 * If the global g modifier was in place for the matching, the position and
-	 * length of the leftmost substring is returned.
-	 * 
-	 * @return object
+	 * @return mixed
 	 */
-	public function matchedPos () {
+	public function matchedPosAssoc () {
 		$tmp = mb_strlen(substr($this->last, 0, $this->matches[0][1]));
-		return new HxAnon([
+		return [
 			"pos" => $tmp,
 			"len" => mb_strlen($this->matches[0][0]),
-		]);
+		];
 	}
 
 	/**
-	 * Returns the part to the right of the last matched substring.
-	 * If the most recent call to `this.match` or `this.matchSub` did not
-	 * match anything, the result is unspecified.
-	 * If the global g modifier was in place for the matching, only the
-	 * substring to the right of the leftmost match is returned.
-	 * The result does not include the matched part.
-	 * 
 	 * @return string
 	 */
 	public function matchedRight () {
@@ -253,15 +184,6 @@ final class EReg {
 	}
 
 	/**
-	 * Replaces the first substring of `s` which `this` EReg matches with `by`.
-	 * If `this` EReg does not match any substring, the result is `s`.
-	 * By default, this method replaces only the first matched substring. If
-	 * the global g modifier is in place, all matched substrings are replaced.
-	 * If `by` contains `$1` to `$9`, the digit corresponds to number of a
-	 * matched sub-group and its value is used instead. If no such sub-group
-	 * exists, the replacement is unspecified. The string `$$` becomes `$`.
-	 * If `s` or `by` are null, the result is unspecified.
-	 * 
 	 * @param string $s
 	 * @param string $by
 	 * 
@@ -277,18 +199,6 @@ final class EReg {
 	}
 
 	/**
-	 * Splits String `s` at all substrings `this` EReg matches.
-	 * If a match is found at the start of `s`, the result contains a leading
-	 * empty String "" entry.
-	 * If a match is found at the end of `s`, the result contains a trailing
-	 * empty String "" entry.
-	 * If two matching substrings appear next to each other, the result
-	 * contains the empty String `""` between them.
-	 * By default, this method splits `s` into two parts at the first matched
-	 * substring. If the global g modifier is in place, `s` is split at each
-	 * matched substring.
-	 * If `s` is null, the result is unspecified.
-	 * 
 	 * @param string $s
 	 * 
 	 * @return Array_hx

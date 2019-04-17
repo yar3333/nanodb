@@ -95,18 +95,16 @@ class PhpClass
 	
 	public function toString() : String
 	{
-		var clas = splitFullClassName(fullClassName);
-		
 		var varLines = new TypedArray<String>();
 		Syntax.foreach(vars, function(_, v:String)
 		{
 			varLines.push(v.replace("\n", "\n\t"));
 		});
 		
-		var s = 'namespace ' + Tools.toPhpType(clas.packageName, false) + ';\n'
+		var s = 'namespace ' + Tools.toPhpType(getPackageName(fullClassName), false) + ';\n'
 			  + '\n'
 			  + imports.join('\n') + (imports.length > 0 ? '\n\n' : '')
-			  + 'class ' + clas.className + (baseFullClassName != null ? ' extends ' + Tools.toPhpType(baseFullClassName) : '') + '\n'
+			  + 'class ' + getShortClassName(fullClassName) + (baseFullClassName != null ? ' extends ' + Tools.toPhpType(baseFullClassName) : '') + '\n'
 			  + '{\n'
 			  + (vars.length > 0 ? '\t' + varLines.join('\n\t\n\t') + '\n\n' : '')
 			  + (methods.length > 0 ? '\t' + methods.join('\n\n\t') + '\n' : '')
@@ -121,17 +119,21 @@ class PhpClass
 		return ind + text.replace("\n", "\n" + ind);
     }
 	
-	function splitFullClassName(fullClassName:String) : { packageName:String, className:String }
+	function getShortClassName(fullClassName:String) : String
 	{
-		var packageName = '';
-		var className = fullClassName;
-		
 		if (fullClassName.lastIndexOf('.') != -1)
 		{
-			packageName = fullClassName.substr(0, fullClassName.lastIndexOf('.'));
-			className = fullClassName.substr(fullClassName.lastIndexOf('.') + 1);
+			return  fullClassName.substr(fullClassName.lastIndexOf('.') + 1);
 		}
-		
-		return { packageName:packageName, className:className };
+		return fullClassName;
+	}
+	
+	function getPackageName(fullClassName:String) : String
+	{
+		if (fullClassName.lastIndexOf('.') != -1)
+		{
+			return fullClassName.substr(0, fullClassName.lastIndexOf('.'));
+		}
+		return '';
 	}
 }

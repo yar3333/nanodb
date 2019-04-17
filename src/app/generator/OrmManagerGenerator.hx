@@ -110,7 +110,7 @@ class OrmManagerGenerator
 			'create',
 			cast createVars,
 			Tools.toPhpType(modelClassName),
-			createVars.filter(positions.is).map
+			createVars.filter(function(x) return positions.is(x.table, x.name)).map
 			(
 				function(x) return 
 				  "if ($" + x.haxeName + " == null)\n"
@@ -285,7 +285,7 @@ class OrmManagerGenerator
 	
 	function getOrderDefVal(vars:TypedArray<OrmPhpVar>, positions:OrmPositions) : String
 	{
-		var positionVar = vars.filter(function(x) return positions.is(x));
+		var positionVar = vars.filter(function(x) return positions.is(x.table, x.name));
 		return positionVar.length == 0 ? "null" : "'" + positionVar.map(function(x) return "$" + x.name).join(", ") + "'";
 	}
     

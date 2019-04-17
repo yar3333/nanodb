@@ -59,7 +59,7 @@ class DbDriver_mysql implements DbDriver
 			
 			if (connection == null)
 			{
-				connection = Mysql.connect( { host:host, user:user, pass:pass, database:database, port:port != 0 ? port : 3306, socket:null } );
+				connection = Mysql.connect(cast Syntax.object(Syntax.assocDecl({ host:host, user:user, pass:pass, database:database, port:port != 0 ? port : 3306, socket:null })));
 				connection.request("set names utf8");
 				connection.request("set character_set_client='utf8'");
 				connection.request("set character_set_results='utf8'");
@@ -109,13 +109,13 @@ class DbDriver_mysql implements DbDriver
         var resultSet = query("SHOW COLUMNS FROM `" + table + "`");
         Syntax.foreach(resultSet.results(), function(_, row:TypedAssoc<String, Dynamic>)
         {
-			r.push({
-                 name : row["Field"]
-                ,type : row["Type"]
-                ,isNull : row["Null"] == "YES"
-                ,isKey : row["Key"] == "PRI"
-                ,isAutoInc : row["Extra"] == "auto_increment"
-			});
+			r.push(new DbTableFieldData(
+				row["Field"],
+				row["Type"],
+				row["Null"] == "YES",
+				row["Key"] == "PRI",
+				row["Extra"] == "auto_increment"
+			));
         });
         return r;
     }

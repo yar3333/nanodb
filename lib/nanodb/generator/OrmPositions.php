@@ -23,13 +23,14 @@ class OrmPositions {
 	}
 
 	/**
-	 * @param object $v
+	 * @param string $table
+	 * @param string $name
 	 * 
 	 * @return bool
 	 */
-	public function is ($v) {
-		if (!(in_array($v->table . "." . $v->name, $this->names, false) || in_array("*." . $v->name, $this->names, false))) {
-			return in_array($v->name, $this->names, false);
+	public function is ($table, $name) {
+		if (!(in_array($table . "." . $name, $this->names, false) || in_array("*." . $name, $this->names, false))) {
+			return in_array($name, $this->names, false);
 		} else {
 			return true;
 		}

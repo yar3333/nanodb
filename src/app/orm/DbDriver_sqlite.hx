@@ -80,14 +80,13 @@ class DbDriver_sqlite implements DbDriver
     {
         var rows = query("PRAGMA table_info(" + table + ")");
         return rows.results().map(function(row)
-			return
-			{
-                 name : row['name']
-                ,type : row['type']
-                ,isNull : row['notnull'] == 0
-                ,isKey : row['pk']
-                ,isAutoInc : isAutoincrement(table, row['name'])
-			}
+			return new DbTableFieldData(
+				row['name'],
+				row['type'],
+				row['notnull'] == 0,
+				row['pk'],
+				isAutoincrement(table, row['name'])
+			)
 		);
     }
 	
@@ -118,11 +117,11 @@ class DbDriver_sqlite implements DbDriver
 		{
 			if (reFK.match(s))
 			{
-				r.push({ 
+				r.push(cast Syntax.object(Syntax.assocDecl({ 
 					   key: reFK.matched(1)
 					 , parentTable: reFK.matched(2)
 					 , parentKey: reFK.matched(3)
-				});
+				})));
 			}
 		});
 		return r;

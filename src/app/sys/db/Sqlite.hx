@@ -104,7 +104,7 @@ private class SQLiteResultSet implements ResultSet {
 	public function next() : Dynamic {
 		if (!loaded) load();
 		var next:Dynamic = rows[currentIndex++];
-		return Boot.createAnon(correctArrayTypes(next));
+		return correctArrayTypes(next);
 	}
 
 	public function results() : TypedArray<TypedAssoc<String, Dynamic>> {

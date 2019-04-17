@@ -5,16 +5,16 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
 use \nanodb\generator\OrmPhpVar as GeneratorOrmPhpVar;
+use \nanodb\orm\DbTableFieldData;
 use \nanodb\EReg;
 use \nanodb\generator\OrmPositions as GeneratorOrmPositions;
 
 class OrmTools {
 	/**
 	 * @param string $table
-	 * @param object $f
+	 * @param DbTableFieldData $f
 	 * @param GeneratorOrmPositions $positions
 	 * 
 	 * @return GeneratorOrmPhpVar
@@ -22,10 +22,7 @@ class OrmTools {
 	static public function field2var ($table, $f, $positions) {
 		$f1 = $f->name;
 		$r = OrmTools::sqlType2phpType($f->type);
-		$r1 = new GeneratorOrmPhpVar($f1, $r, ($positions->is(new HxAnon([
-			"table" => $table,
-			"name" => $f->name,
-		])) ? "null" : null));
+		$r1 = new GeneratorOrmPhpVar($f1, $r, ($positions->is($table, $f->name) ? "null" : null));
 		$r1->table = $table;
 		$r1->name = $f->name;
 		$r1->type = $f->type;

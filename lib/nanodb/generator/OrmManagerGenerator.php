@@ -101,19 +101,21 @@ class OrmManagerGenerator {
 			$this2 = "if (\$" . $x4->haxeName . " == null)\x0A" . "{\x0A" . "\x09position = db.query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
 			$this3 = $_gthis->getForeignKeyVars($db, $table, $vars);
 			return $this2 . ($_gthis->getWhereSql($this3)??'null') . ").getIntResult(0) + 1;\x0A" . "}\x0A\x0A";
-		}, array_filter($createVars, Boot::getInstanceClosure($positions, 'is'))))??'null') . "\$this->db->query('INSERT INTO `" . $table . "`(" . (implode(", ", array_map(function ($x5) {
-			return "`" . $x5->name . "`";
-		}, $createVars))??'null') . ") VALUES (' . " . (implode(" . ', ' . ", array_map(function ($x6) {
-			return "\$this->db->quote(\$" . $x6->haxeName . ")";
-		}, $createVars))??'null') . " . ')');\x0A" . "return self::newModelFromParams(" . (implode(", ", array_map(function ($x7) {
-			if ($x7->isAutoInc) {
+		}, array_filter($createVars, function ($x5)  use (&$positions) {
+			return $positions->is($x5->table, $x5->name);
+		})))??'null') . "\$this->db->query('INSERT INTO `" . $table . "`(" . (implode(", ", array_map(function ($x6) {
+			return "`" . $x6->name . "`";
+		}, $createVars))??'null') . ") VALUES (' . " . (implode(" . ', ' . ", array_map(function ($x7) {
+			return "\$this->db->quote(\$" . $x7->haxeName . ")";
+		}, $createVars))??'null') . " . ')');\x0A" . "return self::newModelFromParams(" . (implode(", ", array_map(function ($x8) {
+			if ($x8->isAutoInc) {
 				return "\$this->db->lastInsertId()";
 			} else {
-				return "\$" . $x7->haxeName;
+				return "\$" . $x8->haxeName;
 			}
 		}, $vars))??'null') . ");");
-		$deleteVars = array_filter($vars, function ($x8) {
-			return $x8->isKey;
+		$deleteVars = array_filter($vars, function ($x9) {
+			return $x9->isKey;
 		});
 		if (count($deleteVars) === 0) {
 			$deleteVars = $vars;
@@ -126,8 +128,8 @@ class OrmManagerGenerator {
 		foreach ($collection as $key => $value) {
 			unset($fields);
 			$fields = $value;
-			$vs = array_filter($vars, function ($x9)  use (&$fields) {
-				return in_array($x9->name, $fields, false);
+			$vs = array_filter($vars, function ($x10)  use (&$fields) {
+				return in_array($x10->name, $fields, false);
 			});
 			$_gthis->createGetByMethodOne($table, $vars, $modelClassName, $vs, $model);
 
@@ -182,7 +184,7 @@ class OrmManagerGenerator {
 	 */
 	public function getOrderDefVal ($vars, $positions) {
 		$positionVar = array_filter($vars, function ($x)  use (&$positions) {
-			return $positions->is($x);
+			return $positions->is($x->table, $x->name);
 		});
 		if (count($positionVar) === 0) {
 			return "null";

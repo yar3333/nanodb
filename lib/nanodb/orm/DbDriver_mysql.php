@@ -6,12 +6,12 @@
 namespace nanodb\orm;
 
 use \nanodb\orm\DbException as OrmDbException;
-use \nanodb\php\_Boot\HxAnon;
 use \nanodb\sys\db\Mysql;
 use \nanodb\php\Boot;
 use \nanodb\sys\db\Connection;
 use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\ResultSet;
+use \nanodb\orm\DbTableFieldData as OrmDbTableFieldData;
 use \nanodb\php\_Boot\HxException;
 use \nanodb\EReg;
 
@@ -93,13 +93,7 @@ class DbDriver_mysql implements OrmDbDriver {
 		$resultSet = $this->query("SHOW COLUMNS FROM `" . $table . "`");
 		$collection = $resultSet->results();
 		foreach ($collection as $key => $value) {
-			array_push($r, new HxAnon([
-				"name" => $value["Field"],
-				"type" => $value["Type"],
-				"isNull" => $value["Null"] === "YES",
-				"isKey" => $value["Key"] === "PRI",
-				"isAutoInc" => $value["Extra"] === "auto_increment",
-			]));
+			array_push($r, new OrmDbTableFieldData($value["Field"], $value["Type"], $value["Null"] === "YES", $value["Key"] === "PRI", $value["Extra"] === "auto_increment"));
 		}
 
 		return $r;
@@ -228,7 +222,7 @@ class DbDriver_mysql implements OrmDbDriver {
 				}
 			}
 			if ($this->connection === null) {
-				$this->connection = Mysql::connect(new HxAnon([
+				$this->connection = Mysql::connect((object)([
 					"host" => $this->host,
 					"user" => $this->user,
 					"pass" => $this->pass,

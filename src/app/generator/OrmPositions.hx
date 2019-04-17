@@ -11,10 +11,10 @@ class OrmPositions
 		this.names = names;
 	}
 	
-	public function is(v:{ table:String, name:String })
+	public function is(table:String, name:String)
 	{
-		return names.hasValue(v.table + "." + v.name)
-		    || names.hasValue("*." + v.name)
-			|| names.hasValue(v.name);
+		return names.hasValue(table + "." + name)
+		    || names.hasValue("*." + name)
+			|| names.hasValue(name);
 	}
 }

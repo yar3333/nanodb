@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
 use \nanodb\generator\Tools as GeneratorTools;
 use \nanodb\php\_Boot\HxString;
@@ -136,6 +135,30 @@ class PhpClass {
 	}
 
 	/**
+	 * @param string $fullClassName
+	 * 
+	 * @return string
+	 */
+	public function getPackageName ($fullClassName) {
+		if (HxString::lastIndexOf($fullClassName, ".") !== -1) {
+			return mb_substr($fullClassName, 0, HxString::lastIndexOf($fullClassName, "."));
+		}
+		return "";
+	}
+
+	/**
+	 * @param string $fullClassName
+	 * 
+	 * @return string
+	 */
+	public function getShortClassName ($fullClassName) {
+		if (HxString::lastIndexOf($fullClassName, ".") !== -1) {
+			return mb_substr($fullClassName, HxString::lastIndexOf($fullClassName, ".") + 1, null);
+		}
+		return $fullClassName;
+	}
+
+	/**
 	 * @param string $text
 	 * @param string $ind
 	 * 
@@ -152,28 +175,9 @@ class PhpClass {
 	}
 
 	/**
-	 * @param string $fullClassName
-	 * 
-	 * @return object
-	 */
-	public function splitFullClassName ($fullClassName) {
-		$packageName = "";
-		$className = $fullClassName;
-		if (HxString::lastIndexOf($fullClassName, ".") !== -1) {
-			$packageName = mb_substr($fullClassName, 0, HxString::lastIndexOf($fullClassName, "."));
-			$className = mb_substr($fullClassName, HxString::lastIndexOf($fullClassName, ".") + 1, null);
-		}
-		return new HxAnon([
-			"packageName" => $packageName,
-			"className" => $className,
-		]);
-	}
-
-	/**
 	 * @return string
 	 */
 	public function toString () {
-		$clas = $this->splitFullClassName($this->fullClassName);
 		$this1 = [];
 		$varLines = $this1;
 		$collection = $this->vars;
@@ -181,7 +185,7 @@ class PhpClass {
 			array_push($varLines, str_replace("\x0A", "\x0A\x09", $value));
 		}
 
-		$s = "namespace " . (GeneratorTools::toPhpType($clas->packageName, false)??'null') . ";\x0A" . "\x0A" . (implode("\x0A", $this->imports)??'null') . (((count($this->imports) > 0 ? "\x0A\x0A" : ""))??'null') . "class " . $clas->className . ((($this->baseFullClassName !== null ? " extends " . (GeneratorTools::toPhpType($this->baseFullClassName)??'null') : ""))??'null') . "\x0A" . "{\x0A" . (((count($this->vars) > 0 ? "\x09" . (implode("\x0A\x09\x0A\x09", $varLines)??'null') . "\x0A\x0A" : ""))??'null') . (((count($this->methods) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->methods)??'null') . "\x0A" : ""))??'null') . (((count($this->customs) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->customs)??'null') . "\x0A" : ""))??'null') . "}";
+		$s = "namespace " . (GeneratorTools::toPhpType($this->getPackageName($this->fullClassName), false)??'null') . ";\x0A" . "\x0A" . (implode("\x0A", $this->imports)??'null') . (((count($this->imports) > 0 ? "\x0A\x0A" : ""))??'null') . "class " . ($this->getShortClassName($this->fullClassName)??'null') . ((($this->baseFullClassName !== null ? " extends " . (GeneratorTools::toPhpType($this->baseFullClassName)??'null') : ""))??'null') . "\x0A" . "{\x0A" . (((count($this->vars) > 0 ? "\x09" . (implode("\x0A\x09\x0A\x09", $varLines)??'null') . "\x0A\x0A" : ""))??'null') . (((count($this->methods) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->methods)??'null') . "\x0A" : ""))??'null') . (((count($this->customs) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->customs)??'null') . "\x0A" : ""))??'null') . "}";
 		return $s;
 	}
 

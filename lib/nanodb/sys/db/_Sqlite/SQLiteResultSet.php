@@ -5,7 +5,6 @@
 
 namespace nanodb\sys\db\_Sqlite;
 
-use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
 use \nanodb\sys\db\ResultSet;
 
@@ -255,7 +254,7 @@ class SQLiteResultSet implements ResultSet {
 			$this->load();
 		}
 		$next = $this->rows[$this->currentIndex++];
-		return new HxAnon($this->correctArrayTypes($next));
+		return $this->correctArrayTypes($next);
 	}
 
 	/**

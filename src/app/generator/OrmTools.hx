@@ -36,7 +36,7 @@ class OrmTools
 	
 	static function field2var(table:String, f:DbTableFieldData, positions:OrmPositions) : OrmPhpVar
 	{
-		var r = new OrmPhpVar(f.name, sqlType2phpType(f.type), positions.is({ table:table, name:f.name}) ? "null" : null);
+		var r = new OrmPhpVar(f.name, sqlType2phpType(f.type), positions.is(table, f.name) ? "null" : null);
 		
 		r.table = table;
 		r.name = f.name;

@@ -6,16 +6,6 @@ import php.TypedAssoc;
 import php.TypedArray;
 using php.StringToolsNative;
 
-private typedef Option = 
-{
-	var name : String;
-	var defaultValue : Dynamic;
-	var type : String;
-	var switches : TypedArray<String>;
-	var help : String;
-	var repeatable : Bool;
-}
-
 /**
  * Usage example:
  * var parser = new CmdOptions();
@@ -28,14 +18,14 @@ private typedef Option =
  */
 class CmdOptions
 {
-	var options : TypedArray<Option>;
+	var options : TypedArray<CmdOption>;
 	var args : TypedArray<String>;
 	var paramWoSwitchIndex : Int;
 	var params : TypedAssoc<String, Dynamic>;
 
 	public function new()
 	{
-		options = new TypedArray<Option>();
+		options = new TypedArray<CmdOption>();
 	}
 	
 	public function get(name:String) : Dynamic
@@ -67,7 +57,7 @@ class CmdOptions
 	{
 		if (!hasOption(name))
 		{
-			options.push({ name:name, defaultValue:defaultValue, type:type, switches:switches, help:help, repeatable:repeatable });
+			options.push(new CmdOption(name, defaultValue, type, switches, help, repeatable));
 		}
 		else
 		{
@@ -78,7 +68,7 @@ class CmdOptions
 	public function getHelpMessage(prefix="\t") : String
 	{
 		var maxSwitchLength = 0;
-		Syntax.foreach(options, function(_, opt:Option)
+		Syntax.foreach(options, function(_, opt:CmdOption)
 		{
 			if (opt.switches != null && opt.switches.length > 0)
 			{
@@ -91,7 +81,7 @@ class CmdOptions
 		});
 		
 		var s = "";
-		Syntax.foreach(options, function(_, opt:Option) 
+		Syntax.foreach(options, function(_, opt:CmdOption) 
 		{
 			if (opt.switches != null && opt.switches.length > 0)
 			{
@@ -125,7 +115,7 @@ class CmdOptions
 		paramWoSwitchIndex = 0;
 		
 		params = new TypedAssoc<String, Dynamic>();
-		Syntax.foreach(options, function(_, opt:Option)
+		Syntax.foreach(options, function(_, opt:CmdOption)
 		{
 			params.set(opt.name, opt.defaultValue);
 		});
@@ -181,7 +171,7 @@ class CmdOptions
 		}
 	}
 	
-	function parseValue(opt:Option, s:String) : Void
+	function parseValue(opt:CmdOption, s:String) : Void
 	{
 		switch (opt.type)
 		{
@@ -221,7 +211,7 @@ class CmdOptions
 		}
 	}
 	
-	function getNextNoSwitchOption() : Option
+	function getNextNoSwitchOption() : CmdOption
 	{
 		for (i in paramWoSwitchIndex...options.length)
 		{

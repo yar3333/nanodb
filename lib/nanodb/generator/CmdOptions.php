@@ -5,9 +5,9 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\_Boot\HxAnon;
 use \nanodb\php\Boot;
 use \nanodb\php\_Boot\HxException;
+use \nanodb\generator\CmdOption as GeneratorCmdOption;
 use \nanodb\EReg;
 
 /**
@@ -77,14 +77,7 @@ class CmdOptions {
 	 */
 	public function addInner ($name, $defaultValue, $type, $switches, $help, $repeatable) {
 		if (!$this->hasOption($name)) {
-			array_push($this->options, new HxAnon([
-				"name" => $name,
-				"defaultValue" => $defaultValue,
-				"type" => $type,
-				"switches" => $switches,
-				"help" => $help,
-				"repeatable" => $repeatable,
-			]));
+			array_push($this->options, new GeneratorCmdOption($name, $defaultValue, $type, $switches, $help, $repeatable));
 		} else {
 			throw new HxException("Option '" . $name . "' already added.");
 		}
@@ -191,7 +184,7 @@ class CmdOptions {
 	}
 
 	/**
-	 * @return object
+	 * @return GeneratorCmdOption
 	 */
 	public function getNextNoSwitchOption () {
 		$_g = $this->paramWoSwitchIndex;
@@ -304,7 +297,7 @@ class CmdOptions {
 	}
 
 	/**
-	 * @param object $opt
+	 * @param GeneratorCmdOption $opt
 	 * @param string $s
 	 * 
 	 * @return void

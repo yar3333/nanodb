@@ -1,7 +1,7 @@
 import haxe.extern.EitherType;
 import php.*;
 
-@:coreApi final class EReg {
+class EReg {
 
 	var r : Dynamic;
 	var last : String;
@@ -49,11 +49,11 @@ import php.*;
 		return Global.substr(last, x);
 	}
 
-	public function matchedPos() : { pos : Int, len : Int } {
-		return {
+	public function matchedPosAssoc() : TypedAssoc<String, Int> { // { pos : Int, len : Int }
+		return cast Syntax.assocDecl({
 			pos : Global.mb_strlen(Global.substr(last, 0, matches[0][1])),
 			len : Global.mb_strlen(matches[0][0])
-		};
+		});
 	}
 
 	public function matchSub( s : String, pos : Int, len : Int = -1):Bool {
@@ -93,15 +93,15 @@ import php.*;
 				buf += s.substr(offset);
 				break;
 			}
-			var p = matchedPos();
-			buf += s.substr(offset, p.pos - offset);
+			var p = matchedPosAssoc();
+			buf += s.substr(offset, p['pos'] - offset);
 			buf += f(this);
-			if (p.len == 0) {
-				buf += s.substr(p.pos, 1);
-				offset = p.pos + 1;
+			if (p['len'] == 0) {
+				buf += s.substr(p['pos'], 1);
+				offset = p['pos'] + 1;
 			}
 			else {
-				offset = p.pos + p.len;
+				offset = p['pos'] + p['len'];
 			}
 		} while (global);
 		if (!global && offset > 0 && offset < length) {
