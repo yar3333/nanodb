@@ -37,13 +37,13 @@ class OrmTable
 			var pack = packs.shift();
 			var words = pack.splitNative("_");
 			s += words.shift();
-			s += words.map(function(v) return StringToolsEx.capitalize(v)).join("");
+			s += words.map(function(v) return Tools.capitalize(v)).join("");
 			s += "_";
 		}
 		
 		var parts = packs[0].splitNative("_");
 		
-		s += parts[0] + parts.slice(1).map(function(w) return StringToolsEx.capitalize(w)).join("");
+		s += parts[0] + parts.slice(1).map(function(w) return Tools.capitalize(w)).join("");
 		
 		return s;
 	}
@@ -58,11 +58,11 @@ class OrmTable
 			var pack = packs.shift();
 			var words = pack.splitNative("_");
 			s += words.shift();
-			s += words.map(function(x) return StringToolsEx.capitalize(x)).join("");
+			s += words.map(function(x) return Tools.capitalize(x)).join("");
 			s += ".";
 		}
 		
-		s += packs[0].splitNative("_").map(function(x) return StringToolsEx.capitalize(x)).join("");
+		s += packs[0].splitNative("_").map(function(x) return Tools.capitalize(x)).join("");
 		
 		return s;
     }

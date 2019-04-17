@@ -7,7 +7,7 @@ namespace nanodb\generator;
 
 use \nanodb\php\Boot;
 
-class StringToolsEx {
+class Tools {
 	/**
 	 * @param string $s
 	 * 
@@ -20,6 +20,17 @@ class StringToolsEx {
 			return (mb_strtoupper(mb_substr($s, 0, 1))??'null') . (mb_substr($s, 1, null)??'null');
 		}
 	}
+
+	/**
+	 * @param string $path
+	 * 
+	 * @return void
+	 */
+	static public function mkdir ($path) {
+		if (!file_exists($path)) {
+			mkdir($path, 511, true);
+		}
+	}
 }
 
-Boot::registerClass(StringToolsEx::class, 'generator.StringToolsEx');
+Boot::registerClass(Tools::class, 'generator.Tools');

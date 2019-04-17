@@ -6,7 +6,7 @@
 namespace nanodb\generator;
 
 use \nanodb\php\Boot;
-use \nanodb\generator\StringToolsEx as GeneratorStringToolsEx;
+use \nanodb\generator\Tools as GeneratorTools;
 
 class OrmTable {
 	/**
@@ -62,12 +62,12 @@ class OrmTable {
 			$words = explode("_", $pack);
 			$s = $s . (array_shift($words)??'null');
 			$s = $s . (implode("", array_map(function ($x) {
-				return GeneratorStringToolsEx::capitalize($x);
+				return GeneratorTools::capitalize($x);
 			}, $words))??'null');
 			$s = $s . ".";
 		}
 		$s = $s . (implode("", array_map(function ($x1) {
-			return GeneratorStringToolsEx::capitalize($x1);
+			return GeneratorTools::capitalize($x1);
 		}, explode("_", $packs[0])))??'null');
 		return $s;
 	}
@@ -83,13 +83,13 @@ class OrmTable {
 			$words = explode("_", $pack);
 			$s = $s . (array_shift($words)??'null');
 			$s = $s . (implode("", array_map(function ($v) {
-				return GeneratorStringToolsEx::capitalize($v);
+				return GeneratorTools::capitalize($v);
 			}, $words))??'null');
 			$s = $s . "_";
 		}
 		$parts = explode("_", $packs[0]);
 		$s1 = implode("", array_map(function ($w) {
-			return GeneratorStringToolsEx::capitalize($w);
+			return GeneratorTools::capitalize($w);
 		}, array_slice($parts, 1, null)));
 		$s = $s . ($parts[0]??'null') . $s1;
 		return $s;
