@@ -78,7 +78,7 @@ class EReg {
 			}
 			$p = $this->matchedPosAssoc();
 			$buf = $buf . (mb_substr($s, $offset, $p["pos"] - $offset)??'null');
-			$buf = $buf . ($f($this)??'null');
+			$buf = $buf . $f($this);
 			if ($p["len"] === 0) {
 				$buf = $buf . (mb_substr($s, $p["pos"], 1)??'null');
 				$offset = $p["pos"] + 1;

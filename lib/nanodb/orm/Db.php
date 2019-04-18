@@ -73,10 +73,8 @@ class Db {
 	public function close () {
 		try {
 			$this->connection->close();
-		} catch (\Throwable $__hx__caught_e) {
-			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
-			$e = $__hx__real_e;
-					}
+		}
+		catch (\Throwable $e) {}
 		$this->connection = null;
 	}
 
@@ -98,20 +96,15 @@ class Db {
 			if ($params !== null) {
 				$sql = $this->bind($sql, $params);
 			}
-			$tmp = $this->logLevel >= 1;
-			$startTime = ($this->logLevel >= 2 ? microtime(true) : 0);
 			$r = $this->connection->query($sql);
-			$tmp1 = $this->logLevel >= 2;
 			return $r;
-		} catch (\Throwable $__hx__caught_e) {
+		}
+		catch (\Throwable $__hx__caught_e) {
 			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
 			if ($__hx__real_e instanceof OrmDbException) {
 				$e = $__hx__real_e;
-				throw new \Exception("DATABASE\n\tSQL QUERY: " . $sql . "\n\tSQL RESULT: error code = " . ($e->getCode()??'null') . ", message: " . ($e->getMessage()??'null'));
-			} else {
-				$e1 = $__hx__real_e;
-				throw (is_object($__hx__throw = $e1) && $__hx__throw instanceof \Throwable ? $__hx__throw : new HxException($__hx__throw));
-			}
+				throw new \Exception("DATABASE\n\tSQL QUERY: " . $sql . "\n\tSQL RESULT: error code = " . $e->getCode() . ", message: " . $e->getMessage());
+			} else  throw $__hx__caught_e;
 		}
 	}
 

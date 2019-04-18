@@ -107,11 +107,10 @@ class Log {
 		Log::start($message, $level);
 		try {
 			$procFunc();
-		} catch (\Throwable $__hx__caught_e) {
-			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
-			$e = $__hx__real_e;
+		}
+		catch (\Throwable $e) {
 			Log::finishFail();
-			throw (is_object($__hx__throw = $e) && $__hx__throw instanceof \Throwable ? $__hx__throw : new HxException($__hx__throw));
+			throw $e;
 		}
 		Log::finishSuccess();
 	}
@@ -131,11 +130,10 @@ class Log {
 		$r = null;
 		try {
 			$r = $procFunc();
-		} catch (\Throwable $__hx__caught_e) {
-			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
-			$e = $__hx__real_e;
+		}
+		catch (\Throwable $e) {
 			Log::finishFail();
-			throw (is_object($__hx__throw = $e) && $__hx__throw instanceof \Throwable ? $__hx__throw : new HxException($__hx__throw));
+			throw $e;
 		}
 		Log::finishSuccess();
 		return $r;
@@ -189,7 +187,7 @@ class Log {
 				if ($this->inBlock) {
 					$this->println("");
 				}
-				$this->println(($this->indent($this->ind)??'null') . (str_replace("\n", "\n" . ($this->indent($this->ind)??'null'), $text)??'null'));
+				$this->println($this->indent($this->ind) . (str_replace("\n", "\n" . $this->indent($this->ind), $text)??'null'));
 				$this->inBlock = false;
 			}
 		}
@@ -281,7 +279,7 @@ class Log {
 				if ($this->inBlock) {
 					$this->println("");
 				}
-				$this->print(($this->indent($this->ind)??'null') . $message . ": ");
+				$this->print($this->indent($this->ind) . $message . ": ");
 				$this->inBlock = true;
 				array_push($this->shown, true);
 				$this->ind++;

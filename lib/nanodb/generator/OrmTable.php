@@ -64,7 +64,7 @@ class OrmTable {
 		while (count($packs) > 1) {
 			$pack = array_shift($packs);
 			$words = explode("_", $pack);
-			$s = $s . (array_shift($words)??'null');
+			$s = $s . array_shift($words);
 			$s = $s . (implode("", array_map(function ($x) {
 				return GeneratorTools::capitalize($x);
 			}, $words))??'null');
@@ -85,7 +85,7 @@ class OrmTable {
 		while (count($packs) > 1) {
 			$pack = array_shift($packs);
 			$words = explode("_", $pack);
-			$s = $s . (array_shift($words)??'null');
+			$s = $s . array_shift($words);
 			$s = $s . (implode("", array_map(function ($v) {
 				return GeneratorTools::capitalize($v);
 			}, $words))??'null');

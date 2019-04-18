@@ -69,7 +69,7 @@ class SQLiteConnection implements DbConnection {
 	 */
 	public function quote ($s) {
 		if ((mb_strpos($s, "\x00") !== false)) {
-			return "x'" . (bin2hex($s)??'null') . "'";
+			return "x'" . bin2hex($s) . "'";
 		}
 		return "'" . (\SQLite3::escapeString($s)??'null') . "'";
 	}

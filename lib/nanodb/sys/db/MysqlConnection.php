@@ -47,7 +47,7 @@ class MysqlConnection implements DbConnection {
 	public function commit () {
 		$success = $this->db->commit();
 		if (!$success) {
-			throw new HxException("Failed to commit transaction: " . ($this->db->error??'null'));
+			throw new HxException("Failed to commit transaction: " . $this->db->error);
 		}
 	}
 
@@ -81,9 +81,9 @@ class MysqlConnection implements DbConnection {
 	 */
 	public function quote ($s) {
 		if ((mb_strpos($s, "\x00") !== false)) {
-			return "x'" . (bin2hex($s)??'null') . "'";
+			return "x'" . bin2hex($s) . "'";
 		}
-		return "'" . ($this->db->escape_string($s)??'null') . "'";
+		return "'" . $this->db->escape_string($s) . "'";
 	}
 
 	/**
@@ -94,7 +94,7 @@ class MysqlConnection implements DbConnection {
 	public function request ($s) {
 		$result = $this->db->query($s);
 		if ($result === false) {
-			throw new HxException("Failed to perform db query: " . ($this->db->error??'null'));
+			throw new HxException("Failed to perform db query: " . $this->db->error);
 		}
 		if ($result === true) {
 			return null;
@@ -108,7 +108,7 @@ class MysqlConnection implements DbConnection {
 	public function rollback () {
 		$success = $this->db->rollback();
 		if (!$success) {
-			throw new HxException("Failed to rollback transaction: " . ($this->db->error??'null'));
+			throw new HxException("Failed to rollback transaction: " . $this->db->error);
 		}
 	}
 
@@ -118,7 +118,7 @@ class MysqlConnection implements DbConnection {
 	public function startTransaction () {
 		$success = $this->db->begin_transaction();
 		if (!$success) {
-			throw new HxException("Failed to start transaction: " . ($this->db->error??'null'));
+			throw new HxException("Failed to start transaction: " . $this->db->error);
 		}
 	}
 }

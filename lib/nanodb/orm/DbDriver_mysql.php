@@ -74,7 +74,8 @@ class DbDriver_mysql implements OrmDbDriver {
 	public function close () {
 		try {
 			$this->connection->close();
-		} catch (\Throwable $__hx__caught_e) {
+		}
+		catch (\Throwable $__hx__caught_e) {
 			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
 			$_ = $__hx__real_e;
 					}
@@ -166,9 +167,8 @@ class DbDriver_mysql implements OrmDbDriver {
 		$this->renew();
 		try {
 			return $this->connection->request($sql);
-		} catch (\Throwable $__hx__caught_e) {
-			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
-			$e = $__hx__real_e;
+		}
+		catch (\Throwable $e) {
 			throw new OrmDbException($e);
 		}
 	}
@@ -212,7 +212,8 @@ class DbDriver_mysql implements OrmDbDriver {
 			if ($this->connection !== null) {
 				try {
 					$this->connection->request("SELECT 0");
-				} catch (\Throwable $__hx__caught_e) {
+				}
+				catch (\Throwable $__hx__caught_e) {
 					$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
 					$_ = $__hx__real_e;
 					$this->close();

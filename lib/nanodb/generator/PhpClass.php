@@ -68,7 +68,7 @@ class PhpClass {
 	 * @return void
 	 */
 	public function addImport ($packageName) {
-		array_push($this->imports, "use " . (GeneratorTools::toPhpType($packageName)??'null') . ";");
+		array_push($this->imports, "use " . GeneratorTools::toPhpType($packageName) . ";");
 	}
 
 	/**
@@ -106,8 +106,8 @@ class PhpClass {
 			$isStatic = false;
 		}
 		$this->addVar($v, "protected", $isStatic);
-		$this->addMethod("get" . (GeneratorTools::capitalize($v->haxeName)??'null'), [], $v->haxeType, "{ return \$this->" . $v->haxeName . "; }", "public", $isStatic);
-		$this->addMethod("set" . (GeneratorTools::capitalize($v->haxeName)??'null'), [new GeneratorPhpVar($v->haxeName, $v->haxeType)], $v->haxeType, "{ \$this->" . $v->haxeName . " = " . $v->haxeName . "; }", "public", $isStatic);
+		$this->addMethod("get" . GeneratorTools::capitalize($v->haxeName), [], $v->haxeType, "{ return \$this->" . $v->haxeName . "; }", "public", $isStatic);
+		$this->addMethod("set" . GeneratorTools::capitalize($v->haxeName), [new GeneratorPhpVar($v->haxeName, $v->haxeType)], $v->haxeType, "{ \$this->" . $v->haxeName . " = " . $v->haxeName . "; }", "public", $isStatic);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class PhpClass {
 			array_push($varLines, str_replace("\n", "\n\t", $value));
 		}
 
-		$s = "namespace " . (GeneratorTools::toPhpType($this->getPackageName($this->fullClassName), false)??'null') . ";\n" . "\n" . (implode("\n", $this->imports)??'null') . (((count($this->imports) > 0 ? "\n\n" : ""))??'null') . "class " . ($this->getShortClassName($this->fullClassName)??'null') . ((($this->baseFullClassName !== null ? " extends " . (GeneratorTools::toPhpType($this->baseFullClassName)??'null') : ""))??'null') . "\n" . "{\n" . (((count($this->vars) > 0 ? "\t" . (implode("\n\t\n\t", $varLines)??'null') . "\n\n" : ""))??'null') . (((count($this->methods) > 0 ? "\t" . (implode("\n\n\t", $this->methods)??'null') . "\n" : ""))??'null') . (((count($this->customs) > 0 ? "\t" . (implode("\n\n\t", $this->customs)??'null') . "\n" : ""))??'null') . "}";
+		$s = "namespace " . (GeneratorTools::toPhpType($this->getPackageName($this->fullClassName), false)??'null') . ";\n" . "\n" . (implode("\n", $this->imports)??'null') . (((count($this->imports) > 0 ? "\n\n" : ""))??'null') . "class " . $this->getShortClassName($this->fullClassName) . ((($this->baseFullClassName !== null ? " extends " . GeneratorTools::toPhpType($this->baseFullClassName) : ""))??'null') . "\n" . "{\n" . (((count($this->vars) > 0 ? "\t" . (implode("\n\t\n\t", $varLines)??'null') . "\n\n" : ""))??'null') . (((count($this->methods) > 0 ? "\t" . (implode("\n\n\t", $this->methods)??'null') . "\n" : ""))??'null') . (((count($this->customs) > 0 ? "\t" . (implode("\n\n\t", $this->customs)??'null') . "\n" : ""))??'null') . "}";
 		return $s;
 	}
 

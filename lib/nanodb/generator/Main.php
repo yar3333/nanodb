@@ -58,7 +58,7 @@ class Main {
 			echo("Generating set of the php classes from database tables.\n");
 			echo("\nUsage:\n\tbin\\nanodb <databaseConnectionString> [options]\n");
 			echo("\nOptions:\n\n");
-			echo(($options->getHelpMessage()??'null') . "\n");
+			echo($options->getHelpMessage() . "\n");
 		}
 		exit(0);
 	}

@@ -167,7 +167,7 @@ class CmdOptions {
 			}
 			if (($value1->help !== null) && ($value1->help !== "")) {
 				$helpLines = explode("\n", $value1->help);
-				$s = $s . (array_shift($helpLines)??'null') . "\n";
+				$s = $s . array_shift($helpLines) . "\n";
 				$s = $s . (implode("", array_map(function ($s3)  use (&$maxSwitchLength, &$prefix) {
 					$this1 = str_pad("", $maxSwitchLength + 1, " ", STR_PAD_LEFT);
 					return $prefix . $this1 . $s3 . "\n";

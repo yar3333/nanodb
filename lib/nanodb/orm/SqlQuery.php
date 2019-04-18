@@ -52,7 +52,7 @@ class SqlQuery {
 	 * @return int
 	 */
 	public function count () {
-		$r = $this->db->query("SELECT COUNT(*) FROM `" . $this->table . "`" . ($this->getWhereSql()??'null'));
+		$r = $this->db->query("SELECT COUNT(*) FROM `" . $this->table . "`" . $this->getWhereSql());
 		if (!$r->hasNext()) {
 			return 0;
 		}
@@ -66,7 +66,7 @@ class SqlQuery {
 	 * @return void
 	 */
 	public function delete ($limit = null, $offset = null) {
-		$this->db->query("DELETE FROM `" . $this->table . "`" . ($this->getWhereSql()??'null') . ($this->getLimitSql($limit)??'null') . ($this->getOffsetSql($offset)??'null'));
+		$this->db->query("DELETE FROM `" . $this->table . "`" . $this->getWhereSql() . $this->getLimitSql($limit) . $this->getOffsetSql($offset));
 	}
 
 	/**
@@ -97,7 +97,7 @@ class SqlQuery {
 	 * @return ResultSet
 	 */
 	public function findManyFields ($fields, $limit = null, $offset = null) {
-		return $this->db->query(($this->getSelectSql($fields)??'null') . ($this->getLimitSql($limit)??'null') . ($this->getOffsetSql($offset)??'null'));
+		return $this->db->query($this->getSelectSql($fields) . $this->getLimitSql($limit) . $this->getOffsetSql($offset));
 	}
 
 	/**
@@ -113,7 +113,7 @@ class SqlQuery {
 	 * @return mixed
 	 */
 	public function findOneFields ($fields) {
-		$rr = $this->db->query(($this->getSelectSql($fields)??'null') . "\nLIMIT 1");
+		$rr = $this->db->query($this->getSelectSql($fields) . "\nLIMIT 1");
 		if ($rr->hasNext()) {
 			return $rr->next();
 		}
@@ -167,7 +167,7 @@ class SqlQuery {
 		$f = ($fields !== null ? array_map(function ($x)  use (&$_gthis) {
 			return $_gthis->quoteField($x);
 		}, $fields) : ["*"]);
-		return "SELECT " . (implode(", ", $f)??'null') . "\nFROM `" . $this->table . "`" . ($this->getWhereSql()??'null') . ($this->getOrderBySql()??'null');
+		return "SELECT " . (implode(", ", $f)??'null') . "\nFROM `" . $this->table . "`" . $this->getWhereSql() . $this->getOrderBySql();
 	}
 
 	/**
@@ -213,7 +213,7 @@ class SqlQuery {
 		if (($v instanceof OrmSqlTextField)) {
 			return "`" . $v->text . "`";
 		}
-		return "`" . (Std::string($v)??'null') . "`";
+		return "`" . Std::string($v) . "`";
 	}
 
 	/**
@@ -248,9 +248,9 @@ class SqlQuery {
 		$_gthis = $this;
 		$sets = [];
 		foreach ($fields as $key => $value) {
-			array_push($sets, "`" . $key . "` = " . ($_gthis->quoteValue($value)??'null'));
+			array_push($sets, "`" . $key . "` = " . $_gthis->quoteValue($value));
 		}
-		$this->db->query("UPDATE `" . $this->table . "`\nSET\n\t" . (implode("\n\t", $sets)??'null') . ($this->getWhereSql()??'null') . ($this->getLimitSql($limit)??'null') . ($this->getOffsetSql($offset)??'null'));
+		$this->db->query("UPDATE `" . $this->table . "`\nSET\n\t" . (implode("\n\t", $sets)??'null') . $this->getWhereSql() . $this->getLimitSql($limit) . $this->getOffsetSql($offset));
 	}
 
 	/**

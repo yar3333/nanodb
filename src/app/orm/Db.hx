@@ -46,25 +46,25 @@ class Db
     {
 		try
 		{
-			#if profiler Profiler.begin('Db.query'); #end
+			//#if profiler Profiler.begin('Db.query'); #end
 			if (params != null) sql = bind(sql, params);
-			if (logLevel >= 1) trace("SQL QUERY: " + sql);
-			var startTime = logLevel >= 2 ? Sys.time() : 0;
+			//if (logLevel >= 1) trace("SQL QUERY: " + sql);
+			//var startTime = logLevel >= 2 ? Sys.time() : 0;
 			var r = connection.query(sql);
-			if (logLevel >= 2) trace("SQL QUERY FINISH " + Math.round((Sys.time() - startTime) * 1000) + " ms");
-			#if profiler Profiler.end(); #end
+			//if (logLevel >= 2) trace("SQL QUERY FINISH " + Math.round((Sys.time() - startTime) * 1000) + " ms");
+			//#if profiler Profiler.end(); #end
 			return r;
 		}
 		catch (e:DbException)
 		{
-            #if profiler Profiler.end(); #end
+            //#if profiler Profiler.end(); #end
 			throw new Exception("DATABASE\n\tSQL QUERY: " + sql + "\n\tSQL RESULT: error code = " + e.getCode() + ", message: " + e.getMessage());
 		}
-		catch (e:Dynamic)
-		{
-			#if profiler Profiler.end(); #end
-			throw e;
-		}
+		//catch (e:Dynamic)
+		//{
+		//	#if profiler Profiler.end(); #end
+		//	throw e;
+		//}
     }
 	
     public function quote(v:Dynamic) : String
