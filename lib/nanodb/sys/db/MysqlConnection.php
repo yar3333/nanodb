@@ -6,7 +6,6 @@
 namespace nanodb\sys\db;
 
 use \nanodb\sys\db\MysqlResultSet as DbMysqlResultSet;
-use \nanodb\php\_Boot\HxException;
 use \nanodb\sys\db\Connection as DbConnection;
 use \nanodb\sys\db\ResultSet as DbResultSet;
 
@@ -47,7 +46,7 @@ class MysqlConnection implements DbConnection {
 	public function commit () {
 		$success = $this->db->commit();
 		if (!$success) {
-			throw new HxException("Failed to commit transaction: " . $this->db->error);
+			throw new \Exception("Failed to commit transaction: " . $this->db->error);
 		}
 	}
 
@@ -94,7 +93,7 @@ class MysqlConnection implements DbConnection {
 	public function request ($s) {
 		$result = $this->db->query($s);
 		if ($result === false) {
-			throw new HxException("Failed to perform db query: " . $this->db->error);
+			throw new \Exception("Failed to perform db query: " . $this->db->error);
 		}
 		if ($result === true) {
 			return null;
@@ -108,7 +107,7 @@ class MysqlConnection implements DbConnection {
 	public function rollback () {
 		$success = $this->db->rollback();
 		if (!$success) {
-			throw new HxException("Failed to rollback transaction: " . $this->db->error);
+			throw new \Exception("Failed to rollback transaction: " . $this->db->error);
 		}
 	}
 
@@ -118,7 +117,7 @@ class MysqlConnection implements DbConnection {
 	public function startTransaction () {
 		$success = $this->db->begin_transaction();
 		if (!$success) {
-			throw new HxException("Failed to start transaction: " . $this->db->error);
+			throw new \Exception("Failed to start transaction: " . $this->db->error);
 		}
 	}
 }

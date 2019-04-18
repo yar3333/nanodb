@@ -9,7 +9,6 @@ use \nanodb\orm\SqlTextField as OrmSqlTextField;
 use \nanodb\orm\SqlTextRaw as OrmSqlTextRaw;
 use \nanodb\orm\Db as OrmDb;
 use \nanodb\sys\db\ResultSet;
-use \nanodb\Std;
 
 class SqlQuery {
 	/**
@@ -213,7 +212,7 @@ class SqlQuery {
 		if (($v instanceof OrmSqlTextField)) {
 			return "`" . $v->text . "`";
 		}
-		return "`" . Std::string($v) . "`";
+		return "`" . $v . "`";
 	}
 
 	/**

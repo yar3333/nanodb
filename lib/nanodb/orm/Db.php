@@ -9,7 +9,6 @@ use \nanodb\orm\DbException as OrmDbException;
 use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\ResultSet;
 use \nanodb\orm\SqlText as OrmSqlText;
-use \nanodb\php\_Boot\HxException;
 use \nanodb\EReg;
 
 class Db {
@@ -63,7 +62,7 @@ class Db {
 			if (array_key_exists($name, $params)) {
 				return $_gthis->quote($params[$name]);
 			}
-			throw new HxException("Param '" . $name . "' not found while binding SQL query '" . $sql . "'.");
+			throw new \Exception("Param '" . $name . "' not found while binding SQL query '" . $sql . "'.");
 		});
 	}
 

@@ -5,7 +5,6 @@
 
 namespace nanodb;
 
-use \nanodb\php\_Boot\HxException;
 
 class EReg {
 	/**
@@ -138,7 +137,7 @@ class EReg {
 	 */
 	public function matched ($n) {
 		if (($this->matches === null) || ($n < 0)) {
-			throw new HxException("EReg::matched");
+			throw new \Exception("EReg::matched");
 		}
 		if ($n >= count($this->matches)) {
 			return null;
@@ -154,7 +153,7 @@ class EReg {
 	 */
 	public function matchedLeft () {
 		if (count($this->matches) === 0) {
-			throw new HxException("No string matched");
+			throw new \Exception("No string matched");
 		}
 		return substr($this->last, 0, $this->matches[0][1]);
 	}
@@ -175,7 +174,7 @@ class EReg {
 	 */
 	public function matchedRight () {
 		if (count($this->matches) === 0) {
-			throw new HxException("No string matched");
+			throw new \Exception("No string matched");
 		}
 		$x = $this->matches[0][1] + strlen($this->matches[0][0]);
 		return substr($this->last, $x);

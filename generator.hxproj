@@ -43,6 +43,7 @@
   <preBuildCommand />
   <!-- Executed after build -->
   <postBuildCommand alwaysRun="False">cmd /C del lib\nanodb\Array_hx.php
+cmd /C del lib\nanodb\Std.php
 cmd /C rmdir /q /s lib\nanodb\_Array
 cmd /C rmdir /q /s lib\nanodb\php
 haxelib run refactor -v process lib *.php generator.rules

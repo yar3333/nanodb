@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\_Boot\HxException;
 
 /**
  * Global log class.

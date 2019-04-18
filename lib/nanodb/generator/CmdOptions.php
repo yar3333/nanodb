@@ -5,7 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\php\_Boot\HxException;
 use \nanodb\generator\CmdOption as GeneratorCmdOption;
 use \nanodb\EReg;
 
@@ -78,7 +77,7 @@ class CmdOptions {
 		if (!$this->hasOption($name)) {
 			array_push($this->options, new GeneratorCmdOption($name, $defaultValue, $type, $switches, $help, $repeatable));
 		} else {
-			throw new HxException("Option '" . $name . "' already added.");
+			throw new \Exception("Option '" . $name . "' already added.");
 		}
 	}
 
@@ -97,7 +96,7 @@ class CmdOptions {
 			$help = "";
 		}
 		if (($type !== "string") && ($type !== "int") && ($type !== "float")) {
-			throw new HxException("Type '" . $type . "' can not be used for repeatable option '" . $name . "'.");
+			throw new \Exception("Type '" . $type . "' can not be used for repeatable option '" . $name . "'.");
 		}
 		$this->addInner($name, [], $type, $switches, $help, true);
 	}
@@ -122,7 +121,7 @@ class CmdOptions {
 	 */
 	public function ensureValueExist ($s) {
 		if (count($this->args) === 0) {
-			throw new HxException("Missing value after '" . $s . "' switch.");
+			throw new \Exception("Missing value after '" . $s . "' switch.");
 		}
 	}
 
@@ -198,7 +197,7 @@ class CmdOptions {
 			}
 		}
 
-		throw new HxException("Unexpected argument '" . ($this->args[0]??'null') . "'.");
+		throw new \Exception("Unexpected argument '" . ($this->args[0]??'null') . "'.");
 	}
 
 	/**
@@ -283,7 +282,7 @@ class CmdOptions {
 					}
 				}
 
-				throw new HxException("Unknow switch '" . $arg . "'.");
+				throw new \Exception("Unknow switch '" . $arg . "'.");
 			} else {
 				array_unshift($this->args, $arg);
 				$this->parseValue($this->getNextNoSwitchOption(), $this->args[0]);
@@ -327,7 +326,7 @@ class CmdOptions {
 				$this->addRepeatableValue($opt->name, array_shift($this->args));
 			}
 		} else {
-			throw new HxException("Option type '" . $opt->type . "' not supported.");
+			throw new \Exception("Option type '" . $opt->type . "' not supported.");
 		}
 	}
 }

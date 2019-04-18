@@ -11,7 +11,6 @@ use \nanodb\sys\db\Connection;
 use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\ResultSet;
 use \nanodb\orm\DbTableFieldData as OrmDbTableFieldData;
-use \nanodb\php\_Boot\HxException;
 use \nanodb\EReg;
 
 class DbDriver_mysql implements OrmDbDriver {
@@ -75,10 +74,7 @@ class DbDriver_mysql implements OrmDbDriver {
 		try {
 			$this->connection->close();
 		}
-		catch (\Throwable $__hx__caught_e) {
-			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
-			$_ = $__hx__real_e;
-					}
+		catch (\Throwable $e) {}
 		$this->connection = null;
 	}
 
@@ -213,9 +209,7 @@ class DbDriver_mysql implements OrmDbDriver {
 				try {
 					$this->connection->request("SELECT 0");
 				}
-				catch (\Throwable $__hx__caught_e) {
-					$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
-					$_ = $__hx__real_e;
+				catch (\Throwable $e) {
 					$this->close();
 				}
 			}

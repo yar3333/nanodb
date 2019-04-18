@@ -11,7 +11,6 @@ use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\Sqlite;
 use \nanodb\sys\db\ResultSet;
 use \nanodb\orm\DbTableFieldData as OrmDbTableFieldData;
-use \nanodb\php\_Boot\HxException;
 use \nanodb\EReg;
 
 class DbDriver_sqlite implements OrmDbDriver {
@@ -36,10 +35,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 		try {
 			$this->connection->close();
 		}
-		catch (\Throwable $__hx__caught_e) {
-			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
-			$_ = $__hx__real_e;
-					}
+		catch (\Throwable $e) {}
 		$this->connection = null;
 	}
 
@@ -133,7 +129,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 		$sql = $this->query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" . $table . "'")->getResult(0);
 		$inner = new EReg("[(]((?:.|\x0D|\n)*)[)]", "m");
 		if (!$inner->match($sql)) {
-			throw new HxException("Unhandled syntax of \"sqlite_master\" for table \"" . $table . "\".");
+			throw new \Exception("Unhandled syntax of \"sqlite_master\" for table \"" . $table . "\".");
 		}
 		$statement = trim($inner->matched(1), null);
 		$fields = explode(",", $statement);
@@ -156,7 +152,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 			}
 		});
 		if (count($named) !== 1) {
-			throw new HxException("Unhandled syntax of \"sqlite_master\" for table \"" . $table . "\".");
+			throw new \Exception("Unhandled syntax of \"sqlite_master\" for table \"" . $table . "\".");
 		}
 		$isAuto = in_array("AUTOINCREMENT", array_map(function ($x) {
 			return trim($x, null);

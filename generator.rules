@@ -19,6 +19,10 @@ FUNC_CALL = (LONGVAR|FUNC_NAME)[(]\s*(?:LONGVAR(?:\s*,\s*LONGVAR)*)?\s*[)]
 !\\x09!\\t!
 
 !} catch \(\\Throwable \$__hx__caught_e\) {\s*\$__hx__real_e = \(\$__hx__caught_e instanceof HxException \? \$__hx__caught_e->e : \$__hx__caught_e\);\s+\$e = \$__hx__real_e;!} catch (\\Throwable $$e) {!
+!} catch \(\\Throwable \$__hx__caught_e\) {\s*\$__hx__real_e = \(\$__hx__caught_e instanceof HxException \? \$__hx__caught_e->e : \$__hx__caught_e\);\s+\$_ = \$__hx__real_e;!} catch (\\Throwable $$e) {!
 !\bthrow \(is_object\(\$__hx__throw = \$e\) && \$__hx__throw instanceof \\Throwable \? \$__hx__throw : new HxException\(\$__hx__throw\)\);!throw $$e;!
 !} catch \(\\Throwable \$e\) {\s+}!} catch (\\Throwable $$e) {}!
 !([ \t]+)} catch \(!$1}\n$1catch (!
+
+!use \\nanodb\\php\\_Boot\\HxException;\n!!
+!\bthrow new HxException\(!throw new \\Exception(!
