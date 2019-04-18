@@ -88,10 +88,10 @@ class PhpClass {
 		if ($isStatic === null) {
 			$isStatic = false;
 		}
-		$header = (((($retType !== null) && (mb_strpos($retType, "[]") !== false) ? "/**\x0A\x09 * @return " . $retType . "\x0A\x09 */\x0A\x09" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
+		$header = (((($retType !== null) && (mb_strpos($retType, "[]") !== false) ? "/**\n\x09 * @return " . $retType . "\n\x09 */\n\x09" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
 			return ((($v->haxeType !== null ? $v->haxeType . " " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
 		}, $vars))??'null') . ")" . ((($retType !== null ? " : " . (((!(mb_strpos($retType, "[]") !== false) ? $retType : "array"))??'null') : ""))??'null');
-		$s = $header . "\x0A" . "\x09{\x0A" . ($this->indent(trim($body, null), "\x09\x09")??'null') . "\x0A" . "\x09}";
+		$s = $header . "\n" . "\x09{\n" . ($this->indent(trim($body, null), "\x09\x09")??'null') . "\n" . "\x09}";
 		array_push($this->methods, $s);
 	}
 
@@ -125,7 +125,7 @@ class PhpClass {
 			$isStatic = false;
 		}
 		if ($v !== null) {
-			$s = ((($v->haxeType !== null ? "/**\x0A * @var " . $v->haxeType . "\x0A */\x0A" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "\$" . $v->haxeName . ";";
+			$s = ((($v->haxeType !== null ? "/**\n * @var " . $v->haxeType . "\n */\n" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "\$" . $v->haxeName . ";";
 			array_push($this->vars, $s);
 		} else {
 			array_push($this->vars, "");
@@ -169,7 +169,7 @@ class PhpClass {
 		if ($text === "") {
 			return "";
 		}
-		return $ind . (str_replace("\x0A", "\x0A" . $ind, $text)??'null');
+		return $ind . (str_replace("\n", "\n" . $ind, $text)??'null');
 	}
 
 	/**
@@ -180,10 +180,10 @@ class PhpClass {
 		$varLines = $this1;
 		$collection = $this->vars;
 		foreach ($collection as $key => $value) {
-			array_push($varLines, str_replace("\x0A", "\x0A\x09", $value));
+			array_push($varLines, str_replace("\n", "\n\x09", $value));
 		}
 
-		$s = "namespace " . (GeneratorTools::toPhpType($this->getPackageName($this->fullClassName), false)??'null') . ";\x0A" . "\x0A" . (implode("\x0A", $this->imports)??'null') . (((count($this->imports) > 0 ? "\x0A\x0A" : ""))??'null') . "class " . ($this->getShortClassName($this->fullClassName)??'null') . ((($this->baseFullClassName !== null ? " extends " . (GeneratorTools::toPhpType($this->baseFullClassName)??'null') : ""))??'null') . "\x0A" . "{\x0A" . (((count($this->vars) > 0 ? "\x09" . (implode("\x0A\x09\x0A\x09", $varLines)??'null') . "\x0A\x0A" : ""))??'null') . (((count($this->methods) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->methods)??'null') . "\x0A" : ""))??'null') . (((count($this->customs) > 0 ? "\x09" . (implode("\x0A\x0A\x09", $this->customs)??'null') . "\x0A" : ""))??'null') . "}";
+		$s = "namespace " . (GeneratorTools::toPhpType($this->getPackageName($this->fullClassName), false)??'null') . ";\n" . "\n" . (implode("\n", $this->imports)??'null') . (((count($this->imports) > 0 ? "\n\n" : ""))??'null') . "class " . ($this->getShortClassName($this->fullClassName)??'null') . ((($this->baseFullClassName !== null ? " extends " . (GeneratorTools::toPhpType($this->baseFullClassName)??'null') : ""))??'null') . "\n" . "{\n" . (((count($this->vars) > 0 ? "\x09" . (implode("\n\x09\n\x09", $varLines)??'null') . "\n\n" : ""))??'null') . (((count($this->methods) > 0 ? "\x09" . (implode("\n\n\x09", $this->methods)??'null') . "\n" : ""))??'null') . (((count($this->customs) > 0 ? "\x09" . (implode("\n\n\x09", $this->customs)??'null') . "\n" : ""))??'null') . "}";
 		return $s;
 	}
 

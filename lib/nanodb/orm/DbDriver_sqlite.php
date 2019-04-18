@@ -69,7 +69,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 		$r = $this1;
 		$sql = $this->query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" . $table . "'")->getResult(0);
 		$reFK = new EReg("^CONSTRAINT \".+?\" FOREIGN KEY [(]\"(.+?)\"[)] REFERENCES \"(.+?)\" [(]\"(.+?)\"[)]", "");
-		$collection = explode("\x0A", str_replace("\x0D", "", $sql));
+		$collection = explode("\n", str_replace("\x0D", "", $sql));
 		foreach ($collection as $key => $value) {
 			if ($reFK->match($value)) {
 				$value1 = $reFK->matched(1);
@@ -105,7 +105,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 		$r = $this1;
 		$sql = $this->query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" . $table . "'")->getResult(0);
 		$reUNIQUE = new EReg("^CONSTRAINT \".+?\" UNIQUE [(](.+?)[)]", "");
-		$collection = explode("\x0A", str_replace("\x0D", "", $sql));
+		$collection = explode("\n", str_replace("\x0D", "", $sql));
 		foreach ($collection as $key => $value) {
 			if ($reUNIQUE->match($value)) {
 				$fields = $reUNIQUE->matched(1);
@@ -130,7 +130,7 @@ class DbDriver_sqlite implements OrmDbDriver {
 	 */
 	public function isAutoincrement ($table, $field) {
 		$sql = $this->query("SELECT sql FROM sqlite_master WHERE type='table' AND name='" . $table . "'")->getResult(0);
-		$inner = new EReg("[(]((?:.|\x0D|\x0A)*)[)]", "m");
+		$inner = new EReg("[(]((?:.|\x0D|\n)*)[)]", "m");
 		if (!$inner->match($sql)) {
 			throw new HxException("Unhandled syntax of \"sqlite_master\" for table \"" . $table . "\".");
 		}

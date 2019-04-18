@@ -189,7 +189,7 @@ class Log {
 				if ($this->inBlock) {
 					$this->println("");
 				}
-				$this->println(($this->indent($this->ind)??'null') . (str_replace("\x0A", "\x0A" . ($this->indent($this->ind)??'null'), $text)??'null'));
+				$this->println(($this->indent($this->ind)??'null') . (str_replace("\n", "\n" . ($this->indent($this->ind)??'null'), $text)??'null'));
 				$this->inBlock = false;
 			}
 		}
@@ -207,10 +207,10 @@ class Log {
 					$this->print($this->indent($this->ind));
 				}
 				$this->ind--;
-				if (!(mb_strpos($text, "\x0A") !== false)) {
+				if (!(mb_strpos($text, "\n") !== false)) {
 					$this->println("[" . $text . "]");
 				} else {
-					$this->println("\x0A" . ($this->indent($this->ind + 1)??'null') . "[\x0A" . ($this->indent($this->ind + 2)??'null') . (str_replace("\x0A", "\x0A" . ($this->indent($this->ind + 2)??'null'), $text)??'null') . "\x0A" . ($this->indent($this->ind + 1)??'null') . "]");
+					$this->println("\n" . ($this->indent($this->ind + 1)??'null') . "[\n" . ($this->indent($this->ind + 2)??'null') . (str_replace("\n", "\n" . ($this->indent($this->ind + 2)??'null'), $text)??'null') . "\n" . ($this->indent($this->ind + 1)??'null') . "]");
 				}
 				$this->inBlock = false;
 			}
@@ -230,10 +230,10 @@ class Log {
 					$this->print($this->indent($this->ind));
 				}
 				$this->ind--;
-				if (!(mb_strpos($text, "\x0A") !== false)) {
+				if (!(mb_strpos($text, "\n") !== false)) {
 					$this->println("[" . $text . "]");
 				} else {
-					$this->println("\x0A" . ($this->indent($this->ind + 1)??'null') . "[\x0A" . ($this->indent($this->ind + 2)??'null') . (str_replace("\x0A", "\x0A" . ($this->indent($this->ind + 2)??'null'), $text)??'null') . "\x0A" . ($this->indent($this->ind + 1)??'null') . "]");
+					$this->println("\n" . ($this->indent($this->ind + 1)??'null') . "[\n" . ($this->indent($this->ind + 2)??'null') . (str_replace("\n", "\n" . ($this->indent($this->ind + 2)??'null'), $text)??'null') . "\n" . ($this->indent($this->ind + 1)??'null') . "]");
 				}
 				$this->inBlock = false;
 			}
@@ -265,7 +265,7 @@ class Log {
 	 * @return void
 	 */
 	public function println ($s) {
-		echo($s . "\x0A");
+		echo($s . "\n");
 	}
 
 	/**

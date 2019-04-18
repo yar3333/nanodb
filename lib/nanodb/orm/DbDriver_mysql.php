@@ -104,7 +104,7 @@ class DbDriver_mysql implements OrmDbDriver {
 	 * @return mixed
 	 */
 	public function getForeignKeys ($table) {
-		$sql = "\x0A  SELECT\x0A   u.table_name AS 'table',\x0A   u.column_name AS 'key',\x0A   u.referenced_table_name AS 'parentTable',\x0A   u.referenced_column_name AS 'parentKey'\x0A  FROM information_schema.table_constraints AS c\x0A  INNER JOIN information_schema.key_column_usage AS u\x0A  USING( constraint_schema, constraint_name )\x0A  WHERE c.constraint_type = 'FOREIGN KEY'\x0A    AND c.table_schema = '" . $this->database . "'\x0A    AND u.table_name = '" . $table . "';\x0A";
+		$sql = "\n  SELECT\n   u.table_name AS 'table',\n   u.column_name AS 'key',\n   u.referenced_table_name AS 'parentTable',\n   u.referenced_column_name AS 'parentKey'\n  FROM information_schema.table_constraints AS c\n  INNER JOIN information_schema.key_column_usage AS u\n  USING( constraint_schema, constraint_name )\n  WHERE c.constraint_type = 'FOREIGN KEY'\n    AND c.table_schema = '" . $this->database . "'\n    AND u.table_name = '" . $table . "';\n";
 		return array_map(function ($x) {
 			return (object)($x);
 		}, $this->query($sql)->results());

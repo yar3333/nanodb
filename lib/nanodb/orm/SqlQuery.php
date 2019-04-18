@@ -113,7 +113,7 @@ class SqlQuery {
 	 * @return mixed
 	 */
 	public function findOneFields ($fields) {
-		$rr = $this->db->query(($this->getSelectSql($fields)??'null') . "\x0ALIMIT 1");
+		$rr = $this->db->query(($this->getSelectSql($fields)??'null') . "\nLIMIT 1");
 		if ($rr->hasNext()) {
 			return $rr->next();
 		}
@@ -127,7 +127,7 @@ class SqlQuery {
 	 */
 	public function getLimitSql ($limit) {
 		if ($limit !== null) {
-			return "\x0ALIMIT " . $limit;
+			return "\nLIMIT " . $limit;
 		} else {
 			return "";
 		}
@@ -140,7 +140,7 @@ class SqlQuery {
 	 */
 	public function getOffsetSql ($offset) {
 		if ($offset !== null) {
-			return "\x0AOFFSET " . $offset;
+			return "\nOFFSET " . $offset;
 		} else {
 			return "";
 		}
@@ -151,7 +151,7 @@ class SqlQuery {
 	 */
 	public function getOrderBySql () {
 		if (count($this->orderBys) > 0) {
-			return "\x0AORDER BY " . (implode(", ", $this->orderBys)??'null');
+			return "\nORDER BY " . (implode(", ", $this->orderBys)??'null');
 		} else {
 			return "";
 		}
@@ -167,7 +167,7 @@ class SqlQuery {
 		$f = ($fields !== null ? array_map(function ($x)  use (&$_gthis) {
 			return $_gthis->quoteField($x);
 		}, $fields) : ["*"]);
-		return "SELECT " . (implode(", ", $f)??'null') . "\x0AFROM `" . $this->table . "`" . ($this->getWhereSql()??'null') . ($this->getOrderBySql()??'null');
+		return "SELECT " . (implode(", ", $f)??'null') . "\nFROM `" . $this->table . "`" . ($this->getWhereSql()??'null') . ($this->getOrderBySql()??'null');
 	}
 
 	/**
@@ -175,7 +175,7 @@ class SqlQuery {
 	 */
 	public function getWhereSql () {
 		if (count($this->conditions) > 0) {
-			return "\x0AWHERE " . (implode("\x0A\x09AND ", $this->conditions)??'null');
+			return "\nWHERE " . (implode("\n\x09AND ", $this->conditions)??'null');
 		} else {
 			return "";
 		}
@@ -250,7 +250,7 @@ class SqlQuery {
 		foreach ($fields as $key => $value) {
 			array_push($sets, "`" . $key . "` = " . ($_gthis->quoteValue($value)??'null'));
 		}
-		$this->db->query("UPDATE `" . $this->table . "`\x0ASET\x0A\x09" . (implode("\x0A\x09", $sets)??'null') . ($this->getWhereSql()??'null') . ($this->getLimitSql($limit)??'null') . ($this->getOffsetSql($offset)??'null'));
+		$this->db->query("UPDATE `" . $this->table . "`\nSET\n\x09" . (implode("\n\x09", $sets)??'null') . ($this->getWhereSql()??'null') . ($this->getLimitSql($limit)??'null') . ($this->getOffsetSql($offset)??'null'));
 	}
 
 	/**

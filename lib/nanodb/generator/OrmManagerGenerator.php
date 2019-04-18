@@ -79,15 +79,15 @@ class OrmManagerGenerator {
 		$model->addVar($ormPhpVar, "protected");
 		$this1 = [];
 		$model->addMethod("query", $this1, GeneratorTools::toPhpType($queryClassName), "return new " . (GeneratorTools::toPhpType($queryClassName)??'null') . "(\$this->db, \$this);");
-		$model->addMethod("__construct", [$dbPhpVar, $ormPhpVar], null, "\$this->db = \$db;\x0A\$this->orm = \$orm;");
+		$model->addMethod("__construct", [$dbPhpVar, $ormPhpVar], null, "\$this->db = \$db;\n\$this->orm = \$orm;");
 		$tmp = GeneratorTools::toPhpType($modelClassName);
-		$tmp1 = "\$_obj = new " . (GeneratorTools::toPhpType($modelClassName)??'null') . "(\$this->db, \$this->orm);\x0A" . (implode("\x0A", array_map(function ($x) {
+		$tmp1 = "\$_obj = new " . (GeneratorTools::toPhpType($modelClassName)??'null') . "(\$this->db, \$this->orm);\n" . (implode("\n", array_map(function ($x) {
 			return "\$_obj->" . $x->haxeName . " = \$" . $x->haxeName . ";";
-		}, $vars))??'null') . "\x0A" . "return \$_obj;";
+		}, $vars))??'null') . "\n" . "return \$_obj;";
 		$model->addMethod("newModelFromParams", $vars, $tmp, $tmp1);
-		$model->addMethod("newModelFromAssoc", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . (GeneratorTools::toPhpType($modelClassName)??'null') . "(\$this->db, \$this->orm);\x0A" . (implode("\x0A", array_map(function ($x1) {
+		$model->addMethod("newModelFromAssoc", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . (GeneratorTools::toPhpType($modelClassName)??'null') . "(\$this->db, \$this->orm);\n" . (implode("\n", array_map(function ($x1) {
 			return "\$_obj->" . $x1->haxeName . " = \$row['" . $x1->haxeName . "'];";
-		}, $vars))??'null') . "\x0A" . "return \$_obj;");
+		}, $vars))??'null') . "\n" . "return \$_obj;");
 		$model->addMethod("whereField", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->whereField(\$field, \$op, \$value);");
 		$model->addMethod("where", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->where(\$rawSqlText);");
 		$getVars = array_filter($vars, function ($x2) {
@@ -100,16 +100,16 @@ class OrmManagerGenerator {
 			return !$x3->isAutoInc;
 		});
 		$model->addMethod("create", $createVars, GeneratorTools::toPhpType($modelClassName), (implode("", array_map(function ($x4)  use (&$table, &$db, &$vars, &$_gthis) {
-			$this2 = "if (\$" . $x4->haxeName . " == null)\x0A" . "{\x0A" . "\x09position = \$this->db->query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
+			$this2 = "if (\$" . $x4->haxeName . " == null)\n" . "{\n" . "\x09position = \$this->db->query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
 			$this3 = $_gthis->getForeignKeyVars($db, $table, $vars);
-			return $this2 . ($_gthis->getWhereSql($this3)??'null') . ").getIntResult(0) + 1;\x0A" . "}\x0A\x0A";
+			return $this2 . ($_gthis->getWhereSql($this3)??'null') . ").getIntResult(0) + 1;\n" . "}\n\n";
 		}, array_filter($createVars, function ($x5)  use (&$positions) {
 			return $positions->is($x5->table, $x5->name);
 		})))??'null') . "\$this->db->query('INSERT INTO `" . $table . "`(" . (implode(", ", array_map(function ($x6) {
 			return "`" . $x6->name . "`";
 		}, $createVars))??'null') . ") VALUES (' . " . (implode(" . ', ' . ", array_map(function ($x7) {
 			return "\$this->db->quote(\$" . $x7->haxeName . ")";
-		}, $createVars))??'null') . " . ')');\x0A" . "return \$this->newModelFromParams(" . (implode(", ", array_map(function ($x8) {
+		}, $createVars))??'null') . " . ')');\n" . "return \$this->newModelFromParams(" . (implode(", ", array_map(function ($x8) {
 			if ($x8->isAutoInc) {
 				return "\$this->db->lastInsertId()";
 			} else {
@@ -124,8 +124,8 @@ class OrmManagerGenerator {
 		}
 		$model->addMethod("delete", $deleteVars, "void", "\$this->db->query('DELETE FROM `" . $table . "`" . ($this->getWhereSql($deleteVars)??'null') . " . ' LIMIT 1');");
 		$model->addMethod("getAll", [new GeneratorPhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "return \$this->getBySqlMany('SELECT * FROM `" . $table . "`' . (\$_order != null ? ' ORDER BY ' . \$_order : ''));");
-		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], "?" . (GeneratorTools::toPhpType($modelClassName)??'null'), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\x0A" . "if (\$rows->length == 0) return null;\x0A" . "return \$this->newModelFromAssoc(\$rows->next());");
-		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "\$resutSet = \$this->db->query(\$sql);\x0A" . "\$r = [];\x0A" . "while (\$row = \$resutSet->next())\x0A" . "{\x0A" . "\x09array_push(\$r, \$this->newModelFromAssoc(\$row));\x0A" . "}\x0A" . "return \$r;");
+		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], "?" . (GeneratorTools::toPhpType($modelClassName)??'null'), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\n" . "if (\$rows->length == 0) return null;\n" . "return \$this->newModelFromAssoc(\$rows->next());");
+		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "\$resutSet = \$this->db->query(\$sql);\n" . "\$r = [];\n" . "while (\$row = \$resutSet->next())\n" . "{\n" . "\x09array_push(\$r, \$this->newModelFromAssoc(\$row));\n" . "}\n" . "return \$r;");
 		$collection = $db->connection->getUniques($table);
 		foreach ($collection as $key => $value) {
 			unset($fields);
@@ -227,12 +227,12 @@ class OrmManagerGenerator {
 		$autoGeneratedManager = $this->getAutogenManager($db, $table->tableName, $vars, $table->customModelClassName, $table->autogenManagerClassName, $customOrmClassName, $table->queryClassName, $positions);
 		$destFileName = $outPath . (str_replace(".", "/", $table->autogenManagerClassName)??'null') . ".php";
 		GeneratorTools::mkdir(dirname($destFileName));
-		file_put_contents($destFileName, "<?php\x0A// This file is autogenerated. Do not edit!\x0A\x0A" . ($autoGeneratedManager->toString()??'null'));
+		file_put_contents($destFileName, "<?php\n// This file is autogenerated. Do not edit!\n\n" . ($autoGeneratedManager->toString()??'null'));
 		if (!file_exists($outPath . "/" . (str_replace(".", "/", $table->customManagerClassName)??'null') . ".php")) {
 			$customManager = $this->getCustomManager($table->tableName, $vars, $table->customModelClassName, $table->customManagerClassName, $table->autogenManagerClassName);
 			$destFileName1 = $outPath . (str_replace(".", "/", $table->customManagerClassName)??'null') . ".php";
 			GeneratorTools::mkdir(dirname($destFileName1));
-			file_put_contents($destFileName1, "<?php\x0A\x0A" . ($customManager->toString()??'null'));
+			file_put_contents($destFileName1, "<?php\n\n" . ($customManager->toString()??'null'));
 		}
 		GeneratorLog::finishSuccess();
 	}

@@ -166,20 +166,20 @@ class CmdOptions {
 				$s = $s . $prefix . $s2;
 			}
 			if (($value1->help !== null) && ($value1->help !== "")) {
-				$helpLines = explode("\x0A", $value1->help);
-				$s = $s . (array_shift($helpLines)??'null') . "\x0A";
+				$helpLines = explode("\n", $value1->help);
+				$s = $s . (array_shift($helpLines)??'null') . "\n";
 				$s = $s . (implode("", array_map(function ($s3)  use (&$maxSwitchLength, &$prefix) {
 					$this1 = str_pad("", $maxSwitchLength + 1, " ", STR_PAD_LEFT);
-					return $prefix . $this1 . $s3 . "\x0A";
+					return $prefix . $this1 . $s3 . "\n";
 				}, $helpLines))??'null');
 			} else {
-				$s = $s . "\x0A";
+				$s = $s . "\n";
 			}
-			$s = $s . "\x0A";
+			$s = $s . "\n";
 
 		}
 
-		return (rtrim($s, null)??'null') . "\x0A";
+		return (rtrim($s, null)??'null') . "\n";
 	}
 
 	/**
