@@ -2,6 +2,7 @@ package orm;
 
 import php.Global;
 import php.Syntax;
+import php.TypedArray;
 import php.TypedAssoc;
 import sys.db.ResultSet;
 import php.Exception;
@@ -65,7 +66,7 @@ class Db
 			throw e;
 		}
     }
-
+	
     public function quote(v:Dynamic) : String
     {
 		return connection.quote(v);

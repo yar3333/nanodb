@@ -36,7 +36,7 @@ class OrmQueryGenerator {
 		$model->addMethod("where", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::where(\$field, \$op, \$value);\x0Areturn \$this;");
 		$model->addMethod("orderAsc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::orderAsc(\$value);\x0Areturn \$this;");
 		$model->addMethod("orderDesc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::orderDesc(\$value);\x0Areturn \$this;");
-		$model->addMethod("findMany", [new GeneratorPhpVar("limit", "int", "null"), new GeneratorPhpVar("offset", "int", "null")], (GeneratorTools::toPhpType($customModelClassName)??'null') . "[]", "parent::findMany(\$limit, \$offset);\x0Areturn \$this;");
+		$model->addMethod("findMany", [new GeneratorPhpVar("limit", "int", "null"), new GeneratorPhpVar("offset", "int", "null")], (GeneratorTools::toPhpType($customModelClassName)??'null') . "[]", "return parent::findMany(\$limit, \$offset);");
 		$model->addMethod("findOne", [], GeneratorTools::toPhpType($customModelClassName), "return parent::findOne();");
 		return $model;
 	}

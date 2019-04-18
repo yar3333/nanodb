@@ -24,7 +24,7 @@ class MysqlResultSet implements ResultSet
 		return fetchedRow != null;
 	}
 
-	public function next() : Dynamic {
+	public function next() : TypedAssoc<String, Dynamic> {
 		if (fetchedRow == null) fetchNext();
 		return withdrawFetched();
 	}
@@ -61,8 +61,8 @@ class MysqlResultSet implements ResultSet
 		return fields.map(function(x) return x.name);
 	}
 
-	function fetchNext() {
-		var row: TypedAssoc<String, Dynamic> = cast result.fetch_assoc();
+	function fetchNext() : Void {
+		var row : TypedAssoc<String, Dynamic> = cast result.fetch_assoc();
 		if (row != null)
 		{
 			correctArrayTypes(row);

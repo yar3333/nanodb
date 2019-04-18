@@ -225,9 +225,9 @@ class OrmManagerGenerator
 			'getBySqlMany',
 			Syntax.arrayDecl(new PhpVar('sql', 'string')),
 			Tools.toPhpType(modelClassName) + '[]',
-			 "$rows = $this->db->query($sql);\n"
+			 "$resutSet = $this->db->query($sql);\n"
 			+"$r = [];\n"
-			+"foreach ($rows as $row)\n"
+			+"while ($row = $resutSet->next())\n"
 			+"{\n"
 			+"	array_push($r, self::newModelFromAssoc($row));\n"
 			+"}\n"

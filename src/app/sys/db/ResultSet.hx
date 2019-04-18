@@ -9,7 +9,7 @@ interface ResultSet {
 	var nfields(default, null) : Int;
 
 	function hasNext() : Bool;
-	function next() : Dynamic;
+	function next() : TypedAssoc<String, Dynamic>;
 	function results() : TypedArray<TypedAssoc<String, Dynamic>>;
 	function getResult( n : Int ) : String;
 	function getIntResult( n : Int ) : Int;

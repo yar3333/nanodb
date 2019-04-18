@@ -82,7 +82,7 @@ class OrmQueryGenerator
 				new PhpVar("offset", "int", "null")
 			),
 			Tools.toPhpType(customModelClassName) + "[]",
-			"parent::findMany($limit, $offset);\nreturn $this;"
+			"return parent::findMany($limit, $offset);"
 		);
 
 		//function findOne() : T

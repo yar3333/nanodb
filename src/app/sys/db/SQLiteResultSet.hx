@@ -25,7 +25,7 @@ class SQLiteResultSet implements ResultSet
 		return currentIndex < length;
 	}
 
-	public function next() : Dynamic {
+	public function next() : TypedAssoc<String, Dynamic> {
 		if (!loaded) load();
 		var next:Dynamic = rows[currentIndex++];
 		return correctArrayTypes(next);
@@ -57,7 +57,7 @@ class SQLiteResultSet implements ResultSet
 		return Global.array_keys(fieldsInfo);
 	}
 
-	function correctArrayTypes(row:NativeAssocArray<String>):TypedAssoc<String, Dynamic> {
+	function correctArrayTypes(row:NativeAssocArray<String>) : TypedAssoc<String, Dynamic> {
 		var fieldsInfo = getFieldsInfo();
 		Syntax.foreach(row, function(field:String, value:String) {
 			row[field] = correctType(value, fieldsInfo[field]);

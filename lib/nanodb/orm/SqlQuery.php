@@ -81,8 +81,11 @@ class SqlQuery {
 	 * 
 	 * @return mixed
 	 */
-	public function findMany ($limit = null, $offset = null) {
-		return $this->manager->getBySqlMany(($this->getSelectSql(null)??'null') . ($this->getLimitSql($limit)??'null') . ($this->getOffsetSql($offset)??'null'));
+	public function findMany (int $limit = null, int $offset = null) : array {
+		$sqlSelect = $this->getSelectSql(null);
+		$sqlLimit = $this->getLimitSql($limit);
+		$sqlOffset = $this->getOffsetSql($offset);
+		return $this->manager->getBySqlMany($sqlSelect . $sqlLimit . $sqlOffset);
 	}
 
 	/**
@@ -245,7 +248,7 @@ class SqlQuery {
 	 * 
 	 * @return SqlQuery
 	 */
-	public function where ($field, $op, $value) {
+	public function where (string $field, string $op, $value) {
 		array_push($this->conditions, $field . " " . $op . " " . ($this->quoteValue($value)??'null'));
 		return $this;
 	}

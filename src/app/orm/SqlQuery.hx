@@ -48,7 +48,10 @@ class SqlQuery<T>
 	
 	public function findMany(?limit:Int,?offset:Int) : TypedArray<T>
 	{
-		return manager.getBySqlMany(getSelectSql(null) + getLimitSql(limit) + getOffsetSql(offset));
+		var sqlSelect = getSelectSql(null);
+		var sqlLimit = getLimitSql(limit);
+		var sqlOffset = getOffsetSql(offset);
+		return manager.getBySqlMany(sqlSelect + sqlLimit + sqlOffset);
 	}
 	
 	public function findOne() : T

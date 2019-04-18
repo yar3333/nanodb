@@ -47,6 +47,8 @@ haxelib run refactor -v replace lib *.php "!use \\nanodb\\php\\Boot;\n!!"
 haxelib run refactor -v replace lib *.php "!Boot::registerClass\([_a-zA-Z]+::[a-z]+, '[_a-zA-Z.]+'\);\n!!"
 haxelib run refactor -v replace lib *.php "!\n\n\n!\n\n!"
 haxelib run refactor -v replaceInFile cli.php "!\\nanodb\\php\\Boot::__hx__init\(\);\n!!"
+haxelib run refactor -v replace lib *.php "!public function where [(][$]field, [$]op, [$]value[)]!public function where (string $$field, string $$op, $$value)!"
+haxelib run refactor -v replace lib *.php "!public function findMany [(][$]limit = null, [$]offset = null[)]!public function findMany (int $$limit = null, int $$offset = null) : array!"
 cmd /C del lib\nanodb\Array_hx.php
 cmd /C rmdir /q /s lib\nanodb\_Array
 cmd /C rmdir /q /s lib\nanodb\php</postBuildCommand>

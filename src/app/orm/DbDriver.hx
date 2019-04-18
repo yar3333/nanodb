@@ -1,12 +1,13 @@
 package orm;
 
-import sys.db.ResultSet;
 import php.TypedArray;
+import sys.db.ResultSet;
 
 interface DbDriver 
 {
 	function query(sql:String) : ResultSet;
-    function quote(s:Dynamic) : String;
+    
+	function quote(s:Dynamic) : String;
     function lastInsertId() : Int;
 	function close() : Void;
     
