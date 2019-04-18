@@ -100,7 +100,7 @@ class OrmManagerGenerator {
 			return !$x3->isAutoInc;
 		});
 		$model->addMethod("create", $createVars, GeneratorTools::toPhpType($modelClassName), (implode("", array_map(function ($x4)  use (&$table, &$db, &$vars, &$_gthis) {
-			$this2 = "if (\$" . $x4->haxeName . " == null)\n" . "{\n" . "\x09position = \$this->db->query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
+			$this2 = "if (\$" . $x4->haxeName . " == null)\n" . "{\n" . "\tposition = \$this->db->query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
 			$this3 = $_gthis->getForeignKeyVars($db, $table, $vars);
 			return $this2 . ($_gthis->getWhereSql($this3)??'null') . ").getIntResult(0) + 1;\n" . "}\n\n";
 		}, array_filter($createVars, function ($x5)  use (&$positions) {
@@ -125,7 +125,7 @@ class OrmManagerGenerator {
 		$model->addMethod("delete", $deleteVars, "void", "\$this->db->query('DELETE FROM `" . $table . "`" . ($this->getWhereSql($deleteVars)??'null') . " . ' LIMIT 1');");
 		$model->addMethod("getAll", [new GeneratorPhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "return \$this->getBySqlMany('SELECT * FROM `" . $table . "`' . (\$_order != null ? ' ORDER BY ' . \$_order : ''));");
 		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], "?" . (GeneratorTools::toPhpType($modelClassName)??'null'), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\n" . "if (\$rows->length == 0) return null;\n" . "return \$this->newModelFromAssoc(\$rows->next());");
-		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "\$resutSet = \$this->db->query(\$sql);\n" . "\$r = [];\n" . "while (\$row = \$resutSet->next())\n" . "{\n" . "\x09array_push(\$r, \$this->newModelFromAssoc(\$row));\n" . "}\n" . "return \$r;");
+		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "\$resutSet = \$this->db->query(\$sql);\n" . "\$r = [];\n" . "while (\$row = \$resutSet->next())\n" . "{\n" . "\tarray_push(\$r, \$this->newModelFromAssoc(\$row));\n" . "}\n" . "return \$r;");
 		$collection = $db->connection->getUniques($table);
 		foreach ($collection as $key => $value) {
 			unset($fields);

@@ -88,10 +88,10 @@ class PhpClass {
 		if ($isStatic === null) {
 			$isStatic = false;
 		}
-		$header = (((($retType !== null) && (mb_strpos($retType, "[]") !== false) ? "/**\n\x09 * @return " . $retType . "\n\x09 */\n\x09" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
+		$header = (((($retType !== null) && (mb_strpos($retType, "[]") !== false) ? "/**\n\t * @return " . $retType . "\n\t */\n\t" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
 			return ((($v->haxeType !== null ? $v->haxeType . " " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
 		}, $vars))??'null') . ")" . ((($retType !== null ? " : " . (((!(mb_strpos($retType, "[]") !== false) ? $retType : "array"))??'null') : ""))??'null');
-		$s = $header . "\n" . "\x09{\n" . ($this->indent(trim($body, null), "\x09\x09")??'null') . "\n" . "\x09}";
+		$s = $header . "\n" . "\t{\n" . ($this->indent(trim($body, null), "\t\t")??'null') . "\n" . "\t}";
 		array_push($this->methods, $s);
 	}
 
@@ -162,9 +162,9 @@ class PhpClass {
 	 * 
 	 * @return string
 	 */
-	public function indent ($text, $ind = "\x09") {
+	public function indent ($text, $ind = "\t") {
 		if ($ind === null) {
-			$ind = "\x09";
+			$ind = "\t";
 		}
 		if ($text === "") {
 			return "";
@@ -180,10 +180,10 @@ class PhpClass {
 		$varLines = $this1;
 		$collection = $this->vars;
 		foreach ($collection as $key => $value) {
-			array_push($varLines, str_replace("\n", "\n\x09", $value));
+			array_push($varLines, str_replace("\n", "\n\t", $value));
 		}
 
-		$s = "namespace " . (GeneratorTools::toPhpType($this->getPackageName($this->fullClassName), false)??'null') . ";\n" . "\n" . (implode("\n", $this->imports)??'null') . (((count($this->imports) > 0 ? "\n\n" : ""))??'null') . "class " . ($this->getShortClassName($this->fullClassName)??'null') . ((($this->baseFullClassName !== null ? " extends " . (GeneratorTools::toPhpType($this->baseFullClassName)??'null') : ""))??'null') . "\n" . "{\n" . (((count($this->vars) > 0 ? "\x09" . (implode("\n\x09\n\x09", $varLines)??'null') . "\n\n" : ""))??'null') . (((count($this->methods) > 0 ? "\x09" . (implode("\n\n\x09", $this->methods)??'null') . "\n" : ""))??'null') . (((count($this->customs) > 0 ? "\x09" . (implode("\n\n\x09", $this->customs)??'null') . "\n" : ""))??'null') . "}";
+		$s = "namespace " . (GeneratorTools::toPhpType($this->getPackageName($this->fullClassName), false)??'null') . ";\n" . "\n" . (implode("\n", $this->imports)??'null') . (((count($this->imports) > 0 ? "\n\n" : ""))??'null') . "class " . ($this->getShortClassName($this->fullClassName)??'null') . ((($this->baseFullClassName !== null ? " extends " . (GeneratorTools::toPhpType($this->baseFullClassName)??'null') : ""))??'null') . "\n" . "{\n" . (((count($this->vars) > 0 ? "\t" . (implode("\n\t\n\t", $varLines)??'null') . "\n\n" : ""))??'null') . (((count($this->methods) > 0 ? "\t" . (implode("\n\n\t", $this->methods)??'null') . "\n" : ""))??'null') . (((count($this->customs) > 0 ? "\t" . (implode("\n\n\t", $this->customs)??'null') . "\n" : ""))??'null') . "}";
 		return $s;
 	}
 

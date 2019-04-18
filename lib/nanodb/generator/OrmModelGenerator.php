@@ -60,11 +60,11 @@ class OrmModelGenerator {
 			$whereVars = array_filter($vars, function ($v5) {
 				return $v5->isKey;
 			});
-			$model->addMethod("save", [], "void", "db.query(\n" . "\x09 'UPDATE `" . $table . "` SET '\n" . "\x09\x09.  '" . (implode("\n\x09\x09.', ", array_map(function ($v6) {
+			$model->addMethod("save", [], "void", "db.query(\n" . "\t 'UPDATE `" . $table . "` SET '\n" . "\t\t.  '" . (implode("\n\t\t.', ", array_map(function ($v6) {
 				return "`" . $v6->name . "` = ' . \$this->db->quote(\$this->" . $v6->haxeName . ")";
-			}, $savedVars))??'null') . "\n\x09.' WHERE " . (implode(".' AND ", array_map(function ($v7) {
+			}, $savedVars))??'null') . "\n\t.' WHERE " . (implode(".' AND ", array_map(function ($v7) {
 				return "`" . $v7->name . "` = ' . \$this->db->quote(\$this->" . $v7->haxeName . ")";
-			}, $whereVars))??'null') . "\n\x09.' LIMIT 1'" . "\n);");
+			}, $whereVars))??'null') . "\n\t.' LIMIT 1'" . "\n);");
 		}
 		return $model;
 	}

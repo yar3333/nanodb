@@ -7,3 +7,4 @@
 !public function findMany [(][$]limit = null, [$]offset = null[)]!public function findMany (int $$limit = null, int $$offset = null) : array!
 ![(][$]this->quoteValue[(][$]value[)][?][?]'null'[)]!$$this->quoteValue($$value)!
 !\\x0A!\\n!
+!\\x09!\\t!

@@ -140,9 +140,9 @@ class CmdOptions {
 	 * 
 	 * @return string
 	 */
-	public function getHelpMessage ($prefix = "\x09") {
+	public function getHelpMessage ($prefix = "\t") {
 		if ($prefix === null) {
-			$prefix = "\x09";
+			$prefix = "\t";
 		}
 		$maxSwitchLength = 0;
 		$collection = $this->options;

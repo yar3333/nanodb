@@ -107,7 +107,7 @@ class Db {
 			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
 			if ($__hx__real_e instanceof OrmDbException) {
 				$e = $__hx__real_e;
-				throw new \Exception("DATABASE\n\x09SQL QUERY: " . $sql . "\n\x09SQL RESULT: error code = " . ($e->getCode()??'null') . ", message: " . ($e->getMessage()??'null'));
+				throw new \Exception("DATABASE\n\tSQL QUERY: " . $sql . "\n\tSQL RESULT: error code = " . ($e->getCode()??'null') . ", message: " . ($e->getMessage()??'null'));
 			} else {
 				$e1 = $__hx__real_e;
 				throw (is_object($__hx__throw = $e1) && $__hx__throw instanceof \Throwable ? $__hx__throw : new HxException($__hx__throw));

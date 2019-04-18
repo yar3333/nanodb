@@ -175,7 +175,7 @@ class SqlQuery {
 	 */
 	public function getWhereSql () {
 		if (count($this->conditions) > 0) {
-			return "\nWHERE " . (implode("\n\x09AND ", $this->conditions)??'null');
+			return "\nWHERE " . (implode("\n\tAND ", $this->conditions)??'null');
 		} else {
 			return "";
 		}
@@ -250,7 +250,7 @@ class SqlQuery {
 		foreach ($fields as $key => $value) {
 			array_push($sets, "`" . $key . "` = " . ($_gthis->quoteValue($value)??'null'));
 		}
-		$this->db->query("UPDATE `" . $this->table . "`\nSET\n\x09" . (implode("\n\x09", $sets)??'null') . ($this->getWhereSql()??'null') . ($this->getLimitSql($limit)??'null') . ($this->getOffsetSql($offset)??'null'));
+		$this->db->query("UPDATE `" . $this->table . "`\nSET\n\t" . (implode("\n\t", $sets)??'null') . ($this->getWhereSql()??'null') . ($this->getLimitSql($limit)??'null') . ($this->getOffsetSql($offset)??'null'));
 	}
 
 	/**
