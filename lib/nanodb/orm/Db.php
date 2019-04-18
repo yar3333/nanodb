@@ -99,12 +99,8 @@ class Db {
 			$r = $this->connection->query($sql);
 			return $r;
 		}
-		catch (\Throwable $__hx__caught_e) {
-			$__hx__real_e = ($__hx__caught_e instanceof HxException ? $__hx__caught_e->e : $__hx__caught_e);
-			if ($__hx__real_e instanceof OrmDbException) {
-				$e = $__hx__real_e;
-				throw new \Exception("DATABASE\n\tSQL QUERY: " . $sql . "\n\tSQL RESULT: error code = " . $e->getCode() . ", message: " . $e->getMessage());
-			} else  throw $__hx__caught_e;
+		catch (OrmDbException $e) {
+			throw new \Exception("DATABASE\n\tSQL QUERY: " . $sql . "\n\tSQL RESULT: error code = " . $e->getCode() . ", message: " . $e->getMessage());
 		}
 	}
 
