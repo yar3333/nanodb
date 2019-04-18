@@ -28,9 +28,15 @@ class SqlQuery<T>
 		this.manager = manager;
 	}
 	
-	public function where(field:String, op:String, value:Dynamic) : SqlQuery<T>
+	public function whereField(field:String, op:String, value:Dynamic) : SqlQuery<T>
 	{
-		conditions.push(field + " " + op + " " + quoteValue(value));
+		conditions.push("`" + field + "` " + op + " " + quoteValue(value));
+		return this;
+	}
+	
+	public function where(rawSqlText:String) : SqlQuery<T>
+	{
+		conditions.push(rawSqlText);
 		return this;
 	}
 	

@@ -200,7 +200,7 @@ class SqlQuery {
 	 * @return SqlQuery
 	 */
 	public function orderDesc ($value) {
-		array_push($this->orderBys, ($this->quoteValue($value)??'null') . " DESC");
+		array_push($this->orderBys, $this->quoteValue($value) . " DESC");
 		return $this;
 	}
 
@@ -242,14 +242,24 @@ class SqlQuery {
 	}
 
 	/**
+	 * @param string $rawSqlText
+	 * 
+	 * @return SqlQuery
+	 */
+	public function where (string $rawSqlText) {
+		array_push($this->conditions, $rawSqlText);
+		return $this;
+	}
+
+	/**
 	 * @param string $field
 	 * @param string $op
 	 * @param mixed $value
 	 * 
 	 * @return SqlQuery
 	 */
-	public function where (string $field, string $op, $value) {
-		array_push($this->conditions, $field . " " . $op . " " . ($this->quoteValue($value)??'null'));
+	public function whereField (string $field, string $op, $value) {
+		array_push($this->conditions, "`" . $field . "` " . $op . " " . $this->quoteValue($value));
 		return $this;
 	}
 }

@@ -33,7 +33,8 @@ class OrmQueryGenerator {
 	public function getQueryClass ($table, $vars, $queryClassName, $customModelClassName, $customManagerClassName) {
 		$model = new GeneratorPhpClass($queryClassName, "nanodb.orm.SqlQuery");
 		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("manager", GeneratorTools::toPhpType($customManagerClassName))], null, "parent::__construct('" . $table . "', \$db, \$manager);");
-		$model->addMethod("where", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::where(\$field, \$op, \$value);\x0Areturn \$this;");
+		$model->addMethod("whereField", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::whereField(\$field, \$op, \$value);\x0Areturn \$this;");
+		$model->addMethod("where", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($queryClassName), "parent::where(\$rawSqlText);\x0Areturn \$this;");
 		$model->addMethod("orderAsc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::orderAsc(\$value);\x0Areturn \$this;");
 		$model->addMethod("orderDesc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "parent::orderDesc(\$value);\x0Areturn \$this;");
 		$model->addMethod("findMany", [new GeneratorPhpVar("limit", "int", "null"), new GeneratorPhpVar("offset", "int", "null")], (GeneratorTools::toPhpType($customModelClassName)??'null') . "[]", "return parent::findMany(\$limit, \$offset);");

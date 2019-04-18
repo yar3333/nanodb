@@ -42,16 +42,26 @@ class OrmQueryGenerator
 			, "parent::__construct('" + table + "', $db, $manager);"
 		);
 		
-		// function where(field:String, op:String, value:Dynamic) : SqlQuery<T>
+		// function whereField(field:String, op:String, value:Dynamic) : SqlQuery<T>
 		model.addMethod(
-			"where",
+			"whereField",
 			Syntax.arrayDecl(
 				new PhpVar("field", "string"),
 				new PhpVar("op", "string"),
 				new PhpVar("value", null)
 			),
 			Tools.toPhpType(queryClassName),
-			"parent::where($field, $op, $value);\nreturn $this;"
+			"parent::whereField($field, $op, $value);\nreturn $this;"
+		);
+		
+		// function where(rawSqlText:String) : SqlQuery<T>
+		model.addMethod(
+			"where",
+			Syntax.arrayDecl(
+				new PhpVar("rawSqlText", "string")
+			),
+			Tools.toPhpType(queryClassName),
+			"parent::where($rawSqlText);\nreturn $this;"
 		);
 		
 		//function orderAsc(value:Dynamic) : SqlQuery<T>

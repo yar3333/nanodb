@@ -1,0 +1,8 @@
+!\((\$[_a-z][_a-z0-9]*(?:->[_a-z][_a-z0-9]*)?)\?\?'null'\)!$1!i
+!use \\nanodb\\php\\Boot;\n!!
+!Boot::registerClass\([_a-zA-Z]+::[a-z]+, '[_a-zA-Z.]+'\);\n!!
+!\n\n\n!\n\n!
+!public function whereField [(][$]field, [$]op, [$]value[)]!public function whereField (string $$field, string $$op, $$value)!
+!public function where [(][$]rawSqlText[)]!public function where (string $$rawSqlText)!
+!public function findMany [(][$]limit = null, [$]offset = null[)]!public function findMany (int $$limit = null, int $$offset = null) : array!
+![(][$]this->quoteValue[(][$]value[)][?][?]'null'[)]!$$this->quoteValue($$value)!
