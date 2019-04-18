@@ -99,7 +99,7 @@ class OrmQueryGenerator
 		model.addMethod(
 			"findOne",
 			Syntax.arrayDecl(),
-			Tools.toPhpType(customModelClassName),
+			"?" + Tools.toPhpType(customModelClassName),
 			"return parent::findOne();"
 		);
 		

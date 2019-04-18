@@ -37,7 +37,7 @@ class OrmManagerGenerator {
 		}
 		$model->addMethod("getBy" . (implode("And", array_map(function ($v) {
 			return GeneratorTools::fieldAsFunctionNamePart($v->haxeName);
-		}, $whereVars))??'null'), array_merge($whereVars, [new GeneratorPhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))]), (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "return getBySqlMany('SELECT * FROM `" . $table . "`" . ($this->getWhereSql($whereVars)??'null') . " . (\$_order != null ? ' ORDER BY ' . \$_order : ''));");
+		}, $whereVars))??'null'), array_merge($whereVars, [new GeneratorPhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))]), (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "return \$this->getBySqlMany('SELECT * FROM `" . $table . "`" . ($this->getWhereSql($whereVars)??'null') . " . (\$_order != null ? ' ORDER BY ' . \$_order : ''));");
 	}
 
 	/**
@@ -55,7 +55,7 @@ class OrmManagerGenerator {
 		}
 		$model->addMethod("getBy" . (implode("And", array_map(function ($x) {
 			return GeneratorTools::fieldAsFunctionNamePart($x->haxeName);
-		}, $whereVars))??'null'), $whereVars, GeneratorTools::toPhpType($modelClassName), "return getBySqlOne('SELECT * FROM `" . $table . "`" . ($this->getWhereSql($whereVars)??'null') . ");");
+		}, $whereVars))??'null'), $whereVars, "?" . (GeneratorTools::toPhpType($modelClassName)??'null'), "return \$this->getBySqlOne('SELECT * FROM `" . $table . "`" . ($this->getWhereSql($whereVars)??'null') . ");");
 	}
 
 	/**
@@ -87,14 +87,14 @@ class OrmManagerGenerator {
 		$model->addMethod("newModelFromParams", $vars, $tmp, $tmp1);
 		$model->addMethod("newModelFromAssoc", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . (GeneratorTools::toPhpType($modelClassName)??'null') . "(\$this->db, \$this->orm);\x0A" . (implode("\x0A", array_map(function ($x1) {
 			return "\$_obj->" . $x1->haxeName . " = \$row['" . $x1->haxeName . "'];";
-		}, $vars))??'null') . "\x0A" . "return _obj;");
+		}, $vars))??'null') . "\x0A" . "return \$_obj;");
 		$model->addMethod("whereField", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->whereField(\$field, \$op, \$value);");
 		$model->addMethod("where", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->where(\$rawSqlText);");
 		$getVars = array_filter($vars, function ($x2) {
 			return $x2->isKey;
 		});
 		if (count($getVars) > 0) {
-			$model->addMethod("get", $getVars, GeneratorTools::toPhpType($modelClassName), "return getBySqlOne('SELECT * FROM `" . $table . "`" . ($this->getWhereSql($getVars)??'null') . ");");
+			$model->addMethod("get", $getVars, "?" . (GeneratorTools::toPhpType($modelClassName)??'null'), "return \$this->getBySqlOne('SELECT * FROM `" . $table . "`" . ($this->getWhereSql($getVars)??'null') . ");");
 		}
 		$createVars = array_filter($vars, function ($x3) {
 			return !$x3->isAutoInc;
@@ -109,7 +109,7 @@ class OrmManagerGenerator {
 			return "`" . $x6->name . "`";
 		}, $createVars))??'null') . ") VALUES (' . " . (implode(" . ', ' . ", array_map(function ($x7) {
 			return "\$this->db->quote(\$" . $x7->haxeName . ")";
-		}, $createVars))??'null') . " . ')');\x0A" . "return self::newModelFromParams(" . (implode(", ", array_map(function ($x8) {
+		}, $createVars))??'null') . " . ')');\x0A" . "return \$this->newModelFromParams(" . (implode(", ", array_map(function ($x8) {
 			if ($x8->isAutoInc) {
 				return "\$this->db->lastInsertId()";
 			} else {
@@ -124,7 +124,7 @@ class OrmManagerGenerator {
 		}
 		$model->addMethod("delete", $deleteVars, "void", "\$this->db->query('DELETE FROM `" . $table . "`" . ($this->getWhereSql($deleteVars)??'null') . " . ' LIMIT 1');");
 		$model->addMethod("getAll", [new GeneratorPhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "return \$this->getBySqlMany('SELECT * FROM `" . $table . "`' . (\$_order != null ? ' ORDER BY ' . \$_order : ''));");
-		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\x0A" . "if (\$rows->length == 0) return null;\x0A" . "return \$this->newModelFromAssoc(\$rows->next());");
+		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], "?" . (GeneratorTools::toPhpType($modelClassName)??'null'), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\x0A" . "if (\$rows->length == 0) return null;\x0A" . "return \$this->newModelFromAssoc(\$rows->next());");
 		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "\$resutSet = \$this->db->query(\$sql);\x0A" . "\$r = [];\x0A" . "while (\$row = \$resutSet->next())\x0A" . "{\x0A" . "\x09array_push(\$r, \$this->newModelFromAssoc(\$row));\x0A" . "}\x0A" . "return \$r;");
 		$collection = $db->connection->getUniques($table);
 		foreach ($collection as $key => $value) {

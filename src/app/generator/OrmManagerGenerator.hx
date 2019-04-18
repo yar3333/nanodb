@@ -78,7 +78,7 @@ class OrmManagerGenerator
 			Tools.toPhpType(modelClassName),
 			  "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
 			+ vars.map(function(x) return "$_obj->" + x.haxeName + " = $row['" + x.haxeName + "'];").join('\n') + "\n"
-			+ "return _obj;"
+			+ "return $_obj;"
 		);
 		
 		model.addMethod
@@ -104,8 +104,8 @@ class OrmManagerGenerator
 			(
 				'get',
 				cast getVars,
-				Tools.toPhpType(modelClassName),
-				"return getBySqlOne('SELECT * FROM `" + table + "`" + getWhereSql(getVars) + ");"
+				"?" + Tools.toPhpType(modelClassName),
+				"return $this->getBySqlOne('SELECT * FROM `" + table + "`" + getWhereSql(getVars) + ");"
 			);
 		}
 		
@@ -131,7 +131,7 @@ class OrmManagerGenerator
 			+") VALUES (' . "
 				+ createVars.map(function(x) return "$this->db->quote($" + x.haxeName + ")").join(" . ', ' . ")
 			+" . ')');\n"
-			+"return self::newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? "$this->db->lastInsertId()" : "$" + x.haxeName).join(", ") + ");"
+			+"return $this->newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? "$this->db->lastInsertId()" : "$" + x.haxeName).join(", ") + ");"
 		);
 		
 		/*model.addMethod
@@ -220,7 +220,7 @@ class OrmManagerGenerator
 		(
 			'getBySqlOne',
 			Syntax.arrayDecl(new PhpVar('sql', 'string')),
-			Tools.toPhpType(modelClassName),
+			"?" + Tools.toPhpType(modelClassName),
 			 "$rows = $this->db->query($sql . ' LIMIT 1');\n"
 			+"if ($rows->length == 0) return null;\n"
 			+"return $this->newModelFromAssoc($rows->next());"
@@ -271,8 +271,8 @@ class OrmManagerGenerator
 		(
 			'getBy' + whereVars.map(function(x) return Tools.fieldAsFunctionNamePart(x.haxeName)).join('And'),
 			cast whereVars, 
-			Tools.toPhpType(modelClassName),
-			"return getBySqlOne('SELECT * FROM `" + table + "`" + getWhereSql(whereVars) + ");"
+			"?" + Tools.toPhpType(modelClassName),
+			"return $this->getBySqlOne('SELECT * FROM `" + table + "`" + getWhereSql(whereVars) + ");"
 		);
 	}
 	
@@ -285,7 +285,7 @@ class OrmManagerGenerator
 			'getBy' + whereVars.map(function(v) return Tools.fieldAsFunctionNamePart(v.haxeName)).join('And'),
 			(cast whereVars:TypedArray<PhpVar>).concat(Syntax.arrayDecl(new PhpVar('_order', 'string', getOrderDefVal(vars, positions)))), 
 			Tools.toPhpType(modelClassName) + '[]',
-			"return getBySqlMany('SELECT * FROM `" + table + "`" + getWhereSql(whereVars) + " . ($_order != null ? ' ORDER BY ' . $_order : ''));"
+			"return $this->getBySqlMany('SELECT * FROM `" + table + "`" + getWhereSql(whereVars) + " . ($_order != null ? ' ORDER BY ' . $_order : ''));"
 		);
 	}
 	
