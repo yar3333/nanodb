@@ -61,7 +61,8 @@ Using code example
 
 Assumed you have a `users` table in your database with fields:
  * `id` int autoincrement
- * `role` varchar
+ * `login` varchar unique index
+ * `role` varchar index
  * `status` int
 
 ```php
@@ -96,7 +97,7 @@ $count = $orm->user->query()->count();
 
 # get count of users by complex condition
 $count = $orm->user->whereField("status", "=", 1)
-                   ->whereField("role", "=", "admin")
+                   ->whereField("role", "=", "support")
                    ->count();
 
 # remove user by ID
