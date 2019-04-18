@@ -39,8 +39,11 @@ class OrmManagerGenerator
 	{
 		var model = new PhpClass(autogenManagerClassName);
 		
-		model.addVar(new PhpVar("db", Tools.toPhpType("nanodb.orm.Db")), "protected");
-		model.addVar(new PhpVar("orm", Tools.toPhpType(customOrmClassName)), "protected");
+		var dbPhpVar = new PhpVar("db", Tools.toPhpType("nanodb.orm.Db"));
+		var ormPhpVar = new PhpVar("orm", Tools.toPhpType(customOrmClassName));
+		
+		model.addVar(dbPhpVar, "protected");
+		model.addVar(ormPhpVar, "protected");
 		
 		model.addMethod
 		(
@@ -53,42 +56,45 @@ class OrmManagerGenerator
 		model.addMethod
 		(
 			  "__construct"
-			, Syntax.arrayDecl( 
-				 new PhpVar("db", Tools.toPhpType("nanodb.orm.Db")),
-				 new PhpVar("orm", Tools.toPhpType(customOrmClassName))
-			  )
+			, Syntax.arrayDecl(dbPhpVar, ormPhpVar)
 			, null
 			, "$this->db = $db;\n$this->orm = $orm;"
 		);
         
-        model.addMethod
+		model.addMethod
 		(
 			'newModelFromParams',
 			cast vars,
 			Tools.toPhpType(modelClassName),
 			  "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
 			+ vars.map(function(x) return "$_obj->" + x.haxeName + " = $" + x.haxeName + ";").join('\n') + "\n"
-			+ "return $_obj;",
-			true
+			+ "return $_obj;"
 		);
 		
 		model.addMethod
 		(
 			'newModelFromAssoc',
-			Syntax.arrayDecl(new PhpVar('row', "array")),
+			Syntax.arrayDecl(new PhpVar("row", "array")),
 			Tools.toPhpType(modelClassName),
 			  "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
 			+ vars.map(function(x) return "$_obj->" + x.haxeName + " = $row['" + x.haxeName + "'];").join('\n') + "\n"
 			+ "return _obj;"
-			, true
+		);
+		
+		model.addMethod
+		(
+			'whereField',
+			Syntax.arrayDecl(new PhpVar('field', 'string'), new PhpVar('op', 'string'), new PhpVar('value', null)),
+			Tools.toPhpType(queryClassName),
+			"return $this->query()->whereField($field, $op, $value);"
 		);
 		
 		model.addMethod
 		(
 			'where',
-			Syntax.arrayDecl(new PhpVar('field', 'string'), new PhpVar('op', 'string'), new PhpVar('value', null)),
+			Syntax.arrayDecl(new PhpVar('rawSqlText', 'string')),
 			Tools.toPhpType(queryClassName),
-			"return $this->query()->where($field, $op, $value);"
+			"return $this->query()->where($rawSqlText);"
 		);
 		
 		var getVars = vars.filter(function(x) return x.isKey);
@@ -115,7 +121,7 @@ class OrmManagerGenerator
 				function(x) return 
 				  "if ($" + x.haxeName + " == null)\n"
 				+ "{\n"
-				+ "\tposition = db.query('SELECT MAX(`" + x.name + "`) FROM `" + table + "`" 
+				+ "\tposition = $this->db->query('SELECT MAX(`" + x.name + "`) FROM `" + table + "`" 
 					+ getWhereSql(getForeignKeyVars(db, table, vars))
 					+ ").getIntResult(0) + 1;\n"
 				+ "}\n\n"
@@ -199,7 +205,7 @@ class OrmManagerGenerator
 			'delete',
 			cast deleteVars,
 			'void',
-			"$db->query('DELETE FROM `" + table + "`" + getWhereSql(deleteVars) + " . ' LIMIT 1');"
+			"$this->db->query('DELETE FROM `" + table + "`" + getWhereSql(deleteVars) + " . ' LIMIT 1');"
 		);
 		
 		model.addMethod
@@ -217,7 +223,7 @@ class OrmManagerGenerator
 			Tools.toPhpType(modelClassName),
 			 "$rows = $this->db->query($sql . ' LIMIT 1');\n"
 			+"if ($rows->length == 0) return null;\n"
-			+"return self::newModelFromAssoc($rows->next());"
+			+"return $this->newModelFromAssoc($rows->next());"
 		);
 		
 		model.addMethod
@@ -229,7 +235,7 @@ class OrmManagerGenerator
 			+"$r = [];\n"
 			+"while ($row = $resutSet->next())\n"
 			+"{\n"
-			+"	array_push($r, self::newModelFromAssoc($row));\n"
+			+"	array_push($r, $this->newModelFromAssoc($row));\n"
 			+"}\n"
 			+"return $r;"
 		);
@@ -292,7 +298,7 @@ class OrmManagerGenerator
     function getWhereSql(vars:TypedArray<OrmPhpVar>) : String
     {
         return vars.length > 0
-            ? " WHERE " + vars.map(function(v) return "`" + v.name + "` = ' . $db->quote($" + v.haxeName + ")").join(". ' AND ")
+            ? " WHERE " + vars.map(function(v) return "`" + v.name + "` = ' . $this->db->quote($" + v.haxeName + ")").join(". ' AND ")
             : "'";
     }
     

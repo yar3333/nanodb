@@ -73,20 +73,23 @@ class OrmManagerGenerator {
 	public function getAutogenManager ($db, $table, $vars, $modelClassName, $autogenManagerClassName, $customOrmClassName, $queryClassName, $positions) {
 		$_gthis = $this;
 		$model = new GeneratorPhpClass($autogenManagerClassName);
-		$model->addVar(new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), "protected");
-		$model->addVar(new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName)), "protected");
+		$dbPhpVar = new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db"));
+		$ormPhpVar = new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName));
+		$model->addVar($dbPhpVar, "protected");
+		$model->addVar($ormPhpVar, "protected");
 		$this1 = [];
 		$model->addMethod("query", $this1, GeneratorTools::toPhpType($queryClassName), "return new " . (GeneratorTools::toPhpType($queryClassName)??'null') . "(\$this->db, \$this);");
-		$model->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName))], null, "\$this->db = \$db;\x0A\$this->orm = \$orm;");
+		$model->addMethod("__construct", [$dbPhpVar, $ormPhpVar], null, "\$this->db = \$db;\x0A\$this->orm = \$orm;");
 		$tmp = GeneratorTools::toPhpType($modelClassName);
 		$tmp1 = "\$_obj = new " . (GeneratorTools::toPhpType($modelClassName)??'null') . "(\$this->db, \$this->orm);\x0A" . (implode("\x0A", array_map(function ($x) {
 			return "\$_obj->" . $x->haxeName . " = \$" . $x->haxeName . ";";
 		}, $vars))??'null') . "\x0A" . "return \$_obj;";
-		$model->addMethod("newModelFromParams", $vars, $tmp, $tmp1, null, true);
+		$model->addMethod("newModelFromParams", $vars, $tmp, $tmp1);
 		$model->addMethod("newModelFromAssoc", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . (GeneratorTools::toPhpType($modelClassName)??'null') . "(\$this->db, \$this->orm);\x0A" . (implode("\x0A", array_map(function ($x1) {
 			return "\$_obj->" . $x1->haxeName . " = \$row['" . $x1->haxeName . "'];";
-		}, $vars))??'null') . "\x0A" . "return _obj;", null, true);
-		$model->addMethod("where", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->where(\$field, \$op, \$value);");
+		}, $vars))??'null') . "\x0A" . "return _obj;");
+		$model->addMethod("whereField", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->whereField(\$field, \$op, \$value);");
+		$model->addMethod("where", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->where(\$rawSqlText);");
 		$getVars = array_filter($vars, function ($x2) {
 			return $x2->isKey;
 		});
@@ -97,7 +100,7 @@ class OrmManagerGenerator {
 			return !$x3->isAutoInc;
 		});
 		$model->addMethod("create", $createVars, GeneratorTools::toPhpType($modelClassName), (implode("", array_map(function ($x4)  use (&$table, &$db, &$vars, &$_gthis) {
-			$this2 = "if (\$" . $x4->haxeName . " == null)\x0A" . "{\x0A" . "\x09position = db.query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
+			$this2 = "if (\$" . $x4->haxeName . " == null)\x0A" . "{\x0A" . "\x09position = \$this->db->query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
 			$this3 = $_gthis->getForeignKeyVars($db, $table, $vars);
 			return $this2 . ($_gthis->getWhereSql($this3)??'null') . ").getIntResult(0) + 1;\x0A" . "}\x0A\x0A";
 		}, array_filter($createVars, function ($x5)  use (&$positions) {
@@ -119,10 +122,10 @@ class OrmManagerGenerator {
 		if (count($deleteVars) === 0) {
 			$deleteVars = $vars;
 		}
-		$model->addMethod("delete", $deleteVars, "void", "\$db->query('DELETE FROM `" . $table . "`" . ($this->getWhereSql($deleteVars)??'null') . " . ' LIMIT 1');");
+		$model->addMethod("delete", $deleteVars, "void", "\$this->db->query('DELETE FROM `" . $table . "`" . ($this->getWhereSql($deleteVars)??'null') . " . ' LIMIT 1');");
 		$model->addMethod("getAll", [new GeneratorPhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "return \$this->getBySqlMany('SELECT * FROM `" . $table . "`' . (\$_order != null ? ' ORDER BY ' . \$_order : ''));");
-		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\x0A" . "if (\$rows->length == 0) return null;\x0A" . "return self::newModelFromAssoc(\$rows->next());");
-		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "\$resutSet = \$this->db->query(\$sql);\x0A" . "\$r = [];\x0A" . "while (\$row = \$resutSet->next())\x0A" . "{\x0A" . "\x09array_push(\$r, self::newModelFromAssoc(\$row));\x0A" . "}\x0A" . "return \$r;");
+		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\x0A" . "if (\$rows->length == 0) return null;\x0A" . "return \$this->newModelFromAssoc(\$rows->next());");
+		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], (GeneratorTools::toPhpType($modelClassName)??'null') . "[]", "\$resutSet = \$this->db->query(\$sql);\x0A" . "\$r = [];\x0A" . "while (\$row = \$resutSet->next())\x0A" . "{\x0A" . "\x09array_push(\$r, \$this->newModelFromAssoc(\$row));\x0A" . "}\x0A" . "return \$r;");
 		$collection = $db->connection->getUniques($table);
 		foreach ($collection as $key => $value) {
 			unset($fields);
@@ -202,7 +205,7 @@ class OrmManagerGenerator {
 	public function getWhereSql ($vars) {
 		if (count($vars) > 0) {
 			return " WHERE " . (implode(". ' AND ", array_map(function ($v) {
-				return "`" . $v->name . "` = ' . \$db->quote(\$" . $v->haxeName . ")";
+				return "`" . $v->name . "` = ' . \$this->db->quote(\$" . $v->haxeName . ")";
 			}, $vars))??'null');
 		} else {
 			return "'";
