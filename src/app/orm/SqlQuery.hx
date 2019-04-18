@@ -65,12 +65,12 @@ class SqlQuery<T>
 		return manager.getBySqlOne(getSelectSql(null));
 	}
 	
-	public function findManyFields(fields:TypedArray<String>, ?limit:Int, ?offset:Int) : ResultSet
+	public function findManyFields(fields:TypedArray<Dynamic>, ?limit:Int, ?offset:Int) : ResultSet
 	{
 		return db.query(getSelectSql(fields) + getLimitSql(limit) + getOffsetSql(offset));
 	}
 	
-	public function findOneFields(fields:TypedArray<String>) : TypedAssoc<String, Dynamic>
+	public function findOneFields(fields:TypedArray<Dynamic>) : TypedAssoc<String, Dynamic>
 	{
 		var rr = db.query(getSelectSql(fields) + "\nLIMIT 1");
 		if (rr.hasNext()) return cast rr.next();
@@ -101,22 +101,14 @@ class SqlQuery<T>
 	
 	public function exists() : Bool
 	{
-		return findOneFields(Syntax.arrayDecl("1")) != null;
+		return findOneFields(Syntax.arrayDecl(db.sqlTextRaw("1"))) != null;
 	}
 	
-	function getSelectSql(fields:TypedArray<String>) : String
+	function getSelectSql(fields:TypedArray<Dynamic>) : String
 	{
-		var f: TypedArray<String> = Syntax.arrayDecl(); 
-		
-		if (fields != null)
-		{
-			Syntax.foreach(fields, function(_, name) f.push("`" + name + "`"));
-		}
-		else
-		{
-			f.push("*");
-		}
-		
+		var f: TypedArray<String> = fields != null
+										? fields.map(function(x) return quoteField(x))
+										: Syntax.arrayDecl("*");
 		return "SELECT " + f.join(", ") + "\nFROM `" + table + "`" + getWhereSql() + getOrderBySql();
 	}
 	
@@ -149,5 +141,12 @@ class SqlQuery<T>
 			return "(" + (cast v:TypedArray<Dynamic>).map(function(x) return db.quote(x)).join(", ") + ")";
 		}
 		return db.quote(v);
+	}
+	
+	function quoteField(v:Dynamic) : String
+	{
+		if (Std.is(v, SqlTextRaw)) return (cast v : SqlTextRaw).text;
+		if (Std.is(v, SqlTextField)) return "`" + (cast v : SqlTextField).text + "`";
+		return "`" + v + "`";
 	}
 }

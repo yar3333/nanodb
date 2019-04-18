@@ -9,6 +9,7 @@ use \nanodb\orm\SqlTextField as OrmSqlTextField;
 use \nanodb\orm\SqlTextRaw as OrmSqlTextRaw;
 use \nanodb\orm\Db as OrmDb;
 use \nanodb\sys\db\ResultSet;
+use \nanodb\Std;
 
 class SqlQuery {
 	/**
@@ -72,7 +73,7 @@ class SqlQuery {
 	 * @return bool
 	 */
 	public function exists () {
-		return $this->findOneFields(["1"]) !== null;
+		return $this->findOneFields([$this->db->sqlTextRaw("1")]) !== null;
 	}
 
 	/**
@@ -162,14 +163,10 @@ class SqlQuery {
 	 * @return string
 	 */
 	public function getSelectSql ($fields) {
-		$f = [];
-		if ($fields !== null) {
-			foreach ($fields as $key => $value) {
-				array_push($f, "`" . $value . "`");
-			}
-		} else {
-			array_push($f, "*");
-		}
+		$_gthis = $this;
+		$f = ($fields !== null ? array_map(function ($x)  use (&$_gthis) {
+			return $_gthis->quoteField($x);
+		}, $fields) : ["*"]);
 		return "SELECT " . (implode(", ", $f)??'null') . "\x0AFROM `" . $this->table . "`" . ($this->getWhereSql()??'null') . ($this->getOrderBySql()??'null');
 	}
 
@@ -202,6 +199,21 @@ class SqlQuery {
 	public function orderDesc ($value) {
 		array_push($this->orderBys, $this->quoteValue($value) . " DESC");
 		return $this;
+	}
+
+	/**
+	 * @param mixed $v
+	 * 
+	 * @return string
+	 */
+	public function quoteField ($v) {
+		if (($v instanceof OrmSqlTextRaw)) {
+			return $v->text;
+		}
+		if (($v instanceof OrmSqlTextField)) {
+			return "`" . $v->text . "`";
+		}
+		return "`" . (Std::string($v)??'null') . "`";
 	}
 
 	/**
