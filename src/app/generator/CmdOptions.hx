@@ -229,7 +229,7 @@ class CmdOptions
 	function addRepeatableValue(name:String, value:Dynamic)
 	{
 		if (params.get(name) == null) params.set(name, Syntax.arrayDecl());
-		params.get(name).push(value);
+		(cast params.get(name) : TypedArray<Dynamic>).push(value);
 	}
 	
 	function getValueType(v:Dynamic) : String

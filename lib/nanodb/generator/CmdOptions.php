@@ -111,7 +111,7 @@ class CmdOptions {
 		if ($this->params[$name] === null) {
 			$this->params[$name] = [];
 		}
-		$this->params[$name]->push($value);
+		array_push($this->params[$name], $value);
 	}
 
 	/**
