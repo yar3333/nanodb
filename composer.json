@@ -2,9 +2,9 @@
   "name": "nanodb/nanodb",
   "type": "ORM",
   "description": "ORM",
-  "version": "1.0.19",
+  "version": "1.1.0",
   "require": {
-    "php": ">=7.1.0"
+    "php": ">=7.2.0"
   },
   "autoload": {
     "psr-4": {
