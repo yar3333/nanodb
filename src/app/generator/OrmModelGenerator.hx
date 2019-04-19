@@ -76,7 +76,7 @@ class OrmModelGenerator
 				"save",
 				Syntax.arrayDecl(),
 				"void",
-				"db.query(\n"
+				"$this->db->query(\n"
 				    + "\t 'UPDATE `" + table + "` SET '\n"
 					+ "\t\t.  '" + savedVars.map(function(v) return "`" + v.name + "` = ' . $this->db->quote($this->" + v.haxeName + ")").join("\n\t\t.', ")
 					+ "\n\t.' WHERE " 
