@@ -63,12 +63,12 @@ class PhpClass {
 	}
 
 	/**
-	 * @param string $packageName
+	 * @param string $className
 	 * 
 	 * @return void
 	 */
-	public function addImport ($packageName) {
-		array_push($this->imports, "use " . GeneratorTools::toPhpType($packageName) . ";");
+	public function addImport ($className) {
+		array_push($this->imports, "use " . GeneratorTools::toPhpType($className) . ";");
 	}
 
 	/**
@@ -137,7 +137,7 @@ class PhpClass {
 	 * 
 	 * @return string
 	 */
-	public function getPackageName ($fullClassName) {
+	public function getNamespaceName ($fullClassName) {
 		if ((mb_strpos($fullClassName, ".") !== false)) {
 			return mb_substr($fullClassName, 0, mb_strrpos($fullClassName, "."));
 		}
@@ -183,7 +183,7 @@ class PhpClass {
 			array_push($varLines, str_replace("\n", "\n\t", $value));
 		}
 
-		$s = "namespace " . (GeneratorTools::toPhpType($this->getPackageName($this->fullClassName), false)??'null') . ";\n" . "\n" . (implode("\n", $this->imports)??'null') . (((count($this->imports) > 0 ? "\n\n" : ""))??'null') . "class " . $this->getShortClassName($this->fullClassName) . ((($this->baseFullClassName !== null ? " extends " . GeneratorTools::toPhpType($this->baseFullClassName) : ""))??'null') . "\n" . "{\n" . (((count($this->vars) > 0 ? "\t" . (implode("\n\t\n\t", $varLines)??'null') . "\n\n" : ""))??'null') . (((count($this->methods) > 0 ? "\t" . (implode("\n\n\t", $this->methods)??'null') . "\n" : ""))??'null') . (((count($this->customs) > 0 ? "\t" . (implode("\n\n\t", $this->customs)??'null') . "\n" : ""))??'null') . "}";
+		$s = "namespace " . (GeneratorTools::toPhpType($this->getNamespaceName($this->fullClassName), false)??'null') . ";\n" . "\n" . (implode("\n", $this->imports)??'null') . (((count($this->imports) > 0 ? "\n\n" : ""))??'null') . "class " . $this->getShortClassName($this->fullClassName) . ((($this->baseFullClassName !== null ? " extends " . GeneratorTools::toPhpType($this->baseFullClassName) : ""))??'null') . "\n" . "{\n" . (((count($this->vars) > 0 ? "\t" . (implode("\n\t\n\t", $varLines)??'null') . "\n\n" : ""))??'null') . (((count($this->methods) > 0 ? "\t" . (implode("\n\n\t", $this->methods)??'null') . "\n" : ""))??'null') . (((count($this->customs) > 0 ? "\t" . (implode("\n\n\t", $this->customs)??'null') . "\n" : ""))??'null') . "}";
 		return $s;
 	}
 

@@ -24,9 +24,9 @@ class PhpClass
 		this.customs = new TypedArray<String>();
 	}
 	
-	public function addImport(packageName:String) : Void
+	public function addImport(className:String) : Void
 	{
-		imports.push("use " + Tools.toPhpType(packageName) + ";");
+		imports.push("use " + Tools.toPhpType(className) + ";");
 	}
 	
 	public function addVar(v:PhpVar, access:String="public", isStatic:Bool=false) : Void
@@ -101,7 +101,7 @@ class PhpClass
 			varLines.push(v.replace("\n", "\n\t"));
 		});
 		
-		var s = 'namespace ' + Tools.toPhpType(getPackageName(fullClassName), false) + ';\n'
+		var s = 'namespace ' + Tools.toPhpType(getNamespaceName(fullClassName), false) + ';\n'
 			  + '\n'
 			  + imports.join('\n') + (imports.length > 0 ? '\n\n' : '')
 			  + 'class ' + getShortClassName(fullClassName) + (baseFullClassName != null ? ' extends ' + Tools.toPhpType(baseFullClassName) : '') + '\n'
@@ -128,7 +128,7 @@ class PhpClass
 		return fullClassName;
 	}
 	
-	function getPackageName(fullClassName:String) : String
+	function getNamespaceName(fullClassName:String) : String
 	{
 		if (fullClassName.contains('.'))
 		{
