@@ -97,23 +97,26 @@ class OrmManagerGenerator {
 		$createVars = array_filter($vars, function ($x2) {
 			return !$x2->isAutoInc;
 		});
-		$model->addMethod("create", $createVars, GeneratorTools::toPhpType($modelClassName), (implode("", array_map(function ($x3)  use (&$table, &$db, &$vars, &$_gthis) {
-			$this2 = "if (\$" . $x3->haxeName . " == null)\n" . "{\n" . "\tposition = \$this->db->query('SELECT MAX(`" . $x3->name . "`) FROM `" . $table . "`";
+		$autoIncVars = array_filter($vars, function ($x3) {
+			return $x3->isAutoInc;
+		});
+		$model->addMethod("create", $createVars, GeneratorTools::toPhpType($modelClassName), (implode("", array_map(function ($x4)  use (&$table, &$db, &$vars, &$_gthis) {
+			$this2 = "if (\$" . $x4->haxeName . " == null)\n" . "{\n" . "\tposition = \$this->db->query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
 			$this3 = $_gthis->getForeignKeyVars($db, $table, $vars);
 			return $this2 . $_gthis->getWhereSql($this3) . ").getIntResult(0) + 1;\n" . "}\n\n";
-		}, array_filter($createVars, function ($x4)  use (&$positions) {
-			return $positions->is($x4->table, $x4->name);
-		})))??'null') . "\$this->db->query('INSERT INTO `" . $table . "`(" . (implode(", ", array_map(function ($x5) {
-			return "`" . $x5->name . "`";
-		}, $createVars))??'null') . ") VALUES (' . " . (implode(" . ', ' . ", array_map(function ($x6) {
-			return "\$this->db->quote(\$" . $x6->haxeName . ")";
-		}, $createVars))??'null') . " . ')');\n" . "return \$this->newModelFromParams(" . (implode(", ", array_map(function ($x7) {
-			if ($x7->isAutoInc) {
-				return "\$this->db->lastInsertId()";
+		}, array_filter($createVars, function ($x5)  use (&$positions) {
+			return $positions->is($x5->table, $x5->name);
+		})))??'null') . "\$obj = \$this->newModelFromParams(" . (implode(", ", array_map(function ($x6) {
+			if ($x6->isAutoInc) {
+				return "0";
 			} else {
-				return "\$" . $x7->haxeName;
+				return "\$" . $x6->haxeName;
 			}
-		}, $vars))??'null') . ");");
+		}, $vars))??'null') . ");\n" . "\$data = \$this->dbSerialize([ " . (implode(", ", array_map(function ($x7) {
+			return "'" . $x7->name . "'";
+		}, $createVars))??'null') . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `" . $table . "`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')';\n" . (implode("", array_map(function ($v) {
+			return "\$obj->" . $v->haxeName . " = \$this->db->lastInsertId();\n";
+		}, $autoIncVars))??'null') . "return \$obj;");
 		$deleteVars = array_filter($vars, function ($x8) {
 			return $x8->isKey;
 		});

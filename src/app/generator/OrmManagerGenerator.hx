@@ -110,6 +110,7 @@ class OrmManagerGenerator
 		}
 		
 		var createVars = vars.filter(function(x) return !x.isAutoInc);
+		var autoIncVars = vars.filter(function(x) return x.isAutoInc);
 		
 		model.addMethod
 		(
@@ -126,77 +127,15 @@ class OrmManagerGenerator
 					+ ").getIntResult(0) + 1;\n"
 				+ "}\n\n"
 			).join("")
-			+"$this->db->query('INSERT INTO `" + table + "`("
-				+ createVars.map(function(x) return "`" + x.name + "`").join(", ")
-			+") VALUES (' . "
-				+ createVars.map(function(x) return "$this->db->quote($" + x.haxeName + ")").join(" . ', ' . ")
-			+" . ')');\n"
-			+"return $this->newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? "$this->db->lastInsertId()" : "$" + x.haxeName).join(", ") + ");"
-		);
-		
-		/*model.addMethod
-		(
-			'createNamed',
-			Syntax.arrayDecl(OrmTools.createVar("data", "{ " + createVars.map(function(x) return x.haxeName + ":" + x.haxeType).join(", ") + " }")),
-			modelClassName,
-			createVars.filter(function(x) return positions.is(x)).map
-			(
-				function(x) return 
-				"if ($data->" + x.haxeName + " == null)\n"
-				+ "{\n"
-				+ "\t$data->" + x.haxeName + " = $db->query('SELECT MAX(`" + x.name + "`) FROM `" + table + "`" 
-					+ getWhereSql(getForeignKeyVars(db, table, vars))
-					+ ").getIntResult(0) + 1;\n"
-				+ "}\n\n"
-			).join("")
-			+"db.query('INSERT INTO `" + table + "`("
-				+ createVars.map(function(x) return "`" + x.name + "`").join(", ")
-			+") VALUES (' + "
-				+ createVars.map(function(x) return "db.quote(data." + x.haxeName + ")").join(" + ', ' + ")
-			+" + ')');\n"
-			+"return newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? 'db.lastInsertId()' : "data." + x.haxeName).join(", ") + ");"
-		);*/
-		
-		//var dataVars: TypedArray<PhpVar> = Syntax.arrayDecl(OrmTools.createVar("data", "{ " + createVars.map(function(x) return (x.isKey ? "" : "?") + x.haxeName + ":" + x.haxeType).join(", ") + " }"));
-		
-		/*if (vars.exists(function(x) return x.isKey))
-		{
-			model.addMethod
-			(
-				'createOptional',
-				dataVars,
-				modelClassName,
-				 "createOptionalNoReturn(data);\n"
-				+"return get(" + getVars.map(function(x) return x.isAutoInc ? 'db.lastInsertId()' : "data." + x.haxeName).join(", ") + ");"
-			);
-		}*/
-		
-		/*model.addMethod
-		(
-			'createOptionalNoReturn',
-			dataVars,
-			"void",
-			createVars.filter(function(x) return positions.is(x)).map
-			(
-				function(x) return 
-				"if ($data->" + x.haxeName + " == null)\n"
-				+ "{\n"
-				+ "\t$data->" + x.haxeName + " = $db->query('SELECT MAX(`" + x.name + "`) FROM `" + table + "`" 
-					+ getWhereSql(getForeignKeyVars(db, table, vars))
-					+ ").getIntResult(0) + 1;\n"
-				+ "}\n\n"
-			).join("")
+			+"$obj = $this->newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? "0" : "$" + x.haxeName).join(", ") + ");\n"
+			+"$data = $this->dbSerialize([ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
 			+"$fields = [];\n"
 			+"$values = [];\n"
-			+createVars.map
-			(
-				function(x) return 
-				x.isKey
-					? "array_push($fields, '`" + x.name + "`'); array_push($values, $db->quote($data->" + x.haxeName + "));\n"
-					: "if (isset($data->, " + x.haxeName + ")) { array_push($fields, '`" + x.name + "`'); array_push($values, $db->quote($data->" + x.haxeName + ")); }\n"
-			).join("")
-			+"$db->query('INSERT INTO `" + table + "`(' + implode(\", \", $fields) + ') VALUES (' + implode(\", \", $values) + ')');\n"
-		);*/
+			+"foreach ($data as $k => $v) { $fields[] = \"`$k`\"; $values[] = $db->quote($v); }\n"
+			+"$this->db->query('INSERT INTO `" + table + "`(' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';\n"
+			+autoIncVars.map(function(v) return "$obj->" + v.haxeName + " = $this->db->lastInsertId();\n").join("")
+			+"return $obj;"
+		);
 		
 		var deleteVars = vars.filter(function(x) return x.isKey);
 		if (deleteVars.length == 0) deleteVars = vars;
