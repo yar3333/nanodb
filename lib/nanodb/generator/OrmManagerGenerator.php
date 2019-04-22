@@ -114,7 +114,7 @@ class OrmManagerGenerator {
 			}
 		}, $vars))??'null') . ");\n" . "\$data = \$this->dbSerialize([ " . (implode(", ", array_map(function ($x7) {
 			return "'" . $x7->name . "'";
-		}, $createVars))??'null') . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `" . $table . "`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')';\n" . (implode("", array_map(function ($v) {
+		}, $createVars))??'null') . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$this->db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `" . $table . "`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')';\n" . (implode("", array_map(function ($v) {
 			return "\$obj->" . $v->haxeName . " = \$this->db->lastInsertId();\n";
 		}, $autoIncVars))??'null') . "return \$obj;");
 		$deleteVars = array_filter($vars, function ($x8) {

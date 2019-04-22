@@ -131,7 +131,7 @@ class OrmManagerGenerator
 			+"$data = $this->dbSerialize([ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
 			+"$fields = [];\n"
 			+"$values = [];\n"
-			+"foreach ($data as $k => $v) { $fields[] = \"`$k`\"; $values[] = $db->quote($v); }\n"
+			+"foreach ($data as $k => $v) { $fields[] = \"`$k`\"; $values[] = $this->db->quote($v); }\n"
 			+"$this->db->query('INSERT INTO `" + table + "`(' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')';\n"
 			+autoIncVars.map(function(v) return "$obj->" + v.haxeName + " = $this->db->lastInsertId();\n").join("")
 			+"return $obj;"
