@@ -19,7 +19,7 @@ class Db {
 	/**
 	 * @var string
 	 */
-	public $connectionString;
+	protected $connectionString;
 	/**
 	 * @var int
 	 * Level of tracing SQL:
@@ -99,7 +99,7 @@ class Db {
 			return $r;
 		}
 		catch (OrmDbException $e) {
-			throw new \Exception("DATABASE\n\tSQL QUERY: " . $sql . "\n\tSQL RESULT: error code = " . $e->getCode() . ", message: " . $e->getMessage());
+				throw new \Exception("DATABASE\n\tSQL QUERY: " . $sql . "\n\tSQL RESULT: error code = " . $e->getCode() . ", message: " . $e->getMessage());
 		}
 	}
 

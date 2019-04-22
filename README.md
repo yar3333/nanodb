@@ -117,8 +117,8 @@ $users = $orm->user->getByRole('support');
 # if you have a `books` table with `user_id` field (with a foreign key), then you can do next
 $books = $orm->book->getByUserId(10);
 
-# get a user and fix `surname` field value
+# get a user and fix `status`
 $user = $orm->user->get(10);
-$user->surname = "Ivanov";
+$user->status = 5;
 $user->save();
 ```

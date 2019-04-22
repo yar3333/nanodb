@@ -30,7 +30,7 @@ class OrmModelGenerator {
 	 * @return GeneratorPhpClass
 	 */
 	public function getAutogenModel ($table, $vars, $modelClassName, $customOrmClassName) {
-		$model = new GeneratorPhpClass($modelClassName);
+		$model = new GeneratorPhpClass($modelClassName, "nanodb.orm.Entity");
 		$model->addVar(new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), "protected");
 		$model->addVar(new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName)), "protected");
 		foreach ($vars as $key => $value) {
@@ -60,11 +60,11 @@ class OrmModelGenerator {
 			$whereVars = array_filter($vars, function ($v5) {
 				return $v5->isKey;
 			});
-			$model->addMethod("save", [], "void", "\$this->db->query(\n" . "\t 'UPDATE `" . $table . "` SET '\n" . "\t\t.  '" . (implode("\n\t\t.', ", array_map(function ($v6) {
-				return "`" . $v6->name . "` = ' . \$this->db->quote(\$this->" . $v6->haxeName . ")";
-			}, $savedVars))??'null') . "\n\t.' WHERE " . (implode(".' AND ", array_map(function ($v7) {
-				return "`" . $v7->name . "` = ' . \$this->db->quote(\$this->" . $v7->haxeName . ")";
-			}, $whereVars))??'null') . "\n\t.' LIMIT 1'" . "\n);");
+			$model->addMethod("save", [], "void", "\$data = \$this->dbSerialize([ " . (implode(", ", array_map(function ($x) {
+				return "'" . $x->name . "'";
+			}, $savedVars))??'null') . " ]);\n" . "\$sets = []; foreach (\$data as \$k => \$v) \$sets[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$keys = \$this->dbSerialize([ " . (implode(", ", array_map(function ($x1) {
+				return "'" . $x1->name . "'";
+			}, $whereVars))??'null') . " ]);\n" . "\$wheres = []; foreach (\$keys as \$k => \$v) \$wheres[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$this->db->query(\n" . "\t 'UPDATE `" . $table . "` SET ' . implode(', ', \$sets) . ' WHERE ' . implode(' AND ', \$wheres) . ' LIMIT 1'" . "\n);");
 		}
 		return $model;
 	}

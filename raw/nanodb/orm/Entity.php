@@ -1,3 +1,5 @@
+<?php
+
 namespace nanodb\orm;
 
 class Entity implements \JsonSerializable
@@ -16,7 +18,7 @@ class Entity implements \JsonSerializable
                                                          : $src[$property];
     }
 
-    protected function serializePropertyIgnoreNull(&$data, $property)
+    protected function serializePropertyIgnoreNull(&$data, $property) : void
     {
         if (isset($this->$property)) $data[$property] = $this->$property;
     }
@@ -25,7 +27,7 @@ class Entity implements \JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $var) {
-            serializeProperty("__toJson", $var, $data);
+            $this->serializeProperty("__toJson", $var, $data);
         }
         return $data;
     }
@@ -33,15 +35,17 @@ class Entity implements \JsonSerializable
     public function jsonDeserialize(array $data) : void
     {
         foreach (get_object_vars($this) as $var) {
-            deserializeProperty("__fromJson", $var, $data);
+            $this->deserializeProperty("__fromJson", $var, $data);
         }
     }
 
-    public function dbSerialize(): array
+	public function dbSerialize(array $properties=null): array
     {
+		if (!$properties) $properties = get_object_vars($this);
+	
         $data = [];
-        foreach (get_object_vars($this) as $var) {
-            serializeProperty("__toDb", $var, $data);
+        foreach ($properties as $var) {
+			$this->serializeProperty("__toDb", $var, $data);
         }
         return $data;
     }
@@ -49,7 +53,7 @@ class Entity implements \JsonSerializable
     public function dbDeserialize(array $data) : void
     {
         foreach (get_object_vars($this) as $var) {
-            deserializeProperty("__fromDb", $var, $data);
+            $this->deserializeProperty("__fromDb", $var, $data);
         }
     }
 }

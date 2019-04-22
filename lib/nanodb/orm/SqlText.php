@@ -37,7 +37,7 @@ class SqlText {
 	 * 
 	 * @return void
 	 */
-	public function __construct ($text) {
+	protected function __construct ($text) {
 		$this->text = $text;
 	}
 }

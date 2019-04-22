@@ -4,7 +4,7 @@ class SqlText
 {
 	public var text : String;
 
-	private inline function new(text : String)
+	@:protected inline function new(text : String)
 	{
 		this.text = text;
 	}

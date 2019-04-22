@@ -84,54 +84,52 @@ class OrmManagerGenerator {
 		$tmp1 = "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm);\n" . (implode("\n", array_map(function ($x) {
 			return "\$_obj->" . $x->haxeName . " = \$" . $x->haxeName . ";";
 		}, $vars))??'null') . "\n" . "return \$_obj;";
-		$model->addMethod("newModelFromParams", $vars, $tmp, $tmp1);
-		$model->addMethod("newModelFromAssoc", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm);\n" . (implode("\n", array_map(function ($x1) {
-			return "\$_obj->" . $x1->haxeName . " = \$row['" . $x1->haxeName . "'];";
-		}, $vars))??'null') . "\n" . "return \$_obj;");
+		$model->addMethod("newEntityFromParams", $vars, $tmp, $tmp1);
+		$model->addMethod("newEntityFromRow", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm);\n" . "\$_obj->dbDeserialize(\$row);\n" . "return \$_obj;");
 		$model->addMethod("whereField", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->whereField(\$field, \$op, \$value);");
 		$model->addMethod("where", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->where(\$rawSqlText);");
-		$getVars = array_filter($vars, function ($x2) {
-			return $x2->isKey;
+		$getVars = array_filter($vars, function ($x1) {
+			return $x1->isKey;
 		});
 		if (count($getVars) > 0) {
 			$model->addMethod("get", $getVars, "?" . GeneratorTools::toPhpType($modelClassName), "return \$this->getBySqlOne('SELECT * FROM `" . $table . "`" . $this->getWhereSql($getVars) . ");");
 		}
-		$createVars = array_filter($vars, function ($x3) {
-			return !$x3->isAutoInc;
+		$createVars = array_filter($vars, function ($x2) {
+			return !$x2->isAutoInc;
 		});
-		$model->addMethod("create", $createVars, GeneratorTools::toPhpType($modelClassName), (implode("", array_map(function ($x4)  use (&$table, &$db, &$vars, &$_gthis) {
-			$this2 = "if (\$" . $x4->haxeName . " == null)\n" . "{\n" . "\tposition = \$this->db->query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
+		$model->addMethod("create", $createVars, GeneratorTools::toPhpType($modelClassName), (implode("", array_map(function ($x3)  use (&$table, &$db, &$vars, &$_gthis) {
+			$this2 = "if (\$" . $x3->haxeName . " == null)\n" . "{\n" . "\tposition = \$this->db->query('SELECT MAX(`" . $x3->name . "`) FROM `" . $table . "`";
 			$this3 = $_gthis->getForeignKeyVars($db, $table, $vars);
 			return $this2 . $_gthis->getWhereSql($this3) . ").getIntResult(0) + 1;\n" . "}\n\n";
-		}, array_filter($createVars, function ($x5)  use (&$positions) {
-			return $positions->is($x5->table, $x5->name);
-		})))??'null') . "\$this->db->query('INSERT INTO `" . $table . "`(" . (implode(", ", array_map(function ($x6) {
-			return "`" . $x6->name . "`";
-		}, $createVars))??'null') . ") VALUES (' . " . (implode(" . ', ' . ", array_map(function ($x7) {
-			return "\$this->db->quote(\$" . $x7->haxeName . ")";
-		}, $createVars))??'null') . " . ')');\n" . "return \$this->newModelFromParams(" . (implode(", ", array_map(function ($x8) {
-			if ($x8->isAutoInc) {
+		}, array_filter($createVars, function ($x4)  use (&$positions) {
+			return $positions->is($x4->table, $x4->name);
+		})))??'null') . "\$this->db->query('INSERT INTO `" . $table . "`(" . (implode(", ", array_map(function ($x5) {
+			return "`" . $x5->name . "`";
+		}, $createVars))??'null') . ") VALUES (' . " . (implode(" . ', ' . ", array_map(function ($x6) {
+			return "\$this->db->quote(\$" . $x6->haxeName . ")";
+		}, $createVars))??'null') . " . ')');\n" . "return \$this->newModelFromParams(" . (implode(", ", array_map(function ($x7) {
+			if ($x7->isAutoInc) {
 				return "\$this->db->lastInsertId()";
 			} else {
-				return "\$" . $x8->haxeName;
+				return "\$" . $x7->haxeName;
 			}
 		}, $vars))??'null') . ");");
-		$deleteVars = array_filter($vars, function ($x9) {
-			return $x9->isKey;
+		$deleteVars = array_filter($vars, function ($x8) {
+			return $x8->isKey;
 		});
 		if (count($deleteVars) === 0) {
 			$deleteVars = $vars;
 		}
 		$model->addMethod("delete", $deleteVars, "void", "\$this->db->query('DELETE FROM `" . $table . "`" . $this->getWhereSql($deleteVars) . " . ' LIMIT 1');");
 		$model->addMethod("getAll", [new GeneratorPhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))], GeneratorTools::toPhpType($modelClassName) . "[]", "return \$this->getBySqlMany('SELECT * FROM `" . $table . "`' . (\$_order != null ? ' ORDER BY ' . \$_order : ''));");
-		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], "?" . GeneratorTools::toPhpType($modelClassName), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\n" . "if (\$rows->length == 0) return null;\n" . "return \$this->newModelFromAssoc(\$rows->next());");
-		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName) . "[]", "\$resultSet = \$this->db->query(\$sql);\n" . "\$r = [];\n" . "while (\$row = \$resultSet->next())\n" . "{\n" . "\tarray_push(\$r, \$this->newModelFromAssoc(\$row));\n" . "}\n" . "return \$r;");
+		$model->addMethod("getBySqlOne", [new GeneratorPhpVar("sql", "string")], "?" . GeneratorTools::toPhpType($modelClassName), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\n" . "if (\$rows->length == 0) return null;\n" . "return \$this->newModelFromRow(\$rows->next());");
+		$model->addMethod("getBySqlMany", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName) . "[]", "\$resultSet = \$this->db->query(\$sql);\n" . "\$r = [];\n" . "while (\$row = \$resultSet->next())\n" . "{\n" . "\tarray_push(\$r, \$this->newModelFromRow(\$row));\n" . "}\n" . "return \$r;");
 		$collection = $db->connection->getUniques($table);
 		foreach ($collection as $key => $value) {
 			unset($fields);
 			$fields = $value;
-			$vs = array_filter($vars, function ($x10)  use (&$fields) {
-				return in_array($x10->name, $fields, false);
+			$vs = array_filter($vars, function ($x9)  use (&$fields) {
+				return in_array($x9->name, $fields, false);
 			});
 			$_gthis->createGetByMethodOne($table, $vars, $modelClassName, $vs, $model);
 

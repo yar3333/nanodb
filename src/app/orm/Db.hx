@@ -13,7 +13,7 @@ import orm.SqlQuery;
 
 class Db
 {
-	var connectionString : String;
+	@:protected var connectionString : String;
 	
     /**
      * Level of tracing SQL:

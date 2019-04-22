@@ -37,7 +37,7 @@ class OrmModelGenerator
 	
 	function getAutogenModel(table:String, vars:TypedArray<OrmPhpVar>, modelClassName:String, customOrmClassName:String) : PhpClass
 	{
-		var model = new PhpClass(modelClassName);
+		var model = new PhpClass(modelClassName, "nanodb.orm.Entity");
 		
 		model.addVar(new PhpVar("db", Tools.toPhpType("nanodb.orm.Db")), "protected");
 		model.addVar(new PhpVar("orm", Tools.toPhpType(customOrmClassName)), "protected");
@@ -76,12 +76,14 @@ class OrmModelGenerator
 				"save",
 				Syntax.arrayDecl(),
 				"void",
-				"$this->db->query(\n"
-				    + "\t 'UPDATE `" + table + "` SET '\n"
-					+ "\t\t.  '" + savedVars.map(function(v) return "`" + v.name + "` = ' . $this->db->quote($this->" + v.haxeName + ")").join("\n\t\t.', ")
-					+ "\n\t.' WHERE " 
-					+ whereVars.map(function(v) return "`" + v.name + "` = ' . $this->db->quote($this->" + v.haxeName + ")").join(".' AND ")
-					+ "\n\t.' LIMIT 1'"
+				  "$data = $this->dbSerialize([ " + savedVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
+				+ "$sets = []; foreach ($data as $k => $v) $sets[] = \"`$k` = \" . $this->db->quote($v);\n"
+				+ "\n"
+				+ "$keys = $this->dbSerialize([ " + whereVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
+				+ "$wheres = []; foreach ($keys as $k => $v) $wheres[] = \"`$k` = \" . $this->db->quote($v);\n"
+				+ "\n"
+				+ "$this->db->query(\n"
+				    + "\t 'UPDATE `" + table + "` SET ' . implode(', ', $sets) . ' WHERE ' . implode(' AND ', $wheres) . ' LIMIT 1'"
 				+ "\n);"
 			);
 		}

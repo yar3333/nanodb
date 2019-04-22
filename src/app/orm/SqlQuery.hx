@@ -14,12 +14,12 @@ private typedef Manager<T> =
 
 class SqlQuery<T>
 {
-	var table : String;
-	var db : Db;
-	var manager : Manager<T>;
+	@:protected var table : String;
+	@:protected var db : Db;
+	@:protected var manager : Manager<T>;
 	
-	var conditions = new TypedArray<String>();
-	var orderBys = new TypedArray<String>();
+	@:protected var conditions = new TypedArray<String>();
+	@:protected var orderBys = new TypedArray<String>();
 	
 	public function new(table:String, db:Db, manager:Manager<T>)
 	{

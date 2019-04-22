@@ -14,23 +14,23 @@ class SqlQuery {
 	/**
 	 * @var mixed
 	 */
-	public $conditions;
+	protected $conditions;
 	/**
 	 * @var OrmDb
 	 */
-	public $db;
+	protected $db;
 	/**
 	 * @var object
 	 */
-	public $manager;
+	protected $manager;
 	/**
 	 * @var mixed
 	 */
-	public $orderBys;
+	protected $orderBys;
 	/**
 	 * @var string
 	 */
-	public $table;
+	protected $table;
 
 	/**
 	 * @param string $table
