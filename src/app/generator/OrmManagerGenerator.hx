@@ -223,7 +223,7 @@ class OrmManagerGenerator
 			"?" + Tools.toPhpType(modelClassName),
 			 "$rows = $this->db->query($sql . ' LIMIT 1');\n"
 			+"if ($rows->length == 0) return null;\n"
-			+"return $this->newModelFromRow($rows->next());"
+			+"return $this->newEntityFromRow($rows->next());"
 		);
 		
 		model.addMethod
@@ -235,7 +235,7 @@ class OrmManagerGenerator
 			+"$r = [];\n"
 			+"while ($row = $resultSet->next())\n"
 			+"{\n"
-			+"	array_push($r, $this->newModelFromRow($row));\n"
+			+"	array_push($r, $this->newEntityFromRow($row));\n"
 			+"}\n"
 			+"return $r;"
 		);
