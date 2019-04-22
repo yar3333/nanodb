@@ -85,7 +85,7 @@ class SqlQuery {
 		$sqlSelect = $this->getSelectSql(null);
 		$sqlLimit = $this->getLimitSql($limit);
 		$sqlOffset = $this->getOffsetSql($offset);
-		return $this->manager->getBySqlMany($sqlSelect . $sqlLimit . $sqlOffset);
+		return $this->manager->getMany($sqlSelect . $sqlLimit . $sqlOffset);
 	}
 
 	/**
@@ -103,7 +103,7 @@ class SqlQuery {
 	 * @return mixed
 	 */
 	public function findOne () {
-		return $this->manager->getBySqlOne($this->getSelectSql(null));
+		return $this->manager->getOne($this->getSelectSql(null));
 	}
 
 	/**

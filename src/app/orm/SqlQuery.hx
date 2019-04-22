@@ -8,8 +8,8 @@ import sys.db.ResultSet;
 
 private typedef Manager<T> =
 {
-	function getBySqlMany(sql:String) : TypedArray<T>;
-	function getBySqlOne(sql:String) : T;
+	function getMany(sql:String) : TypedArray<T>;
+	function getOne(sql:String) : T;
 }
 
 class SqlQuery<T>
@@ -57,12 +57,12 @@ class SqlQuery<T>
 		var sqlSelect = getSelectSql(null);
 		var sqlLimit = getLimitSql(limit);
 		var sqlOffset = getOffsetSql(offset);
-		return manager.getBySqlMany(sqlSelect + sqlLimit + sqlOffset);
+		return manager.getMany(sqlSelect + sqlLimit + sqlOffset);
 	}
 	
 	public function findOne() : T
 	{
-		return manager.getBySqlOne(getSelectSql(null));
+		return manager.getOne(getSelectSql(null));
 	}
 	
 	public function findManyFields(fields:TypedArray<Dynamic>, ?limit:Int, ?offset:Int) : ResultSet

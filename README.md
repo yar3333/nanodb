@@ -87,13 +87,13 @@ $users = $orm->user->whereField("status", "=", $db->sqlTextRaw("1 + 1"))->findMa
 $users = $orm->user->where("status = 2")->findMany(); # get users with status = 2
 
 # find first by raw SQL
-$user = $orm->user->getBySqlOne("SELECT * FROM `users` WHERE `status` = " . $db->quote($statusFromRequest));
+$user = $orm->user->getOne("SELECT * FROM `users` WHERE `status` = " . $db->quote($statusFromRequest));
 
 # find many by raw SQL
-$users = $orm->user->getBySqlMany("SELECT * FROM `users` WHERE `status` = 2");
+$users = $orm->user->getMany("SELECT * FROM `users` WHERE `status` = 2");
 
 # find by raw SQL with binding parameters
-$users = $orm->user->getBySqlMany("SELECT * FROM `users` WHERE `status` = {myStatus}", [
+$users = $orm->user->getMany("SELECT * FROM `users` WHERE `status` = {myStatus}", [
 	"myStatus" => $statusFromRequest 
 ]);
 
