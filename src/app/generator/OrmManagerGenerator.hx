@@ -63,7 +63,7 @@ class OrmManagerGenerator
         
 		model.addMethod
 		(
-			'newEntityFromParams',
+			'newModelFromParams',
 			cast vars,
 			Tools.toPhpType(modelClassName),
 			  "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
@@ -73,7 +73,7 @@ class OrmManagerGenerator
 		
 		model.addMethod
 		(
-			'newEntityFromRow',
+			'newModelFromRow',
 			Syntax.arrayDecl(new PhpVar("row", "array")),
 			Tools.toPhpType(modelClassName),
 			   "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
@@ -223,7 +223,7 @@ class OrmManagerGenerator
 			"?" + Tools.toPhpType(modelClassName),
 			 "$rows = $this->db->query($sql . ' LIMIT 1');\n"
 			+"if ($rows->length == 0) return null;\n"
-			+"return $this->newEntityFromRow($rows->next());"
+			+"return $this->newModelFromRow($rows->next());"
 		);
 		
 		model.addMethod
@@ -235,7 +235,7 @@ class OrmManagerGenerator
 			+"$r = [];\n"
 			+"while ($row = $resultSet->next())\n"
 			+"{\n"
-			+"	array_push($r, $this->newEntityFromRow($row));\n"
+			+"	array_push($r, $this->newModelFromRow($row));\n"
 			+"}\n"
 			+"return $r;"
 		);

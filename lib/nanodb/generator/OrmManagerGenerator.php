@@ -84,8 +84,8 @@ class OrmManagerGenerator {
 		$tmp1 = "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm);\n" . (implode("\n", array_map(function ($x) {
 			return "\$_obj->" . $x->haxeName . " = \$" . $x->haxeName . ";";
 		}, $vars))??'null') . "\n" . "return \$_obj;";
-		$model->addMethod("newEntityFromParams", $vars, $tmp, $tmp1);
-		$model->addMethod("newEntityFromRow", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm);\n" . "\$_obj->dbDeserialize(\$row);\n" . "return \$_obj;");
+		$model->addMethod("newModelFromParams", $vars, $tmp, $tmp1);
+		$model->addMethod("newModelFromRow", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm);\n" . "\$_obj->dbDeserialize(\$row);\n" . "return \$_obj;");
 		$model->addMethod("whereField", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->whereField(\$field, \$op, \$value);");
 		$model->addMethod("where", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->where(\$rawSqlText);");
 		$getVars = array_filter($vars, function ($x1) {
