@@ -9,6 +9,7 @@ class PhpClass
 	var fullClassName : String;
 	var baseFullClassName : String;
 	
+	var comments : TypedArray<String>;
 	var imports : TypedArray<String>;
 	var vars : TypedArray<String>;
 	var methods : TypedArray<String>;
@@ -18,6 +19,8 @@ class PhpClass
 	{
 		this.fullClassName = fullClassName;
 		this.baseFullClassName = baseFullClassName;
+		
+		this.comments = new TypedArray<String>();
 		this.imports = new TypedArray<String>();
 		this.vars = new TypedArray<String>();
 		this.methods = new TypedArray<String>();
@@ -93,6 +96,11 @@ class PhpClass
 		customs.push(code);
 	}
 	
+	public function addComment(text:String) : Void
+	{
+		comments.push(text);
+	}
+	
 	public function toString() : String
 	{
 		var varLines = new TypedArray<String>();
@@ -101,7 +109,9 @@ class PhpClass
 			varLines.push(v.replace("\n", "\n\t"));
 		});
 		
-		var s = 'namespace ' + Tools.toPhpType(getNamespaceName(fullClassName), false) + ';\n'
+		var s = '<?php\n\n'
+			  + comments.join("\n") + (comments.length > 0 ? '\n\n' : '')
+			  + 'namespace ' + Tools.toPhpType(getNamespaceName(fullClassName), false) + ';\n'
 			  + '\n'
 			  + imports.join('\n') + (imports.length > 0 ? '\n\n' : '')
 			  + 'class ' + getShortClassName(fullClassName) + (baseFullClassName != null ? ' extends ' + Tools.toPhpType(baseFullClassName) : '') + '\n'
