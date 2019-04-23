@@ -129,7 +129,7 @@ class OrmManagerGenerator
 				+ "}\n\n"
 			).join("")
 			+"$obj = $this->newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? "0" : "$" + x.haxeName).join(", ") + ");\n"
-			+"$data = $this->dbSerialize([ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
+			+"$data = $obj->dbSerialize([ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
 			+"$fields = [];\n"
 			+"$values = [];\n"
 			+"foreach ($data as $k => $v) { $fields[] = \"`$k`\"; $values[] = $this->db->quote($v); }\n"
@@ -162,7 +162,7 @@ class OrmManagerGenerator
 			Syntax.arrayDecl(new PhpVar('sql', 'string')),
 			"?" + Tools.toPhpType(modelClassName),
 			 "$rows = $this->db->query($sql . ' LIMIT 1');\n"
-			+"if ($rows->length == 0) return null;\n"
+			+"if (!$rows->hasNext()) return null;\n"
 			+"return $this->newModelFromRow($rows->next());"
 		);
 		
