@@ -14,7 +14,7 @@ class Entity implements \JsonSerializable
     protected function deserializeProperty(string $methodSuffix, string $property, array $src) : void
     {
         $method = $property . $methodSuffix;
-        $this->$property = method_exists($this, $method) ? $this->$method($src[$property])
+        $this->$property = method_exists($this, $method) ? $this->$method($src, $property)
                                                          : $src[$property];
     }
 
