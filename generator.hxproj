@@ -47,8 +47,7 @@ cmd /C del lib\nanodb\Std.php
 cmd /C rmdir /q /s lib\nanodb\_Array
 cmd /C rmdir /q /s lib\nanodb\php
 haxelib run refactor -v process lib *.php generator.rules
-haxelib run refactor -v replaceInFile cli.php "!\\nanodb\\php\\Boot::__hx__init\(\);\n!!"
-xcopy /S /Y raw lib</postBuildCommand>
+haxelib run refactor -v replaceInFile cli.php "!\\nanodb\\php\\Boot::__hx__init\(\);\n!!"</postBuildCommand>
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
