@@ -26,7 +26,7 @@ class Entity implements \JsonSerializable
     public function jsonSerialize() : array
     {
         $data = [];
-        foreach (get_object_vars($this) as $var) {
+        foreach (get_object_vars($this) as $var => $value) {
             $this->serializeProperty("__toJson", $var, $data);
         }
         return $data;
@@ -34,14 +34,14 @@ class Entity implements \JsonSerializable
 
     public function jsonDeserialize(array $data) : void
     {
-        foreach (get_object_vars($this) as $var) {
+        foreach (get_object_vars($this) as $var => $value) {
             $this->deserializeProperty("__fromJson", $var, $data);
         }
     }
 
 	public function dbSerialize(array $properties=null): array
     {
-		if (!$properties) $properties = get_object_vars($this);
+		if (!$properties) $properties = array_keys(get_object_vars($this));
 	
         $data = [];
         foreach ($properties as $var) {
@@ -52,7 +52,7 @@ class Entity implements \JsonSerializable
 
     public function dbDeserialize(array $data) : void
     {
-        foreach (get_object_vars($this) as $var) {
+        foreach (get_object_vars($this) as $var => $value) {
             $this->deserializeProperty("__fromDb", $var, $data);
         }
     }
