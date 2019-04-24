@@ -106,7 +106,7 @@ class PhpClass {
 		$header = (((($retType !== null) && (mb_strpos($retType, "[]") !== false) ? "/**\n\t * @return " . $retType . "\n\t */\n\t" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
 			return ((($v->haxeType !== null ? $v->haxeType . " " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
 		}, $vars))??'null') . ")" . ((($retType !== null ? " : " . (((!(mb_strpos($retType, "[]") !== false) ? $retType : "array"))??'null') : ""))??'null');
-		$s = $header . "\n" . "\t{\n" . ($this->indent(trim($body, null), "\t\t")??'null') . "\n" . "\t}";
+		$s = $header . (((($body !== null) && (mb_strlen(trim($body, null)) > 0) ? "\n\t{\n" . ($this->indent(trim($body, null), "\t\t")??'null') . "\n\t}" : " {}"))??'null');
 		array_push($this->methods, $s);
 	}
 

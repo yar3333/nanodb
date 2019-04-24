@@ -84,10 +84,7 @@ class PhpClass
 				   + vars.map(function(v:PhpVar) { return (v.haxeType != null ? v.haxeType + " " : "") + "$" + v.haxeName + (v.haxeDefVal != null ? '=' + v.haxeDefVal : ''); } ).join(', ')
 				   + ')'
 				   + (retType != null ? " : " + (!retType.contains("[]") ? retType : "array") : "");
-		var s = header + '\n'
-			  + '\t{\n'
-			  + indent(body.trim(), '\t\t') + '\n'
-			  + '\t}';
+		var s = header + (body != null && body.trim().length > 0 ? '\n\t{\n' + indent(body.trim(), '\t\t') + '\n\t}' : " {}");
 		methods.push(s);
  	}
 	
