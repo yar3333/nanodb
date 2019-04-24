@@ -270,7 +270,32 @@ class SqlQuery {
 	 * @return SqlQuery
 	 */
 	public function whereField (string $field, string $op, $value) {
-		array_push($this->conditions, "`" . $field . "` " . $op . " " . $this->quoteValue($value));
+		$_gthis = $this;
+		$opUC = trim(mb_strtoupper($op), null);
+		if ($opUC === "!=" || $opUC === "<>") {
+			if (($value === null)) {
+				array_push($this->conditions, "`" . $field . "` IS NOT NULL");
+			} else {
+				array_push($this->conditions, "`" . $field . "` != " . $this->quoteValue($value));
+			}
+		} else if ($opUC === "=") {
+			if (($value === null)) {
+				array_push($this->conditions, "`" . $field . "` IS NULL");
+			} else {
+				array_push($this->conditions, "`" . $field . "` = " . $this->quoteValue($value));
+			}
+		} else if ($opUC === "IN" || $opUC === "NOT IN") {
+			$this1 = [];
+			$values = $this1;
+			$collection = $value;
+			foreach ($collection as $key => $value1) {
+				array_push($values, $_gthis->quoteValue($value1));
+			}
+
+			array_push($this->conditions, "`" . $field . "` " . $opUC . " (" . (implode(", ", $values)??'null') . ")");
+		} else {
+			array_push($this->conditions, "`" . $field . "` " . $op . " " . $this->quoteValue($value));
+		}
 		return $this;
 	}
 }

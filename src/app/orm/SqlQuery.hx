@@ -1,6 +1,7 @@
 package orm;
 
 import php.Global;
+import php.StringToolsNative;
 import php.Syntax;
 import php.TypedArray;
 import php.TypedAssoc;
@@ -30,7 +31,34 @@ class SqlQuery<T>
 	
 	public function whereField(field:String, op:String, value:Dynamic) : SqlQuery<T>
 	{
-		conditions.push("`" + field + "` " + op + " " + quoteValue(value));
+		var opUC = StringToolsNative.trim(op.toUpperCase());
+		
+		switch (opUC)
+		{
+			case "=":
+				if (Syntax.strictEqual(value, null))
+					conditions.push("`" + field + "` IS NULL");	
+				else
+					conditions.push("`" + field + "` = " + quoteValue(value));
+				
+			case "!=", "<>":
+				if (Syntax.strictEqual(value, null))
+					conditions.push("`" + field + "` IS NOT NULL");	
+				else
+					conditions.push("`" + field + "` != " + quoteValue(value));
+				
+			case "IN", "NOT IN":
+				var values = new TypedArray<Dynamic>();
+				Syntax.foreach(value, function(_, v:Dynamic)
+				{
+					values.push(quoteValue(v));
+				});
+				conditions.push("`" + field + "` " + opUC + " (" + values.join(", ") + ")");
+				
+			default:
+				conditions.push("`" + field + "` " + op + " " + quoteValue(value));
+		}
+		
 		return this;
 	}
 	

@@ -88,7 +88,8 @@ class OrmManagerGenerator {
 			return "\$_obj->" . $x->haxeName . " = \$" . $x->haxeName . ";";
 		}, $vars))??'null') . "\n" . "return \$_obj;";
 		$klass->addMethod("newModelFromParams", $vars, $tmp, $tmp1);
-		$klass->addMethod("newModelFromRow", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm);\n" . "\$_obj->dbDeserialize(\$row);\n" . "return \$_obj;");
+		$klass->addMethod("newModelFromDb", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm);\n" . "\$_obj->dbDeserialize(\$row);\n" . "return \$_obj;");
+		$klass->addMethod("newModelFromJson", [new GeneratorPhpVar("json", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm);\n" . "\$_obj->jsonDeserialize(\$json);\n" . "return \$_obj;");
 		$klass->addMethod("whereField", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->whereField(\$field, \$op, \$value);");
 		$klass->addMethod("where", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($queryClassName), "return \$this->query()->where(\$rawSqlText);");
 		$getVars = array_filter($vars, function ($x1) {
@@ -128,8 +129,8 @@ class OrmManagerGenerator {
 		}
 		$klass->addMethod("delete", $deleteVars, "void", "\$this->db->query('DELETE FROM `" . $table . "`" . $this->getWhereSql($deleteVars) . " . ' LIMIT 1');");
 		$klass->addMethod("getAll", [new GeneratorPhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))], GeneratorTools::toPhpType($modelClassName) . "[]", "return \$this->getMany('SELECT * FROM `" . $table . "`' . (\$_order != null ? ' ORDER BY ' . \$_order : ''));");
-		$klass->addMethod("getOne", [new GeneratorPhpVar("sql", "string")], "?" . GeneratorTools::toPhpType($modelClassName), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\n" . "if (!\$rows->hasNext()) return null;\n" . "return \$this->newModelFromRow(\$rows->next());");
-		$klass->addMethod("getMany", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName) . "[]", "\$resultSet = \$this->db->query(\$sql);\n" . "\$r = [];\n" . "while (\$row = \$resultSet->next())\n" . "{\n" . "\tarray_push(\$r, \$this->newModelFromRow(\$row));\n" . "}\n" . "return \$r;");
+		$klass->addMethod("getOne", [new GeneratorPhpVar("sql", "string")], "?" . GeneratorTools::toPhpType($modelClassName), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\n" . "if (!\$rows->hasNext()) return null;\n" . "return \$this->newModelFromDb(\$rows->next());");
+		$klass->addMethod("getMany", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName) . "[]", "\$resultSet = \$this->db->query(\$sql);\n" . "\$r = [];\n" . "while (\$row = \$resultSet->next())\n" . "{\n" . "\tarray_push(\$r, \$this->newModelFromDb(\$row));\n" . "}\n" . "return \$r;");
 		$collection = $db->connection->getUniques($table);
 		foreach ($collection as $key => $value) {
 			unset($fields);

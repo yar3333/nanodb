@@ -76,15 +76,17 @@ $user = $orm->user->create($login, $role, $status);
 # get user by ID
 $user = $orm->user->get(10);
 
-# get users with status = 2
 # field name and value will be automatically quoted
 $users = $orm->user->whereField("status", "=", 2)->findMany(); 
+
+# field name and value will be automatically quoted
+$users = $orm->user->whereField("status", "IN", [2, 3])->findMany();
 
 # prevent quoting by sqlTextRaw()
 $users = $orm->user->whereField("status", "=", $db->sqlTextRaw("1 + 1"))->findMany(); 
 
 # find by raw SQL condition
-$users = $orm->user->where("status = 2")->findMany(); # get users with status = 2
+$users = $orm->user->where("status = 2")->findMany();
 
 # find first by raw SQL
 $user = $orm->user->getOne("SELECT * FROM `users` WHERE `status` = " . $db->quote($statusFromRequest));

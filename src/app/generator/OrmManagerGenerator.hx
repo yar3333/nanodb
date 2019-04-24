@@ -74,11 +74,21 @@ class OrmManagerGenerator
 		
 		klass.addMethod
 		(
-			'newModelFromRow',
+			'newModelFromDb',
 			Syntax.arrayDecl(new PhpVar("row", "array")),
 			Tools.toPhpType(modelClassName),
 			   "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
 			 + "$_obj->dbDeserialize($row);\n"
+			 + "return $_obj;"
+		);
+		
+		klass.addMethod
+		(
+			'newModelFromJson',
+			Syntax.arrayDecl(new PhpVar("json", "array")),
+			Tools.toPhpType(modelClassName),
+			   "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
+			 + "$_obj->jsonDeserialize($json);\n"
 			 + "return $_obj;"
 		);
 		
@@ -163,7 +173,7 @@ class OrmManagerGenerator
 			"?" + Tools.toPhpType(modelClassName),
 			 "$rows = $this->db->query($sql . ' LIMIT 1');\n"
 			+"if (!$rows->hasNext()) return null;\n"
-			+"return $this->newModelFromRow($rows->next());"
+			+"return $this->newModelFromDb($rows->next());"
 		);
 		
 		klass.addMethod
@@ -175,7 +185,7 @@ class OrmManagerGenerator
 			+"$r = [];\n"
 			+"while ($row = $resultSet->next())\n"
 			+"{\n"
-			+"	array_push($r, $this->newModelFromRow($row));\n"
+			+"	array_push($r, $this->newModelFromDb($row));\n"
 			+"}\n"
 			+"return $r;"
 		);
