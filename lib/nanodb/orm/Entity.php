@@ -54,7 +54,7 @@ class Entity implements \JsonSerializable
     {
 		if (!isset($properties)) $properties = array_keys(get_object_vars($this));
         
-		foreach ($properties as $var => $value) {
+		foreach ($properties as $var) {
             $this->deserializeProperty("__fromDb", $var, $data);
         }
     }
