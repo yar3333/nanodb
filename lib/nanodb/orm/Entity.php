@@ -41,7 +41,7 @@ class Entity implements \JsonSerializable
 
 	public function dbSerialize(array $properties=null): array
     {
-		if (!$properties) $properties = array_keys(get_object_vars($this));
+		if (!isset($properties)) $properties = array_keys(get_object_vars($this));
 	
         $data = [];
         foreach ($properties as $var) {
@@ -50,9 +50,11 @@ class Entity implements \JsonSerializable
         return $data;
     }
 
-    public function dbDeserialize(array $data) : void
+    public function dbDeserialize(array $data, array $properties=null) : void
     {
-        foreach (get_object_vars($this) as $var => $value) {
+		if (!isset($properties)) $properties = array_keys(get_object_vars($this));
+        
+		foreach ($properties as $var => $value) {
             $this->deserializeProperty("__fromDb", $var, $data);
         }
     }

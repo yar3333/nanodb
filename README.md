@@ -123,4 +123,15 @@ $books = $orm->book->getByUserId(10);
 $user = $orm->user->get(10);
 $user->status = 5;
 $user->save();
+
+# save data received from external
+$user = $orm->user->newModelFromJson($request);
+# here - check field types and validate data
+$orm->user->add($user); # insert to database
+
+$user = $orm->user->newEmptyModel();
+$user->login = "hero";
+$user->role = "admin";
+$user->status = 1;
+$orm->user->add($user); # insert to database
 ```
