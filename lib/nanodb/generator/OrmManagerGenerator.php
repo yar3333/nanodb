@@ -121,8 +121,19 @@ class OrmManagerGenerator {
 		}, $createVars))??'null') . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$this->db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `" . $table . "`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')');\n" . (implode("", array_map(function ($v) {
 			return "\$obj->" . $v->haxeName . " = \$this->db->lastInsertId();\n";
 		}, $autoIncVars))??'null') . "return \$obj;");
-		$deleteVars = array_filter($vars, function ($x8) {
-			return $x8->isKey;
+		$klass->addMethod("add", [new GeneratorPhpVar("obj", GeneratorTools::toPhpType($modelClassName))], "void", (implode("", array_map(function ($x8)  use (&$table, &$db, &$vars, &$_gthis) {
+			$this4 = "if (\$" . $x8->haxeName . " == null)\n" . "{\n" . "\t\$obj->" . $x8->name . " = \$this->db->query('SELECT MAX(`" . $x8->name . "`) FROM `" . $table . "`";
+			$this5 = $_gthis->getForeignKeyVars($db, $table, $vars);
+			return $this4 . $_gthis->getWhereSql($this5) . ").getIntResult(0) + 1;\n" . "}\n\n";
+		}, array_filter($createVars, function ($x9)  use (&$positions) {
+			return $positions->is($x9->table, $x9->name);
+		})))??'null') . "\$data = \$obj->dbSerialize([ " . (implode(", ", array_map(function ($x10) {
+			return "'" . $x10->name . "'";
+		}, $createVars))??'null') . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$this->db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `" . $table . "`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')');\n" . (implode("\n", array_map(function ($v1) {
+			return "\$obj->" . $v1->haxeName . " = \$this->db->lastInsertId();";
+		}, $autoIncVars))??'null'));
+		$deleteVars = array_filter($vars, function ($x11) {
+			return $x11->isKey;
 		});
 		if (count($deleteVars) === 0) {
 			$deleteVars = $vars;
@@ -135,8 +146,8 @@ class OrmManagerGenerator {
 		foreach ($collection as $key => $value) {
 			unset($fields);
 			$fields = $value;
-			$vs = array_filter($vars, function ($x9)  use (&$fields) {
-				return in_array($x9->name, $fields, false);
+			$vs = array_filter($vars, function ($x12)  use (&$fields) {
+				return in_array($x12->name, $fields, false);
 			});
 			$_gthis->createGetByMethodOne($table, $vars, $modelClassName, $vs, $klass);
 

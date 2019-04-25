@@ -148,6 +148,29 @@ class OrmManagerGenerator
 			+"return $obj;"
 		);
 		
+		klass.addMethod
+		(
+			'add',
+			Syntax.arrayDecl(new PhpVar('obj', Tools.toPhpType(modelClassName))),
+			'void',
+			createVars.filter(function(x) return positions.is(x.table, x.name)).map
+			(
+				function(x) return 
+				  "if ($" + x.haxeName + " == null)\n"
+				+ "{\n"
+				+ "\t$obj->" + x.name + " = $this->db->query('SELECT MAX(`" + x.name + "`) FROM `" + table + "`" 
+					+ getWhereSql(getForeignKeyVars(db, table, vars))
+					+ ").getIntResult(0) + 1;\n"
+				+ "}\n\n"
+			).join("")
+			+"$data = $obj->dbSerialize([ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
+			+"$fields = [];\n"
+			+"$values = [];\n"
+			+"foreach ($data as $k => $v) { $fields[] = \"`$k`\"; $values[] = $this->db->quote($v); }\n"
+			+"$this->db->query('INSERT INTO `" + table + "`(' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')');\n"
+			+autoIncVars.map(function(v) return "$obj->" + v.haxeName + " = $this->db->lastInsertId();").join("\n")
+		);
+		
 		var deleteVars = vars.filter(function(x) return x.isKey);
 		if (deleteVars.length == 0) deleteVars = vars;
 		klass.addMethod
