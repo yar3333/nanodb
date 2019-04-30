@@ -70,6 +70,10 @@ use \models\Orm;
 $db = new Db("mysql://root:123456@localhost/testdb");
 $orm = new Orm($db);
 
+#################
+# High-level code
+#################
+
 # create user in database
 $user = $orm->user->create($login, $role, $status);
 
@@ -134,4 +138,18 @@ $user->login = "hero";
 $user->role = "admin";
 $user->status = 1;
 $orm->user->add($user); # insert to database
+
+
+################
+# Low-level code
+################
+
+$rows = $db->query("SELECT `role`, `status` FROM `users`")->results();
+$count = $db->query("SELECT COUNT(*) FROM `users`")->getIntResult(0);
+
+$resultSet = $db->query("SELECT `role`, `status` FROM `users`");
+while ($row = $resultSet->next())
+{
+	echo "role = " . $row['role'] . "; status = " . $row['status'] . "\n";
+}
 ```
