@@ -33,6 +33,19 @@ class Tools {
 	}
 
 	/**
+	 * @param string $fullClassName
+	 * 
+	 * @return string
+	 */
+	static public function getNamespace ($fullClassName) {
+		$parts = explode(".", $fullClassName);
+		if (count($parts) <= 1) {
+			return "";
+		}
+		return implode(".", array_slice($parts, 0, count($parts) - 1));
+	}
+
+	/**
 	 * @param string $path
 	 * 
 	 * @return void

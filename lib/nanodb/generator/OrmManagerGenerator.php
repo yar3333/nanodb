@@ -173,7 +173,9 @@ class OrmManagerGenerator {
 	 */
 	public function getCustomManager ($table, $vars, $modelClassName, $fullClassName, $baseClassName = null) {
 		$model = new GeneratorPhpClass($fullClassName, $baseClassName);
-		$model->addImport($modelClassName);
+		if (GeneratorTools::getNamespace($modelClassName) !== GeneratorTools::getNamespace($fullClassName)) {
+			$model->addImport($modelClassName);
+		}
 		return $model;
 	}
 

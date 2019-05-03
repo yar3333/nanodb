@@ -239,7 +239,10 @@ class OrmManagerGenerator
 	{
 		var model = new PhpClass(fullClassName, baseClassName);
 		
-		model.addImport(modelClassName);
+		if (Tools.getNamespace(modelClassName) != Tools.getNamespace(fullClassName))
+		{
+			model.addImport(modelClassName);
+		}
 		
 		return model;
 	}

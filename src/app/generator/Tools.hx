@@ -51,4 +51,11 @@ class Tools
 		
 		return word;
 	}
+	
+	public static function getNamespace(fullClassName:String) : String
+	{
+		var parts = fullClassName.splitNative(".");
+		if (parts.length <= 1) return "";
+		return parts.slice(0, parts.length - 1).join(".");
+	}
 }
