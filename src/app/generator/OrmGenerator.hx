@@ -43,7 +43,7 @@ class OrmGenerator
 	
 	function makeAutogenOrm(tables:TypedArray<OrmTable>, autogenOrmClassName:String, customOrmClassName:String, noInstantiateManagers:TypedArray<String>)
 	{
-		var autogenOrm = getAutogenOrm(tables, autogenOrmClassName, noInstantiateManagers);
+		var autogenOrm = getAutogenOrm(tables, autogenOrmClassName, noInstantiateManagers, customOrmClassName);
 		var destFileName = outPath + autogenOrmClassName.replace(".", "/") + ".php";
 		Tools.mkdir(Global.dirname(destFileName));
 		Global.file_put_contents(destFileName ,autogenOrm.toString());
@@ -60,7 +60,7 @@ class OrmGenerator
 		}
 	}
 	
-	function getAutogenOrm(tables:TypedArray<OrmTable>, fullClassName:String, noInstantiateManagers:TypedArray<String>) : PhpClass
+	function getAutogenOrm(tables:TypedArray<OrmTable>, fullClassName:String, noInstantiateManagers:TypedArray<String>, customOrmClassName:String) : PhpClass
 	{
 		var klass = new PhpClass(fullClassName);
 		
@@ -77,7 +77,10 @@ class OrmGenerator
 			, null
 			, tables
 				.filter(function(t) return !noInstantiateManagers.hasValue(t.tableName))
-				.map(function(t) return "$this->" + t.varName + " = new " + Tools.toPhpType(t.customManagerClassName) + "($db, $this);")
+				.map(function(t) {
+					return "/** @var " + Tools.toPhpType(customOrmClassName) +" $this */\n"
+					     + "$this->" + t.varName + " = new " + Tools.toPhpType(t.customManagerClassName) + "($db, $this);";
+				})
 				.join("\n")
 		);
         
