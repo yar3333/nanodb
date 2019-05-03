@@ -51,7 +51,7 @@ class OrmTools {
 	 */
 	static public function sqlType2phpType ($sqlType) {
 		$sqlType = mb_strtoupper($sqlType);
-		if ($sqlType === "TINYINT(1)") {
+		if (OrmTools::sqlTypeCheck($sqlType, "BIT")) {
 			return "bool";
 		}
 		if (OrmTools::sqlTypeCheck($sqlType, "TINYINT")) {
@@ -97,10 +97,10 @@ class OrmTools {
 			return "float";
 		}
 		if (OrmTools::sqlTypeCheck($sqlType, "DATE")) {
-			return "DateTime";
+			return "\\DateTime";
 		}
 		if (OrmTools::sqlTypeCheck($sqlType, "DATETIME")) {
-			return "DateTime";
+			return "\\DateTime";
 		}
 		return "string";
 	}

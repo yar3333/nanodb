@@ -44,6 +44,12 @@ class OrmModelGenerator {
 		$klass->addMethod("orm__toJson", [], "void", "", "protected");
 		foreach ($vars as $key => $value) {
 			$klass->addVar($value);
+			if ($value->haxeType === "\\DateTime") {
+				$klass->addMethod($value->haxeName . "__fromDb", [new GeneratorPhpVar("data", "array")], null, "return \$data['" . $value->name . "'] !== null ? new \\DateTime(\$data['" . $value->name . "']) : null;", "protected");
+			} else if ($value->haxeType === "bool") {
+				$klass->addMethod($value->haxeName . "__fromDb", [new GeneratorPhpVar("data", "array")], null, "return \$data['" . $value->name . "'] !== null ? (bool)\$data['" . $value->name . "'] : null;", "protected");
+			}
+
 		}
 		$klass->addMethod("__construct", [new GeneratorPhpVar("db", GeneratorTools::toPhpType("nanodb.orm.Db")), new GeneratorPhpVar("orm", GeneratorTools::toPhpType($customOrmClassName))], null, "\$this->db = \$db;\n\$this->orm = \$orm;");
 		if (current(array_filter($vars, function ($v) {

@@ -14,7 +14,7 @@ class OrmTools
 	public static function sqlType2phpType(sqlType:String) : String
 	{
 		sqlType = sqlType.toUpperCase();
-		if (sqlType == "TINYINT(1)")            return "bool";
+		if (sqlTypeCheck(sqlType, "BIT"))       return "bool";
 		if (sqlTypeCheck(sqlType, "TINYINT"))   return "int";
 		if (sqlTypeCheck(sqlType, "SMALLINT"))  return "int";
 		if (sqlTypeCheck(sqlType, "MEDIUMINT")) return "int";
@@ -29,8 +29,8 @@ class OrmTools
 		if (sqlTypeCheck(sqlType, "FLOAT"))     return "float";
 		if (sqlTypeCheck(sqlType, "DOUBLE"))    return "float";
 		if (sqlTypeCheck(sqlType, "REAL"))      return "float";
-		if (sqlTypeCheck(sqlType, "DATE"))      return "DateTime";
-		if (sqlTypeCheck(sqlType, "DATETIME"))  return "DateTime";
+		if (sqlTypeCheck(sqlType, "DATE"))      return "\\DateTime";
+		if (sqlTypeCheck(sqlType, "DATETIME"))  return "\\DateTime";
 		return "string";
 	}
 	

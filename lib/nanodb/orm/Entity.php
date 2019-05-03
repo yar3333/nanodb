@@ -14,7 +14,7 @@ class Entity implements \JsonSerializable
     protected function deserializeProperty(string $methodSuffix, string $property, array $src) : void
     {
         $method = $property . $methodSuffix;
-        $this->$property = method_exists($this, $method) ? $this->$method($src, $property)
+		$this->$property = method_exists($this, $method) ? $this->$method($src, $property)
                                                          : $src[$property];
     }
 
@@ -41,8 +41,7 @@ class Entity implements \JsonSerializable
 
 	public function dbSerialize(array $properties=null): array
     {
-		if (!isset($properties)) $properties = array_keys(get_object_vars($this));
-	
+        if (!isset($properties)) $properties = array_keys(get_object_vars($this));
         $data = [];
         foreach ($properties as $var) {
 			$this->serializeProperty("__toDb", $var, $data);

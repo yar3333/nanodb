@@ -1,6 +1,6 @@
 nanodb
 ======
-Small, fast and free database-first ORM for PHP 7.2+
+Small, fast and free database-first ORM for PHP 7.2+ and MySQL
 
 
 Install
