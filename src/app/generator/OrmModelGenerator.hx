@@ -123,7 +123,7 @@ class OrmModelGenerator
 			  "dbSerialize"
 			, Syntax.arrayDecl(new PhpVar("properties", "array", "null"))
 			, "array"
-			, "if (!isset($properties)) $properties = [ " + vars.map(function(x) return "'" + x.haxeName + "'").join(", ") + " ];\n"
+			, "if ($properties === null) $properties = [ " + vars.map(function(x) return "'" + x.haxeName + "'").join(", ") + " ];\n"
 			+ "return parent::dbSerialize($properties);"
 		);
 		
@@ -131,7 +131,7 @@ class OrmModelGenerator
 			  "dbDeserialize"
 			, Syntax.arrayDecl(new PhpVar("data", "array"), new PhpVar("properties", "array", "null"))
 			, "void"
-			, "if (!isset($properties)) $properties = [ " + vars.map(function(x) return "'" + x.haxeName + "'").join(", ") + " ];\n"
+			, "if ($properties === null) $properties = [ " + vars.map(function(x) return "'" + x.haxeName + "'").join(", ") + " ];\n"
 			+ "parent::dbDeserialize($data, $properties);"
 		);
 		

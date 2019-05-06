@@ -81,10 +81,10 @@ class OrmModelGenerator {
 				return "'" . $x1->name . "'";
 			}, $whereVars))??'null') . " ]);\n" . "\$wheres = []; foreach (\$keys as \$k => \$v) \$wheres[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$this->db->query(\n" . "\t 'UPDATE `" . $table . "` SET ' . implode(', ', \$sets) . ' WHERE ' . implode(' AND ', \$wheres) . ' LIMIT 1'" . "\n);");
 		}
-		$klass->addMethod("dbSerialize", [new GeneratorPhpVar("properties", "array", "null")], "array", "if (!isset(\$properties)) \$properties = [ " . (implode(", ", array_map(function ($x2) {
+		$klass->addMethod("dbSerialize", [new GeneratorPhpVar("properties", "array", "null")], "array", "if (\$properties === null) \$properties = [ " . (implode(", ", array_map(function ($x2) {
 			return "'" . $x2->haxeName . "'";
 		}, $vars))??'null') . " ];\n" . "return parent::dbSerialize(\$properties);");
-		$klass->addMethod("dbDeserialize", [new GeneratorPhpVar("data", "array"), new GeneratorPhpVar("properties", "array", "null")], "void", "if (!isset(\$properties)) \$properties = [ " . (implode(", ", array_map(function ($x3) {
+		$klass->addMethod("dbDeserialize", [new GeneratorPhpVar("data", "array"), new GeneratorPhpVar("properties", "array", "null")], "void", "if (\$properties === null) \$properties = [ " . (implode(", ", array_map(function ($x3) {
 			return "'" . $x3->haxeName . "'";
 		}, $vars))??'null') . " ];\n" . "parent::dbDeserialize(\$data, \$properties);");
 		return $klass;
