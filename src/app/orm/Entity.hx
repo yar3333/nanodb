@@ -9,6 +9,7 @@ extern class Entity
     private function deserializeProperty(methodSuffix:String, property:String, src:TypedAssoc<String, Dynamic>) : Void;
 
     private function serializePropertyIgnoreNull(data:TypedAssoc<String, Dynamic>, property:String) : Void;
+    private function deserializePropertyOptional(data:TypedAssoc<String, Dynamic>, property:String, ?defaultValue:Dynamic) : Void;
 
     function jsonSerialize() : TypedAssoc<String, Dynamic>;
     function jsonDeserialize(data:TypedAssoc<String, Dynamic>) : Void;

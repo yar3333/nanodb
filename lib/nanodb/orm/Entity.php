@@ -18,9 +18,14 @@ class Entity implements \JsonSerializable
 		else                               $this->$property = $src[$property];
     }
 
-    protected function serializePropertyIgnoreNull(&$data, $property) : void
+    protected function serializePropertyIgnoreNull(array &$data, string $property) : void
     {
         if (isset($this->$property)) $data[$property] = $this->$property;
+    }
+    
+    protected function deserializePropertyOptional(array $data, string $property, $defaultValue=null) : void
+    {
+        $this->$property = isset($data[$property]) ? $data[$property] : $defaultValue;
     }
 
     public function jsonSerialize() : array
