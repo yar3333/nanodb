@@ -4,28 +4,47 @@ namespace nanodb\orm;
 
 class Entity implements \JsonSerializable
 {
+    /**
+	 * param string $methodSuffix
+	 * param array $dest
+	 * param string $property
+     * @throws EntityFieldNotFoundException
+	 */
     protected function serializeProperty(string $methodSuffix, array &$dest, string $property) : void
     {
         $method = $property . $methodSuffix;
         if (method_exists($this, $method)) $this->$method($dest, $property);
-        else                               $dest[$property] = $this->$property;
+        else {
+			if (!property_exists($this, $property)) throw new EntityFieldNotFoundException($property, $methodSuffix);
+			$dest[$property] = $this->$property;
+		}
     }
 
-    protected function deserializeProperty(string $methodSuffix, array $src, string $property) : void
+    /**
+	 * param string $methodSuffix
+	 * param string $src
+	 * param string $property
+     * @throws EntityFieldNotFoundException
+	 */
+	protected function deserializeProperty(string $methodSuffix, array $src, string $property) : void
     {
         $method = $property . $methodSuffix;
 		if (method_exists($this, $method)) $this->$method($src, $property);
-		else                               $this->$property = $src[$property];
+		else
+		{
+			if (!array_key_exists($property, $src)) throw new EntityFieldNotFoundException($property, $methodSuffix);
+			$this->$property = $src[$property];
+		}
     }
 
     protected function serializePropertyIgnoreNull(array &$data, string $property) : void
     {
-        if (isset($this->$property)) $data[$property] = $this->$property;
+        if (property_exists($this, $property)) $data[$property] = $this->$property;
     }
     
     protected function deserializePropertyOptional(array $data, string $property, $defaultValue=null) : void
     {
-        $this->$property = isset($data[$property]) ? $data[$property] : $defaultValue;
+        $this->$property = array_key_exists($property, $data) ? $data[$property] : $defaultValue;
     }
 
     public function jsonSerialize(array $properties=null) : array
