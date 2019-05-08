@@ -68,6 +68,9 @@ class Tools {
 		if ((substr($word, -mb_strlen("xes")) === "xes") || (substr($word, -mb_strlen("ses")) === "ses") || (substr($word, -mb_strlen("zes")) === "zes") || (substr($word, -mb_strlen("shes")) === "shes") || (substr($word, -mb_strlen("ches")) === "ches")) {
 			return mb_substr($word, 0, mb_strlen($word) - 2);
 		}
+		if (substr($word, -mb_strlen("ies")) === "ies") {
+			return (mb_substr($word, 0, mb_strlen($word) - 3)??'null') . "y";
+		}
 		if (substr($word, -mb_strlen("s")) === "s") {
 			return mb_substr($word, 0, mb_strlen($word) - 1);
 		}

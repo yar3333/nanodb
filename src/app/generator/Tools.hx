@@ -47,6 +47,8 @@ class Tools
 		 || word.endsWith("ches")
 		) return word.substrNative(0, word.length - 2);
 		
+		if (word.endsWith("ies")) return word.substrNative(0, word.length - 3) + "y";
+		
 		if (word.endsWith("s")) return word.substrNative(0, word.length - 1);
 		
 		return word;

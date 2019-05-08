@@ -4,14 +4,14 @@ namespace nanodb\orm;
 
 class Entity implements \JsonSerializable
 {
-    protected function serializeProperty(string $methodSuffix, string $property, array &$dest) : void
+    protected function serializeProperty(string $methodSuffix, array &$dest, string $property) : void
     {
         $method = $property . $methodSuffix;
         if (method_exists($this, $method)) $this->$method($dest, $property);
         else                               $dest[$property] = $this->$property;
     }
 
-    protected function deserializeProperty(string $methodSuffix, string $property, array $src) : void
+    protected function deserializeProperty(string $methodSuffix, array $src, string $property) : void
     {
         $method = $property . $methodSuffix;
 		if (method_exists($this, $method)) $this->$method($src, $property);
@@ -28,28 +28,33 @@ class Entity implements \JsonSerializable
         $this->$property = isset($data[$property]) ? $data[$property] : $defaultValue;
     }
 
-    public function jsonSerialize() : array
+    public function jsonSerialize(array $properties=null) : array
     {
+        if (!isset($properties)) $properties = array_diff(array_keys(get_object_vars($this)), [ "db", "orm" ]);
+
         $data = [];
-        foreach (get_object_vars($this) as $var => $value) {
-            $this->serializeProperty("__toJson", $var, $data);
+        foreach ($properties as $var) {
+            $this->serializeProperty("__toJson", $data, $var);
         }
         return $data;
     }
 
     public function jsonDeserialize(array $data) : void
     {
-        foreach (get_object_vars($this) as $var => $value) {
-            $this->deserializeProperty("__fromJson", $var, $data);
+		if (!isset($properties)) $properties = array_diff(array_keys(get_object_vars($this)), [ "db", "orm" ]);
+
+		foreach ($properties as $var) {
+            $this->deserializeProperty("__fromJson", $data, $var);
         }
     }
 
 	public function dbSerialize(array $properties=null): array
     {
         if (!isset($properties)) $properties = array_keys(get_object_vars($this));
+
         $data = [];
         foreach ($properties as $var) {
-			$this->serializeProperty("__toDb", $var, $data);
+			$this->serializeProperty("__toDb", $data, $var);
         }
         return $data;
     }
@@ -59,7 +64,7 @@ class Entity implements \JsonSerializable
 		if (!isset($properties)) $properties = array_keys(get_object_vars($this));
         
 		foreach ($properties as $var) {
-            $this->deserializeProperty("__fromDb", $var, $data);
+            $this->deserializeProperty("__fromDb", $data, $var);
         }
     }
 }
