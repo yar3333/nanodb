@@ -30,7 +30,7 @@ class Entity implements \JsonSerializable
 
     public function jsonSerialize(array $properties=null) : array
     {
-        if (!isset($properties)) $properties = array_diff(array_keys(get_object_vars($this)), [ "db", "orm" ]);
+        if ($properties == null) $properties = array_diff(array_keys(get_object_vars($this)), [ "db", "orm" ]);
 
         $data = [];
         foreach ($properties as $var) {
@@ -39,9 +39,9 @@ class Entity implements \JsonSerializable
         return $data;
     }
 
-    public function jsonDeserialize(array $data) : void
+    public function jsonDeserialize(array $data, array $properties=null) : void
     {
-		if (!isset($properties)) $properties = array_diff(array_keys(get_object_vars($this)), [ "db", "orm" ]);
+		if ($properties == null) $properties = array_diff(array_keys(get_object_vars($this)), [ "db", "orm" ]);
 
 		foreach ($properties as $var) {
             $this->deserializeProperty("__fromJson", $data, $var);
@@ -50,7 +50,7 @@ class Entity implements \JsonSerializable
 
 	public function dbSerialize(array $properties=null): array
     {
-        if (!isset($properties)) $properties = array_keys(get_object_vars($this));
+        if ($properties == null) $properties = array_keys(get_object_vars($this));
 
         $data = [];
         foreach ($properties as $var) {
@@ -61,7 +61,7 @@ class Entity implements \JsonSerializable
 
     public function dbDeserialize(array $data, array $properties=null) : void
     {
-		if (!isset($properties)) $properties = array_keys(get_object_vars($this));
+		if ($properties == null) $properties = array_keys(get_object_vars($this));
         
 		foreach ($properties as $var) {
             $this->deserializeProperty("__fromDb", $data, $var);
