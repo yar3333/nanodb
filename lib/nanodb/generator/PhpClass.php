@@ -103,9 +103,10 @@ class PhpClass {
 		if ($isStatic === null) {
 			$isStatic = false;
 		}
-		$header = (((($retType !== null) && (mb_strpos($retType, "[]") !== false) ? "/**\n\t * @return " . $retType . "\n\t */\n\t" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v) {
-			return ((($v->haxeType !== null ? $v->haxeType . " " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
-		}, $vars))??'null') . ")" . ((($retType !== null ? " : " . (((!(mb_strpos($retType, "[]") !== false) ? $retType : "array"))??'null') : ""))??'null');
+		$_gthis = $this;
+		$header = $this->getMethodComment($vars, $retType) . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "function " . $name . "(" . (implode(", ", array_map(function ($v)  use (&$_gthis) {
+			return ((($v->haxeType !== null ? $_gthis->renderPhpType($v->haxeType) . " " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
+		}, $vars))??'null') . ")" . ((($retType !== null ? " : " . $this->renderPhpType($retType) : ""))??'null');
 		$s = $header . (((($body !== null) && (mb_strlen(trim($body, null)) > 0) ? "\n\t{\n" . ($this->indent(trim($body, null), "\t\t")??'null') . "\n\t}" : " {}"))??'null');
 		array_push($this->methods, $s);
 	}
@@ -148,6 +149,31 @@ class PhpClass {
 	}
 
 	/**
+	 * @param mixed $vars
+	 * @param string $retType
+	 * 
+	 * @return string
+	 */
+	public function getMethodComment ($vars, $retType) {
+		if (!current(array_filter($vars, function ($x) {
+			return (mb_strpos($x->haxeType, "[]") !== false);
+		})) && !(mb_strpos($retType, "[]") !== false)) {
+			return "";
+		}
+		$r = "/**\n";
+		$_g = 0;
+		while ($_g < count($vars)) {
+			$v = $vars[$_g];
+			++$_g;
+			$r = $r . "\t * @param " . $v->haxeType . " \$" . $v->haxeName . "\n";
+		}
+
+		$r = $r . "\t * @return " . $retType . "\n";
+		$r = $r . "\t */\n\t";
+		return $r;
+	}
+
+	/**
 	 * @param string $fullClassName
 	 * 
 	 * @return string
@@ -185,6 +211,19 @@ class PhpClass {
 			return "";
 		}
 		return $ind . (str_replace("\n", "\n" . $ind, $text)??'null');
+	}
+
+	/**
+	 * @param string $type
+	 * 
+	 * @return string
+	 */
+	public function renderPhpType ($type) {
+		if ((mb_strpos($type, "[]") !== false)) {
+			return "array";
+		} else {
+			return $type;
+		}
 	}
 
 	/**

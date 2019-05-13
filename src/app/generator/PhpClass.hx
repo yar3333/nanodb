@@ -77,16 +77,33 @@ class PhpClass
 	
 	public function addMethod(name:String, vars:TypedArray<PhpVar>, retType:String, body:String, access="public", isStatic=false) : Void
 	{
-		var header = (retType != null && retType.contains("[]") ? "/**\n\t * @return " + retType + "\n\t */\n\t" : "")
+		var header = getMethodComment(vars, retType)
 				   + (access + " ")
 				   + (isStatic ? 'static ' : '')
 				   + 'function ' + name + '('
-				   + vars.map(function(v:PhpVar) { return (v.haxeType != null ? v.haxeType + " " : "") + "$" + v.haxeName + (v.haxeDefVal != null ? '=' + v.haxeDefVal : ''); } ).join(', ')
+				   + vars.map(function(v:PhpVar) { return (v.haxeType != null ? renderPhpType(v.haxeType) + " " : "") + "$" + v.haxeName + (v.haxeDefVal != null ? '=' + v.haxeDefVal : ''); } ).join(', ')
 				   + ')'
-				   + (retType != null ? " : " + (!retType.contains("[]") ? retType : "array") : "");
+				   + (retType != null ? " : " + renderPhpType(retType) : "");
 		var s = header + (body != null && body.trim().length > 0 ? '\n\t{\n' + indent(body.trim(), '\t\t') + '\n\t}' : " {}");
 		methods.push(s);
  	}
+	
+	function getMethodComment(vars:TypedArray<PhpVar>, retType:String) : String
+	{
+		if (!vars.exists(function(x) return x.haxeType.contains("[]")) && !retType.contains("[]")) return "";
+		
+		var r = "/**\n";
+		for (v in vars)
+		{
+			r += "\t * @param " + v.haxeType + " $" + v.haxeName + "\n";
+		}
+		r += "\t * @return " + retType + "\n";
+		r += "\t */\n\t";
+		
+		return r;
+	}
+	
+	function renderPhpType(type:String) return type.contains("[]") ? "array" : type;
 	
 	public function addCustom(code:String) : Void
 	{
