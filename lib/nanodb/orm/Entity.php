@@ -10,7 +10,7 @@ class Entity implements \JsonSerializable
 	 * param string $property
      * @throws EntityFieldNotFoundException
 	 */
-    protected function serializeProperty(string $methodSuffix, array &$dest, string $property) : void
+    private function serializeProperty(string $methodSuffix, array &$dest, string $property) : void
     {
         $method = $property . $methodSuffix;
         if (method_exists($this, $method)) $this->$method($dest, $property);
@@ -26,7 +26,7 @@ class Entity implements \JsonSerializable
 	 * param string $property
      * @throws EntityFieldNotFoundException
 	 */
-	protected function deserializeProperty(string $methodSuffix, array $src, string $property) : void
+	private function deserializeProperty(string $methodSuffix, array $src, string $property) : void
     {
         $method = $property . $methodSuffix;
 		if (method_exists($this, $method)) $this->$method($src, $property);
@@ -36,17 +36,18 @@ class Entity implements \JsonSerializable
 			$this->$property = $src[$property];
 		}
     }
-
+	
     protected function serializePropertyIgnoreNull(array &$data, string $property) : void
     {
         if (property_exists($this, $property)) $data[$property] = $this->$property;
     }
-    
-    protected function deserializePropertyOptional(array $data, string $property, $defaultValue=null) : void
-    {
-        $this->$property = array_key_exists($property, $data) ? $data[$property] : $defaultValue;
-    }
-
+	
+	
+	protected function deserializer(array $data, string $field) : FieldDeserializer
+	{
+		return new FieldDeserializer($data, $field);
+	}
+	
     public function jsonSerialize(array $properties=null) : array
     {
         if ($properties == null) $properties = array_diff(array_keys(get_object_vars($this)), [ "db", "orm" ]);
