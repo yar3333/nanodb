@@ -7,7 +7,7 @@ use \nanodb\orm\EntityDeserializationException;
 class FieldDeserializer
 {
 	private $data;
-	private $property;
+	private $field;
 
 	private $optional = false;
 	private $defaultValue;
@@ -44,12 +44,12 @@ class FieldDeserializer
 
 	function asMixed()
 	{
-		if (!array_key_exists($this->property, $this->data)) {
+		if (!array_key_exists($this->field, $this->data)) {
 			if ($this->optional) return $this->defaultValue;
 			throw new EntityDeserializationException("Field [" . $this->field . "] is required", '__fromJson');
 		}
 
-		$v = $this->data[$this->property];
+		$v = $this->data[$this->field];
 		if ($v === null) {
 		    if ($this->optional) return $this->defaultValue;
             throw new EntityDeserializationException("Null is not allowed for field [" . $this->field . "]", '__fromJson');
@@ -58,20 +58,20 @@ class FieldDeserializer
         return $v;
 	}
 
-	function asString() : string
+	function asString() : ?string
 	{
         $v = $this->asMixed();
-		if ($this->optional && ($v === null || !array_key_exists($this->property, $this->data))) return $this->defaultValue;
+		if ($this->optional && ($v === null || !array_key_exists($this->field, $this->data))) return $this->defaultValue;
 
 		if (!is_string($v)) throw new EntityDeserializationException("String is expected for field [" . $this->field . "]", '__fromJson');
 
         return $v;
 	}
 
-	function asInt() : int
+	function asInt() : ?int
 	{
         $v = $this->asMixed();
-		if ($this->optional && ($v === null || !array_key_exists($this->property, $this->data))) return $this->defaultValue;
+		if ($this->optional && ($v === null || !array_key_exists($this->field, $this->data))) return $this->defaultValue;
 
 		if (!is_numeric($v) || !ctype_digit($v)) throw new EntityDeserializationException("Integer is expected for field [" . $this->field . "]", '__fromJson');
 
@@ -84,10 +84,10 @@ class FieldDeserializer
         return $i;
 	}
 
-	function asFloat() : float
+	function asFloat() : ?float
 	{
         $v = $this->asMixed();
-		if ($this->optional && ($v === null || !array_key_exists($this->property, $this->data))) return $this->defaultValue;
+		if ($this->optional && ($v === null || !array_key_exists($this->field, $this->data))) return $this->defaultValue;
 
 		if (!is_numeric($v)) throw new EntityDeserializationException("Float is expected for field [" . $this->field . "]", '__fromJson');
 
@@ -97,10 +97,10 @@ class FieldDeserializer
         return $f;
 	}
 
-	function asDateTime() : \DateTime
+	function asDateTime() : ?\DateTime
 	{
         $v = $this->asMixed();
-		if ($this->optional && ($v === null || !array_key_exists($this->property, $this->data))) return $this->defaultValue;
+		if ($this->optional && ($v === null || !array_key_exists($this->field, $this->data))) return $this->defaultValue;
 
 		try
         {
@@ -121,10 +121,10 @@ class FieldDeserializer
         throw new EntityDeserializationException("Date/time is expected for field [" . $this->field . "]", '__fromJson');
 	}
 
-	function asArray() : array
+	function asArray() : ?array
 	{
         $v = $this->asMixed();
-		if ($this->optional && ($v === null || !array_key_exists($this->property, $this->data))) return $this->defaultValue;
+		if ($this->optional && ($v === null || !array_key_exists($this->field, $this->data))) return $this->defaultValue;
 
         if (!is_array($v)) throw new EntityDeserializationException("Array is expected for field [" . $this->field . "]", '__fromJson');
 
