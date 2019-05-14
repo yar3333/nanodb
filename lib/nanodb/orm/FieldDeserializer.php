@@ -73,15 +73,14 @@ class FieldDeserializer
         $v = $this->asMixed();
 		if ($this->optional && ($v === null || !array_key_exists($this->field, $this->data))) return $this->defaultValue;
 
-		if (!is_numeric($v) || !ctype_digit($v)) throw new EntityDeserializationException("Integer is expected for field [" . $this->field . "]", '__fromJson');
+		if (!is_int($v)) {
+            if (!is_string($v) || !ctype_digit($v)) throw new EntityDeserializationException("Integer is expected for field [" . $this->field . "]", '__fromJson');
+            $v = (int)$v;
+        }
 
-        $f = (float)$v;
-        if ($f < PHP_INT_MIN || $f > PHP_INT_MAX) throw new EntityDeserializationException("Value out of integer range for field [" . $this->field . "]", '__fromJson');
+        if ($this->checkRange && ($v < $this->rangeMin || $v > $this->rangeMax)) throw new EntityDeserializationException("Value out of allowed range " . $this->rangeMin . ".." . $this->rangeMax . " for field [" . $this->field . "]", '__fromJson');
 
-        $i = (int)$v;
-        if ($this->checkRange && ($i < $this->rangeMin || $i > $this->rangeMax)) throw new EntityDeserializationException("Value out of allowed range " . $this->rangeMin . ".." . $this->rangeMax . " for field [" . $this->field . "]", '__fromJson');
-
-        return $i;
+        return $v;
 	}
 
 	function asFloat() : ?float
@@ -89,12 +88,14 @@ class FieldDeserializer
         $v = $this->asMixed();
 		if ($this->optional && ($v === null || !array_key_exists($this->field, $this->data))) return $this->defaultValue;
 
-		if (!is_numeric($v)) throw new EntityDeserializationException("Float is expected for field [" . $this->field . "]", '__fromJson');
+		if (!is_float($v)) {
+            if (!is_string($v) || !is_numeric($v)) throw new EntityDeserializationException("Float is expected for field [" . $this->field . "]", '__fromJson');
+            $v = (float)$v;
+        }
 
-		$f =  (float)$v;
-        if ($this->checkRange && ($f < $this->rangeMin || $f > $this->rangeMax)) throw new EntityDeserializationException("Value out of alolowed range (" . $this->rangeMin . ".." . $this->rangeMax . ") for field [" . $this->field . "]", '__fromJson');
+        if ($this->checkRange && ($v < $this->rangeMin || $v > $this->rangeMax)) throw new EntityDeserializationException("Value out of alolowed range (" . $this->rangeMin . ".." . $this->rangeMax . ") for field [" . $this->field . "]", '__fromJson');
 
-        return $f;
+        return $v;
 	}
 
 	function asDateTime() : ?\DateTime
