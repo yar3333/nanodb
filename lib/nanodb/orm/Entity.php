@@ -15,7 +15,6 @@ class Entity implements \JsonSerializable
         $method = $property . $methodSuffix;
         if (method_exists($this, $method)) $this->$method($dest, $property);
         else {
-			if (!property_exists($this, $property)) throw new EntityFieldNotFoundException($property, $methodSuffix);
 			$dest[$property] = $this->$property;
 		}
     }
@@ -32,7 +31,7 @@ class Entity implements \JsonSerializable
 		if (method_exists($this, $method)) $this->$method($src, $property);
 		else
 		{
-			if (!array_key_exists($property, $src)) throw new EntityFieldNotFoundException($property, $methodSuffix);
+			if (!array_key_exists($property, $src) || $methodSuffix === "__fromJson" && $src[$property] === null) throw new EntityDeserializationException("Field [" . $property . "] is required", $methodSuffix);
 			$this->$property = $src[$property];
 		}
     }
