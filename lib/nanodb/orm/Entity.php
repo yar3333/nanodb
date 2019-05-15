@@ -42,12 +42,6 @@ class Entity implements \JsonSerializable
         if (property_exists($this, $property)) $data[$property] = $this->$property;
     }
 	
-	
-	protected function deserializer(array $data, string $field) : FieldDeserializer
-	{
-		return new FieldDeserializer($data, $field);
-	}
-	
     public function jsonSerialize(array $properties=null) : array
     {
         if ($properties == null) $properties = array_diff(array_keys(get_object_vars($this)), [ "db", "orm" ]);
