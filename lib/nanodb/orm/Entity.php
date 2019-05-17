@@ -22,19 +22,25 @@ class Entity implements \JsonSerializable
     }
 
     /**
-     * @param array $src
+     * @param array|\ArrayObject $src
      * @param string $property
      * @param string $methodSuffix
      * @throws EntityDeserializationException
      */
-    private function deserializeProperty(array $src, string $property, string $methodSuffix) : void
+    private function deserializeProperty($src, string $property, string $methodSuffix) : void
     {
         $method = $property . $methodSuffix;
 		if (method_exists($this, $method)) $this->$method($src, $property);
 		else			                   $this->deserializePropertyDefault($src, $property, $methodSuffix);
     }
 
-    protected function deserializePropertyDefault(array $src, string $property, string $methodSuffix) : void
+    /**
+     * @param array|\ArrayObject $src
+     * @param string $property
+     * @param string $methodSuffix
+     * @throws EntityDeserializationException
+     */
+    protected function deserializePropertyDefault($src, string $property, string $methodSuffix) : void
     {
         if (!array_key_exists($property, $src) || $methodSuffix === "__fromJson" && $src[$property] === null)
         {
@@ -79,7 +85,12 @@ class Entity implements \JsonSerializable
         return $data;
     }
 
-    public function dbDeserialize(array $data, array $properties=null) : void
+    
+	/**
+	 * @param array|\ArrayObject $data 
+	 * @param array $properties 
+	 */
+	public function dbDeserialize($data, array $properties=null) : void
     {
 		if ($properties === null) $properties = array_keys(get_object_vars($this));
         

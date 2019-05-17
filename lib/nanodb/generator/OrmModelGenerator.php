@@ -75,7 +75,7 @@ class OrmModelGenerator {
 		$klass->addMethod("dbSerialize", [new GeneratorPhpVar("properties", "array", "null")], "array", "if (\$properties === null) \$properties = [ " . (implode(", ", array_map(function ($x2) {
 			return "'" . $x2->haxeName . "'";
 		}, $vars))??'null') . " ];\n" . "return parent::dbSerialize(\$properties);");
-		$klass->addMethod("dbDeserialize", [new GeneratorPhpVar("data", "array"), new GeneratorPhpVar("properties", "array", "null")], "void", "if (\$properties === null) \$properties = [ " . (implode(", ", array_map(function ($x3) {
+		$klass->addMethod("dbDeserialize", [new GeneratorPhpVar("data", null), new GeneratorPhpVar("properties", "array", "null")], "void", "if (\$properties === null) \$properties = [ " . (implode(", ", array_map(function ($x3) {
 			return "'" . $x3->haxeName . "'";
 		}, $vars))??'null') . " ];\n" . "parent::dbDeserialize(\$data, \$properties);");
 		return $klass;

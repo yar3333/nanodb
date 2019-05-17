@@ -117,7 +117,7 @@ class OrmModelGenerator
 		
 		klass.addMethod(
 			  "dbDeserialize"
-			, Syntax.arrayDecl(new PhpVar("data", "array"), new PhpVar("properties", "array", "null"))
+			, Syntax.arrayDecl(new PhpVar("data", null), new PhpVar("properties", "array", "null"))
 			, "void"
 			, "if ($properties === null) $properties = [ " + vars.map(function(x) return "'" + x.haxeName + "'").join(", ") + " ];\n"
 			+ "parent::dbDeserialize($data, $properties);"
