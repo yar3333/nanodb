@@ -18,7 +18,27 @@ class Entity implements \JsonSerializable
 
     protected function serializePropertyDefault(array &$dest, string $property, string $methodSuffix) : void
     {
-    	$dest[$property] = $this->$property;
+    	if ($this->$property instanceof Entity)
+        {
+            switch ($methodSuffix)
+            {
+                case "__toJson":
+                    $dest[$property] = $this->$property->jsonSerialize();
+                    break;
+
+                case "__toDb":
+                    $dest[$property] = $this->$property->dbSerialize();
+                    break;
+
+                default:
+                    $dest[$property] =  $this->$property;
+                    break;
+            }
+        }
+    	else
+        {
+            $dest[$property] =  $this->$property;
+        }
     }
 
     /**
@@ -51,7 +71,7 @@ class Entity implements \JsonSerializable
 
     protected function serializePropertyIgnoreNull(array &$data, string $property) : void
     {
-        if (property_exists($this, $property)) $data[$property] = $this->$property;
+        if ($this->$property !== null) $data[$property] = $this->$property;
     }
 	
     public function jsonSerialize(array $properties=null) : array
