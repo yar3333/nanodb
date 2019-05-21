@@ -30,7 +30,7 @@ class OrmModelGenerator {
 	 * @return void
 	 */
 	public function addCastFromDbMethod ($klass, $v, $destCastPhpType) {
-		$klass->addMethod($v->haxeName . "__fromDb", [new GeneratorPhpVar("data", "array")], null, "return \$data['" . $v->name . "'] !== null ? (" . $destCastPhpType . ")\$data['" . $v->name . "'] : null;", "protected");
+		$klass->addMethod($v->haxeName . "__fromDb", [new GeneratorPhpVar("data", "array")], null, "\$this->" . $v->name . " = \$data['" . $v->name . "'] !== null ? (" . $destCastPhpType . ")\$data['" . $v->name . "'] : null;", "protected");
 	}
 
 	/**
@@ -49,7 +49,7 @@ class OrmModelGenerator {
 		foreach ($vars as $key => $value) {
 			$klass->addVar($value);
 			if ($value->haxeType === "\\DateTime") {
-				$klass->addMethod($value->haxeName . "__fromDb", [new GeneratorPhpVar("data", "array")], null, "return \$data['" . $value->name . "'] !== null ? new \\DateTime(\$data['" . $value->name . "']) : null;", "protected");
+				$klass->addMethod($value->haxeName . "__fromDb", [new GeneratorPhpVar("data", "array")], null, "\$this->" . $value->name . " = \$data['" . $value->name . "'] !== null ? new \\DateTime(\$data['" . $value->name . "']) : null;", "protected");
 			} else if ($value->haxeType === "int") {
 				$_gthis->addCastFromDbMethod($klass, $value, "int");
 			} else if ($value->haxeType === "float") {

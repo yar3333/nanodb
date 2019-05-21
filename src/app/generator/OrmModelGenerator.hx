@@ -49,7 +49,7 @@ class OrmModelGenerator
 					v.haxeName + "__fromDb",
 					Syntax.arrayDecl(new PhpVar("data", "array")),
 					null, 
-					"return $data['" + v.name + "'] !== null ? new \\DateTime($data['" + v.name + "']) : null;",
+					"$this->" + v.name + " = $data['" + v.name + "'] !== null ? new \\DateTime($data['" + v.name + "']) : null;",
 					"protected"
 				);
 			}
@@ -134,7 +134,7 @@ class OrmModelGenerator
 			v.haxeName + "__fromDb",
 			Syntax.arrayDecl(new PhpVar("data", "array")),
 			null, 
-			"return $data['" + v.name + "'] !== null ? (" + destCastPhpType + ")$data['" + v.name + "'] : null;",
+			"$this->" + v.name + " = $data['" + v.name + "'] !== null ? (" + destCastPhpType + ")$data['" + v.name + "'] : null;",
 			"protected"
 		);
 	}
