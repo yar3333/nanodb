@@ -9,36 +9,44 @@ class Entity implements \JsonSerializable
      * @param string $property
      * @param string $methodSuffix
      */
-    private function serializeProperty(array &$dest, string $property, string $methodSuffix) : void
+    private function serializePropertyViaMethod(array &$dest, string $property, string $methodSuffix) : void
     {
         $method = $property . $methodSuffix;
         if (method_exists($this, $method)) $this->$method($dest, $property);
-        else 			                   $this->serializePropertyDefault($dest, $property, $methodSuffix);
+        else 			                   $this->serializeProperty($dest, $property, $methodSuffix);
     }
 
-    protected function serializePropertyDefault(array &$dest, string $property, string $methodSuffix) : void
+    protected function serializeProperty(array &$dest, string $property, string $methodSuffix) : void
     {
-    	if ($this->$property instanceof Entity)
+        $dest[$property] = $this->serializeValue($this->$property, $methodSuffix);
+    }
+
+    /**
+     * @param mixed $value
+     * @param string $methodSuffix
+     * @return mixed
+     */
+    function serializeValue($value, string $methodSuffix)
+    {
+    	if ((is_array($value) && array_keys($value) === range(0, count($value) - 1)) || $value instanceof \ArrayObject)
+        {
+            $r = [];
+            foreach ($value as $item) {
+                $r[] = $this->serializeValue($item, $methodSuffix);
+            }
+            return $r;
+        }
+
+    	if ($value instanceof Entity)
         {
             switch ($methodSuffix)
             {
-                case "__toJson":
-                    $dest[$property] = $this->$property->jsonSerialize();
-                    break;
-
-                case "__toDb":
-                    $dest[$property] = $this->$property->dbSerialize();
-                    break;
-
-                default:
-                    $dest[$property] =  $this->$property;
-                    break;
+                case "__toJson": return $value->jsonSerialize();
+                case "__toDb": return $value->dbSerialize();
             }
         }
-    	else
-        {
-            $dest[$property] =  $this->$property;
-        }
+
+    	return $value;
     }
 
     /**
@@ -47,11 +55,11 @@ class Entity implements \JsonSerializable
      * @param string $methodSuffix
      * @throws EntityDeserializationException
      */
-    private function deserializeProperty($src, string $property, string $methodSuffix) : void
+    private function deserializePropertyViaMethod($src, string $property, string $methodSuffix) : void
     {
         $method = $property . $methodSuffix;
 		if (method_exists($this, $method)) $this->$method($src, $property);
-		else			                   $this->deserializePropertyDefault($src, $property, $methodSuffix);
+		else			                   $this->deserializeProperty($src, $property, $methodSuffix);
     }
 
     /**
@@ -60,18 +68,13 @@ class Entity implements \JsonSerializable
      * @param string $methodSuffix
      * @throws EntityDeserializationException
      */
-    protected function deserializePropertyDefault($src, string $property, string $methodSuffix) : void
+    protected function deserializeProperty($src, string $property, string $methodSuffix) : void
     {
         if (!array_key_exists($property, $src) || $methodSuffix === "__fromJson" && $src[$property] === null)
         {
             throw new EntityDeserializationException("Field [" . $property . "] is required", $methodSuffix);
         }
         $this->$property = $src[$property];
-    }
-
-    protected function serializePropertyIgnoreNull(array &$data, string $property) : void
-    {
-        if ($this->$property !== null) $data[$property] = $this->$property;
     }
 	
     public function jsonSerialize(array $properties=null) : array
@@ -80,7 +83,7 @@ class Entity implements \JsonSerializable
 
         $data = [];
         foreach ($properties as $var) {
-            $this->serializeProperty($data, $var, "__toJson");
+            $this->serializePropertyViaMethod($data, $var, "__toJson");
         }
         return $data;
     }
@@ -90,7 +93,7 @@ class Entity implements \JsonSerializable
 		if ($properties === null) $properties = array_keys(get_object_vars($this));
 
 		foreach ($properties as $var) {
-            $this->deserializeProperty($data, $var, "__fromJson");
+            $this->deserializePropertyViaMethod($data, $var, "__fromJson");
         }
     }
 
@@ -100,12 +103,11 @@ class Entity implements \JsonSerializable
 
         $data = [];
         foreach ($properties as $var) {
-			$this->serializeProperty($data, $var, "__toDb");
+			$this->serializePropertyViaMethod($data, $var, "__toDb");
         }
         return $data;
     }
 
-    
 	/**
 	 * @param array|\ArrayObject $data 
 	 * @param array $properties 
@@ -115,7 +117,7 @@ class Entity implements \JsonSerializable
 		if ($properties === null) $properties = array_keys(get_object_vars($this));
         
 		foreach ($properties as $var) {
-            $this->deserializeProperty($data, $var, "__fromDb");
+            $this->deserializePropertyViaMethod($data, $var, "__fromDb");
         }
     }
 }
