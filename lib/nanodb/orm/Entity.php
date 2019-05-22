@@ -111,6 +111,7 @@ class Entity implements \JsonSerializable
 	/**
 	 * @param array|\ArrayObject $data 
 	 * @param array $properties 
+     * @throws EntityDeserializationException
 	 */
 	public function dbDeserialize($data, array $properties=null) : void
     {
