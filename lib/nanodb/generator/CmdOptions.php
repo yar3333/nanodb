@@ -82,8 +82,6 @@ class CmdOptions {
 	}
 
 	/**
-	 * @param type Next types are supported: string, int, float, bool.
-	 * 
 	 * @param string $name
 	 * @param string $type
 	 * @param mixed $switches

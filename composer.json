@@ -1,6 +1,6 @@
 {
   "name": "nanodb/nanodb",
-  "type": "ORM",
+  "type": "library",
   "description": "ORM",
   "version": "1.6.5",
   "require": {

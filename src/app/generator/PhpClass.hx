@@ -40,6 +40,7 @@ class PhpClass
 				  + (access + " ")
 				  + (isStatic ? "static " : "")
 				  + "$" + v.haxeName
+				  + (v.haxeDefVal != null ? " = " + v.haxeDefVal : "")
 				  + ";";
 			vars.push(s);
 		}

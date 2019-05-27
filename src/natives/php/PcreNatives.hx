@@ -54,16 +54,14 @@ class PcreNatives
 		}
 	}
 	
-	public static function preg_replace_callback(pattern:Dynamic, callback:NativeArray->String, subject:Dynamic, limit=-1, ?count:Int) : Dynamic
+	public static inline function preg_replace_callback(pattern:Dynamic, callback:NativeArray->String, subject:Dynamic, limit=-1) : Dynamic
 	{
-		if (count == null)
-		{
-			return untyped __call__('preg_replace_callback', pattern, callback, String, subject, limit);
-		}
-		else
-		{
-			return untyped __call__('preg_replace_callback', pattern, callback, String, subject, limit, count);
-		}
+		return untyped __call__('preg_replace_callback', pattern, callback, subject, limit);
+	}
+	
+	public static inline function preg_replace_callbackEx(pattern:Dynamic, callback:NativeArray->String, subject:Dynamic, limit:Int, count:Int) : Dynamic
+	{
+		return untyped __call__('preg_replace_callback', pattern, callback, subject, limit, count);
 	}
 	
 	public static function preg_replace<T>(pattern:Dynamic, replacement:Dynamic, subject:T, limit=-1, ?count:Int) : T

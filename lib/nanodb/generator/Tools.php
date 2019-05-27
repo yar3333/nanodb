@@ -5,8 +5,6 @@
 
 namespace nanodb\generator;
 
-use \nanodb\EReg;
-
 class Tools {
 	/**
 	 * @param string $s
@@ -27,9 +25,12 @@ class Tools {
 	 * @return string
 	 */
 	static public function fieldAsFunctionNamePart ($field) {
-		return Tools::capitalize((new EReg("_[a-z]", "g"))->map($field, function ($re) {
-			return mb_strtoupper(mb_substr($re->matched(0), 1, null));
-		}));
+		return Tools::capitalize(preg_replace_callback("/_[a-z]/", function ($arr) {
+			return (function ()  use (&$arr) {
+				$_this = mb_substr($arr[0], 1, null);
+				return mb_strtoupper($_this);
+			})();
+		}, $field, -1));
 	}
 
 	/**

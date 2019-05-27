@@ -42,9 +42,11 @@ class OrmManagerGenerator
 		
 		var dbPhpVar = new PhpVar("db", Tools.toPhpType("nanodb.orm.Db"));
 		var ormPhpVar = new PhpVar("orm", Tools.toPhpType(customOrmClassName));
+		var serializerPhpVar = new PhpVar("serializer", Tools.toPhpType("nanodb.orm.ISerializer"));
 		
 		klass.addVar(dbPhpVar, "protected");
 		klass.addVar(ormPhpVar, "protected");
+		klass.addVar(serializerPhpVar, "protected");
 		
 		klass.addMethod
 		(
@@ -57,9 +59,9 @@ class OrmManagerGenerator
 		klass.addMethod
 		(
 			  "__construct"
-			, Syntax.arrayDecl(dbPhpVar, ormPhpVar)
+			, Syntax.arrayDecl(dbPhpVar, ormPhpVar, serializerPhpVar)
 			, null
-			, "$this->db = $db;\n$this->orm = $orm;"
+			, "$this->db = $db;\n$this->orm = $orm;\n$this->serializer = $serializer;"
 		);
         
 		klass.addMethod
@@ -67,7 +69,7 @@ class OrmManagerGenerator
 			'newEmptyModel',
 			Syntax.arrayDecl(),
 			Tools.toPhpType(modelClassName),
-			"return new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);"
+			"return new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm, $this->serializer);"
 		);
         
 		klass.addMethod
@@ -75,7 +77,7 @@ class OrmManagerGenerator
 			'newModelFromParams',
 			cast vars,
 			Tools.toPhpType(modelClassName),
-			  "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
+			  "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm, $this->serializer);\n"
 			+ vars.map(function(x) return "$_obj->" + x.haxeName + " = $" + x.haxeName + ";").join('\n') + "\n"
 			+ "return $_obj;"
 		);
@@ -85,18 +87,8 @@ class OrmManagerGenerator
 			'newModelFromDbRow',
 			Syntax.arrayDecl(new PhpVar("row", "array")),
 			Tools.toPhpType(modelClassName),
-			   "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
-			 + "$_obj->dbDeserialize($row);\n"
-			 + "return $_obj;"
-		);
-		
-		klass.addMethod
-		(
-			'newModelFromJson',
-			Syntax.arrayDecl(new PhpVar("json", "array")),
-			Tools.toPhpType(modelClassName),
-			   "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm);\n"
-			 + "$_obj->jsonDeserialize($json);\n"
+			   "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm, $this->serializer);\n"
+			 + "$this->serializer->deserializeObject($row, $_obj);\n"
 			 + "return $_obj;"
 		);
 		
@@ -147,7 +139,7 @@ class OrmManagerGenerator
 				+ "}\n\n"
 			).join("")
 			+"$obj = $this->newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? "0" : "$" + x.haxeName).join(", ") + ");\n"
-			+"$data = $obj->dbSerialize([ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
+			+"$data = $this->serializer->serializeObject($obj, [ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
 			+"$fields = [];\n"
 			+"$values = [];\n"
 			+"foreach ($data as $k => $v) { $fields[] = \"`$k`\"; $values[] = $this->db->quote($v); }\n"
@@ -171,7 +163,7 @@ class OrmManagerGenerator
 					+ ").getIntResult(0) + 1;\n"
 				+ "}\n\n"
 			).join("")
-			+"$data = $obj->dbSerialize([ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
+			+"$data = $this->serializer->serializeObject($obj, [ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
 			+"$fields = [];\n"
 			+"$values = [];\n"
 			+"foreach ($data as $k => $v) { $fields[] = \"`$k`\"; $values[] = $this->db->quote($v); }\n"

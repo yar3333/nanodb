@@ -141,7 +141,7 @@ class PhpClass {
 			$isStatic = false;
 		}
 		if ($v !== null) {
-			$s = ((($v->haxeType !== null ? "/**\n * @var " . $v->haxeType . "\n */\n" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "\$" . $v->haxeName . ";";
+			$s = ((($v->haxeType !== null ? "/**\n * @var " . $v->haxeType . "\n */\n" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? " = " . $v->haxeDefVal : ""))??'null') . ";";
 			array_push($this->vars, $s);
 		} else {
 			array_push($this->vars, "");

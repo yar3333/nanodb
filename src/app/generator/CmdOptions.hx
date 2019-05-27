@@ -40,9 +40,6 @@ class CmdOptions
 		addInner(name, defaultValue, type, switches, help, false);
 	}
 	
-	/**
-	   @param type Next types are supported: string, int, float, bool.
-	**/
 	public function addRepeatable(name:String, type:String, ?switches:TypedArray<String>, help="")
 	{
 		if (type != "string" && type != "int" && type != "float")

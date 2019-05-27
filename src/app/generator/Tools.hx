@@ -1,6 +1,8 @@
 package generator;
 
 import php.Global;
+import php.PcreNatives;
+import php.TypedArray;
 using php.StringToolsNative;
 
 class Tools
@@ -25,10 +27,10 @@ class Tools
 	
 	public static function fieldAsFunctionNamePart(field:String): String
 	{
-		return capitalize(~/_[a-z]/g.map(field, function(re:EReg)
+		return capitalize(PcreNatives.preg_replace_callback('/_[a-z]/', function(arr:TypedArray<String>)
 		{
-			return re.matched(0).substrNative(1).toUpperCase();
-		}));
+			return arr[0].substrNative(1).toUpperCase();
+		}, field));
 	}
 	
 	public static function pluralToSingular(word:String) : String

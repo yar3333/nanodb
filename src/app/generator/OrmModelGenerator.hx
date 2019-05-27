@@ -42,7 +42,7 @@ class OrmModelGenerator
 		{
 			klass.addVar(v);
 			
-			if (v.haxeType == "\\DateTime")
+			/*if (v.haxeType == "\\DateTime")
 			{
 				klass.addMethod
 				(
@@ -64,17 +64,18 @@ class OrmModelGenerator
 			else if (v.haxeType == "bool")
 			{
 				addCastFromDbMethod(klass, v, "bool");
-			}
+			}*/
 		});
 		
 		klass.addMethod(
 			  "__construct"
 			, Syntax.arrayDecl(
 				new PhpVar("db", Tools.toPhpType("nanodb.orm.Db")),
-				new PhpVar("orm", Tools.toPhpType(customOrmClassName)) 
+				new PhpVar("orm", Tools.toPhpType(customOrmClassName)),
+				new PhpVar("serializer", Tools.toPhpType("nanodb.orm.ISerializer"))
 			  )
 			, null
-			, "$this->db = $db;\n$this->orm = $orm;"
+			, "$this->db = $db;\n$this->orm = $orm;\n$this->serializer = $serializer;"
 		);
         
         if (vars.exists(function(v) return v.isKey) && vars.exists(function(v) return !v.isKey))
@@ -96,10 +97,10 @@ class OrmModelGenerator
 				"save",
 				Syntax.arrayDecl(),
 				"void",
-				  "$data = $this->dbSerialize([ " + savedVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
+				  "$data = $this->serializer->serializeObject($this, [ " + savedVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
 				+ "$sets = []; foreach ($data as $k => $v) $sets[] = \"`$k` = \" . $this->db->quote($v);\n"
 				+ "\n"
-				+ "$keys = $this->dbSerialize([ " + whereVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
+				+ "$keys = $this->serializer->serializeObject($this, [ " + whereVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
 				+ "$wheres = []; foreach ($keys as $k => $v) $wheres[] = \"`$k` = \" . $this->db->quote($v);\n"
 				+ "\n"
 				+ "$this->db->query(\n"
@@ -107,22 +108,6 @@ class OrmModelGenerator
 				+ "\n);"
 			);
 		}
-		
-		klass.addMethod(
-			  "dbSerialize"
-			, Syntax.arrayDecl(new PhpVar("properties", "array", "null"))
-			, "array"
-			, "if ($properties === null) $properties = [ " + vars.map(function(x) return "'" + x.haxeName + "'").join(", ") + " ];\n"
-			+ "return parent::dbSerialize($properties);"
-		);
-		
-		klass.addMethod(
-			  "dbDeserialize"
-			, Syntax.arrayDecl(new PhpVar("data", null), new PhpVar("properties", "array", "null"))
-			, "void"
-			, "if ($properties === null) $properties = [ " + vars.map(function(x) return "'" + x.haxeName + "'").join(", ") + " ];\n"
-			+ "parent::dbDeserialize($data, $properties);"
-		);
 		
 		return klass;
 	}
