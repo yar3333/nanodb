@@ -41,30 +41,6 @@ class OrmModelGenerator
 		Syntax.foreach(vars, function(_, v:OrmPhpVar)
 		{
 			klass.addVar(v);
-			
-			/*if (v.haxeType == "\\DateTime")
-			{
-				klass.addMethod
-				(
-					v.haxeName + "__fromDb",
-					Syntax.arrayDecl(new PhpVar("data", "array")),
-					null, 
-					"$this->" + v.name + " = $data['" + v.name + "'] !== null ? new \\DateTime($data['" + v.name + "']) : null;",
-					"protected"
-				);
-			}
-			else if (v.haxeType == "int")
-			{
-				addCastFromDbMethod(klass, v, "int");
-			}
-			else if (v.haxeType == "float")
-			{
-				addCastFromDbMethod(klass, v, "float");
-			}
-			else if (v.haxeType == "bool")
-			{
-				addCastFromDbMethod(klass, v, "bool");
-			}*/
 		});
 		
 		klass.addMethod(

@@ -88,7 +88,7 @@ class OrmManagerGenerator
 			Syntax.arrayDecl(new PhpVar("row", "array")),
 			Tools.toPhpType(modelClassName),
 			   "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm, $this->serializer);\n"
-			 + "$this->serializer->deserializeObject($row, $_obj);\n"
+			 + "$this->serializer->deserializeObject($row, $_obj, [ " + vars.map(function(x) return "'" + x.haxeName + "'").join(", ") + " ]);\n"
 			 + "return $_obj;"
 		);
 		

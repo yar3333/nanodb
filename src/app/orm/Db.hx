@@ -10,7 +10,6 @@ import php.Exception;
 import orm.DbDriver_mysql;
 import orm.DbDriver_sqlite;
 import orm.SqlQuery;
-import orm.Serializer;
 
 class Db
 {
