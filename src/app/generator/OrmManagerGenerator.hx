@@ -206,7 +206,7 @@ class OrmManagerGenerator
 			Tools.toPhpType(modelClassName) + '[]',
 			 "$resultSet = $this->db->query($sql);\n"
 			+"$r = [];\n"
-			+"/** @noinspection PhpAssignmentInConditionInspection */"
+			+"/** @noinspection PhpAssignmentInConditionInspection */\n"
 			+"while ($row = $resultSet->next())\n"
 			+"{\n"
 			+"	array_push($r, $this->newModelFromDbRow($row));\n"
