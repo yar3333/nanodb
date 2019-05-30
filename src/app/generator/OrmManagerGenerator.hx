@@ -186,7 +186,7 @@ class OrmManagerGenerator
 			'getAll',
 			Syntax.arrayDecl(new PhpVar('_order', 'string', getOrderDefVal(vars, positions))),
 			Tools.toPhpType(modelClassName) + '[]',
-			"return $this->getMany('SELECT * FROM `" + table + "`' . ($_order != null ? ' ORDER BY ' . $_order : ''));"
+			"return $this->getMany('SELECT * FROM `" + table + "`' . ($_order !== null ? ' ORDER BY ' . $_order : ''));"
 		);
 		
 		klass.addMethod
@@ -262,7 +262,7 @@ class OrmManagerGenerator
 			'getBy' + whereVars.map(function(v) return Tools.fieldAsFunctionNamePart(v.haxeName)).join('And'),
 			(cast whereVars:TypedArray<PhpVar>).concat(Syntax.arrayDecl(new PhpVar('_order', 'string', getOrderDefVal(vars, positions)))), 
 			Tools.toPhpType(modelClassName) + '[]',
-			"return $this->getMany('SELECT * FROM `" + table + "`" + getWhereSql(whereVars) + " . ($_order != null ? ' ORDER BY ' . $_order : ''));"
+			"return $this->getMany('SELECT * FROM `" + table + "`" + getWhereSql(whereVars) + " . ($_order !== null ? ' ORDER BY ' . $_order : ''));"
 		);
 	}
 	
