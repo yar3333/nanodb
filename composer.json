@@ -2,7 +2,6 @@
   "name": "nanodb/nanodb",
   "type": "library",
   "description": "ORM",
-  "version": "1.7.5",
   "require": {
     "php": ">=7.2.0"
   },
