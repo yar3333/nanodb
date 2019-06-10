@@ -20,7 +20,7 @@ class OrmTools {
 	 */
 	static public function field2var ($table, $f, $positions) {
 		$f1 = $f->name;
-		$r = OrmTools::sqlType2phpType($f->type);
+		$r = ((($f->isNull ? "?" : ""))??'null') . OrmTools::sqlType2phpType($f->type);
 		$r1 = new GeneratorOrmPhpVar($f1, $r, ($positions->is($table, $f->name) ? "null" : null));
 		$r1->table = $table;
 		$r1->name = $f->name;
