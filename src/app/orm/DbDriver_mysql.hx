@@ -128,6 +128,7 @@ class DbDriver_mysql implements DbDriver
         if (Global.is_bool(v)) return v ? "1" : "0";
         if (Syntax.strictEqual(v, null)) return "NULL";
 		if (Std.is(v, DateTime)) return "'" + (cast v:DateTime).format("Y-m-d H:i:s") + "'";
+		if (Std.is(v, SqlTextField)) return "`" + (cast v:SqlTextField).text + "`";
         
         throw new Exception("Unsupported parameter type '" + (cast v:String) + "'.");
     }

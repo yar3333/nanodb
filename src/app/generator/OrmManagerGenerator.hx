@@ -209,7 +209,7 @@ class OrmManagerGenerator
 			+"/** @noinspection PhpAssignmentInConditionInspection */\n"
 			+"while ($row = $resultSet->next())\n"
 			+"{\n"
-			+"	array_push($r, $this->newModelFromDbRow($row));\n"
+			+"	$r[] = $this->newModelFromDbRow($row);\n"
 			+"}\n"
 			+"return $r;"
 		);

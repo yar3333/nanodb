@@ -6,6 +6,7 @@
 namespace nanodb\orm;
 
 use \nanodb\orm\DbException as OrmDbException;
+use \nanodb\orm\SqlTextField as OrmSqlTextField;
 use \nanodb\sys\db\Connection;
 use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\Sqlite;
@@ -210,6 +211,9 @@ class DbDriver_sqlite implements OrmDbDriver {
 		}
 		if (($v instanceof \DateTime)) {
 			return "'" . ($v->format("Y-m-d H:i:s")??'null') . "'";
+		}
+		if (($v instanceof OrmSqlTextField)) {
+			return "`" . $v->text . "`";
 		}
 		throw new \Exception("Unsupported parameter type '" . $v . "'.");
 	}

@@ -10,7 +10,7 @@ class Serializer implements ISerializer
 	 *
 	 * @return array
 	 */
-	function serializeObject(object $src, array $properties=null) : array
+	public function serializeObject(object $src, array $properties=null) : array
     {
 		if ($properties === null) $properties = array_keys(get_object_vars($src));
 
@@ -28,7 +28,7 @@ class Serializer implements ISerializer
 	 * 
 	 * @return void
 	 */
-	function deserializeObject(array $src, object $dest, array $properties=null) : void
+	public function deserializeObject(array $src, object $dest, array $properties=null) : void
     {
 		if ($properties === null) $properties = array_keys(get_object_vars($dest));
 
