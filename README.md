@@ -104,7 +104,7 @@ $users = $orm->user->getMany("SELECT * FROM `users` WHERE `status` = {myStatus}"
 ]);
 
 # get count of all users
-$count = $orm->user->query()->count();
+$count = $orm->user->count();
 
 # get count of users by complex condition
 $count = $orm->user->whereField("status", "=", 1)

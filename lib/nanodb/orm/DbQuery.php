@@ -19,12 +19,17 @@ abstract class DbQuery
 	/**
 	 * @var string[]
 	 */
-	protected $conditions = [];
+	private $conditions = [];
 
 	/**
 	 * @var string[]
 	 */
-	protected $orderBys = [];
+	private $orderBys = [];
+
+    /**
+     * @var bool
+     */
+	private $isDistinct = false;
 
 	/**
 	 * @param string $table
@@ -112,7 +117,7 @@ abstract class DbQuery
 	protected function getSelectSql(?array $fields) : string
 	{
 		$f = ($fields !== null ? array_map(function($x) { return $this->db->quote(SqlText::field($x)); }, $fields) : ["*"]);
-		return "SELECT " . implode(", ", $f) . "\nFROM `" . $this->table . "`" . $this->getWhereSql() . $this->getOrderBySql();
+		return "SELECT " . ($this->isDistinct ? "DISTINCT " : "") . implode(", ", $f) . "\nFROM `" . $this->table . "`" . $this->getWhereSql() . $this->getOrderBySql();
 	}
 
 	/**
@@ -155,6 +160,16 @@ abstract class DbQuery
 		$r->conditions[] = $rawSqlText;
 		return $r;
 	}
+
+    /**
+     * @return static
+     */
+	public function distinct()
+    {
+		$r = clone $this;
+		$r->isDistinct = true;
+		return $r;
+    }
 
     /**
      * @param string $field
