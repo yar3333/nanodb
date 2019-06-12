@@ -4,22 +4,17 @@ namespace nanodb\orm;
 
 use nanodb\sys\db\ResultSet;
 
-class SqlQuery
+abstract class DbQuery
 {
-	/**
-	 * @var string
-	 */
-	protected $table;
-
 	/**
 	 * @var Db
 	 */
 	protected $db;
 
 	/**
-	 * @var object
+	 * @var string
 	 */
-	protected $manager;
+	protected $table;
 
 	/**
 	 * @var string[]
@@ -34,13 +29,11 @@ class SqlQuery
 	/**
 	 * @param string $table
 	 * @param Db $db
-	 * @param object $manager
 	 */
-	public function __construct(string $table, Db $db, object $manager)
+	public function __construct(Db $db, string $table)
 	{
-		$this->table = $table;
 		$this->db = $db;
-		$this->manager = $manager;
+		$this->table = $table;
 	}
 
 	public function count() : int
@@ -65,7 +58,7 @@ class SqlQuery
 		$sqlSelect = $this->getSelectSql(null);
 		$sqlLimit = $this->getLimitSql($limit);
 		$sqlOffset = $this->getOffsetSql($offset);
-		return $this->manager->getMany($sqlSelect . $sqlLimit . $sqlOffset);
+		return $this->getMany($sqlSelect . $sqlLimit . $sqlOffset);
 	}
 
 	public function findManyFields(array $fields, int $limit = null, int $offset = null) : ResultSet
@@ -75,7 +68,7 @@ class SqlQuery
 
 	public function findOne()
 	{
-		return $this->manager->getOne($this->getSelectSql(null));
+		return $this->getOne($this->getSelectSql(null));
 	}
 
 	/**
@@ -197,5 +190,8 @@ class SqlQuery
 
 		return $this->where("`" . $field . "` " . $op . " " . $this->db->quote($value));
 	}
-}
 
+	abstract public function getMany(string $sql) : array;
+
+	abstract public function getOne(string $sql);
+}
