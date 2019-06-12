@@ -222,20 +222,20 @@ class OrmManagerGenerator
 		klass.addMethod(
 			"orderAsc",
 			Syntax.arrayDecl(
-				new PhpVar("value", null)
+				new PhpVar("rawSqlText", "string")
 			),
 			Tools.toPhpType(customManagerClassName),
-			"return parent::orderAsc($value);"
+			"return parent::orderAsc($rawSqlText);"
 		);
 		
 		//function orderDesc(value:Dynamic) : SqlQuery<T>
 		klass.addMethod(
 			"orderDesc",
 			Syntax.arrayDecl(
-				new PhpVar("value", null)
+				new PhpVar("rawSqlText", "string")
 			),
 			Tools.toPhpType(customManagerClassName),
-			"return parent::orderDesc($value);"
+			"return parent::orderDesc($rawSqlText);"
 		);
 		
 		//function findMany(?limit:Int, ?offset:Int) : TypedArray<T>

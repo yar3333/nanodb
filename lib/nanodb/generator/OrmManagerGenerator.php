@@ -163,8 +163,8 @@ class OrmManagerGenerator {
 
 		$klass->addMethod("whereField", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($customManagerClassName), "return parent::whereField(\$field, \$op, \$value);");
 		$klass->addMethod("where", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($customManagerClassName), "return parent::where(\$rawSqlText);");
-		$klass->addMethod("orderAsc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($customManagerClassName), "return parent::orderAsc(\$value);");
-		$klass->addMethod("orderDesc", [new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($customManagerClassName), "return parent::orderDesc(\$value);");
+		$klass->addMethod("orderAsc", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($customManagerClassName), "return parent::orderAsc(\$rawSqlText);");
+		$klass->addMethod("orderDesc", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($customManagerClassName), "return parent::orderDesc(\$rawSqlText);");
 		$klass->addMethod("findMany", [new GeneratorPhpVar("limit", "int", "null"), new GeneratorPhpVar("offset", "int", "null")], GeneratorTools::toPhpType($modelClassName) . "[]", "return parent::findMany(\$limit, \$offset);");
 		$klass->addMethod("findOne", [], "?" . GeneratorTools::toPhpType($modelClassName), "return parent::findOne();");
 		return $klass;

@@ -129,24 +129,24 @@ abstract class DbQuery
 	}
 
 	/**
-	 * @param mixed $value
+	 * @param string $rawSqlText
 	 * @return static
 	 */
-	public function orderAsc($value)
+	public function orderAsc(string $rawSqlText)
 	{
 		$r = clone $this;
-		$r->orderBys[] = $this->db->quote($value);
+		$r->orderBys[] = $rawSqlText;
 		return $r;
 	}
 
 	/**
-	 * @param mixed $value
+	 * @param string $rawSqlText
 	 * @return static
 	 */
-	public function orderDesc($value)
+	public function orderDesc(string $rawSqlText)
 	{
 		$r = clone $this;
-		$r->orderBys[] = $this->db->quote($value) . " DESC";
+		$r->orderBys[] = $rawSqlText . " DESC";
 		return $r;
 	}
 
