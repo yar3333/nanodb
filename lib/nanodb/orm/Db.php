@@ -61,7 +61,7 @@ class Db
 		return $this->connection->lastInsertId();
 	}
 
-	public function query(string $sql, array $params = null) : ResultSet
+	public function query(string $sql, array $params = null) : ?ResultSet
 	{
 		try {
 			if ($params !== null) {
