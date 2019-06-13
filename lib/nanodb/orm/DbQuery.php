@@ -76,11 +76,7 @@ abstract class DbQuery
 		return $this->getOne($this->getSelectSql(null));
 	}
 
-	/**
-	 * @param string[] $fields
-	 * @return mixed
-	 */
-	public function findOneFields(?array $fields)
+	public function findOneFields(?array $fields) : ?array
 	{
 		$rr = $this->db->query($this->getSelectSql($fields) . "\nLIMIT 1");
 		if ($rr->hasNext()) {
@@ -116,7 +112,7 @@ abstract class DbQuery
 
 	protected function getSelectSql(?array $fields) : string
 	{
-		$f = ($fields !== null ? array_map(function($x) { return $this->db->quote(SqlText::field($x)); }, $fields) : ["*"]);
+		$f = ($fields !== null ? array_map(function($x) { return $this->db->quote($x); }, $fields) : ["*"]);
 		return "SELECT " . ($this->isDistinct ? "DISTINCT " : "") . implode(", ", $f) . "\nFROM `" . $this->table . "`" . $this->getWhereSql() . $this->getOrderBySql();
 	}
 
