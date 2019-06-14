@@ -165,9 +165,8 @@ class OrmManagerGenerator
 			'getOne',
 			Syntax.arrayDecl(new PhpVar('sql', 'string')),
 			"?" + Tools.toPhpType(modelClassName),
-			 "$rows = $this->db->query($sql . ' LIMIT 1');\n"
-			+"if (!$rows->hasNext()) return null;\n"
-			+"return $this->newModelFromDbRow($rows->next());"
+			 "/** @noinspection PhpIncompatibleReturnTypeInspection */\n"
+			+"return parent::getOne($sql);"
 		);
 		
 		klass.addMethod
@@ -175,14 +174,7 @@ class OrmManagerGenerator
 			'getMany',
 			Syntax.arrayDecl(new PhpVar('sql', 'string')),
 			Tools.toPhpType(modelClassName) + '[]',
-			 "$resultSet = $this->db->query($sql);\n"
-			+"$r = [];\n"
-			+"/** @noinspection PhpAssignmentInConditionInspection */\n"
-			+"while ($row = $resultSet->next())\n"
-			+"{\n"
-			+"	$r[] = $this->newModelFromDbRow($row);\n"
-			+"}\n"
-			+"return $r;"
+			"return parent::getMany($sql);"
 		);
 		
         Syntax.foreach(db.connection.getUniques(table), function(_, fields:TypedArray<String>)

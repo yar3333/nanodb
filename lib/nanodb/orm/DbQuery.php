@@ -202,7 +202,26 @@ abstract class DbQuery
 		return $this->where("`" . $field . "` " . $op . " " . $this->db->quote($value));
 	}
 
-	abstract public function getMany(string $sql) : array;
+	public function getOne(string $sql)
+	{
+		$resultSet = $this->db->query($sql . ' LIMIT 1');
+		if (!$resultSet) throw DbException::errorOnQuery($sql, new \Exception('Query must return ResultSet.'));
+		if (!$resultSet->hasNext()) return null;
+		return $this->newModelFromDbRow($resultSet->next());
+	}
+    
+	public function getMany(string $sql) : array
+	{
+		$resultSet = $this->db->query($sql);
+		if (!$resultSet) throw DbException::errorOnQuery($sql, new \Exception('Query must return ResultSet.'));
+		$r = [];
+		/** @noinspection PhpAssignmentInConditionInspection */
+		while ($row = $resultSet->next())
+		{
+			$r[] = $this->newModelFromDbRow($row);
+		}
+		return $r;
+	}
 
-	abstract public function getOne(string $sql);
+	abstract public function newModelFromDbRow(array $row);
 }

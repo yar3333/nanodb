@@ -174,14 +174,12 @@ class DbDriver_sqlite implements OrmDbDriver {
 	 * @return ResultSet
 	 */
 	public function query ($sql) {
-		$r = null;
 		try {
-			$r = $this->connection->request($sql);
+			return $this->connection->request($sql);
 		}
 		catch (\Throwable $e) {
-			throw new OrmDbException($e);
+			throw OrmDbException::errorOnQuery($sql, $e);
 		}
-		return $r;
 	}
 
 	/**

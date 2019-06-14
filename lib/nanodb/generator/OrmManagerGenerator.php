@@ -142,8 +142,8 @@ class OrmManagerGenerator {
 		$klass->addMethod("deleteBy" . (implode("And", array_map(function ($x13) {
 			return GeneratorTools::fieldAsFunctionNamePart($x13->haxeName);
 		}, $deleteVars))??'null'), $deleteVars, "void", "\$this->db->query('DELETE FROM `" . $table . "`" . $this->getWhereSql($deleteVars) . " . ' LIMIT 1');");
-		$klass->addMethod("getOne", [new GeneratorPhpVar("sql", "string")], "?" . GeneratorTools::toPhpType($modelClassName), "\$rows = \$this->db->query(\$sql . ' LIMIT 1');\n" . "if (!\$rows->hasNext()) return null;\n" . "return \$this->newModelFromDbRow(\$rows->next());");
-		$klass->addMethod("getMany", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName) . "[]", "\$resultSet = \$this->db->query(\$sql);\n" . "\$r = [];\n" . "/** @noinspection PhpAssignmentInConditionInspection */\n" . "while (\$row = \$resultSet->next())\n" . "{\n" . "\t\$r[] = \$this->newModelFromDbRow(\$row);\n" . "}\n" . "return \$r;");
+		$klass->addMethod("getOne", [new GeneratorPhpVar("sql", "string")], "?" . GeneratorTools::toPhpType($modelClassName), "/** @noinspection PhpIncompatibleReturnTypeInspection */\n" . "return parent::getOne(\$sql);");
+		$klass->addMethod("getMany", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName) . "[]", "return parent::getMany(\$sql);");
 		$collection = $db->connection->getUniques($table);
 		foreach ($collection as $key => $value) {
 			unset($fields);

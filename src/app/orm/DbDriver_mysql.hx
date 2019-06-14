@@ -80,7 +80,7 @@ class DbDriver_mysql implements DbDriver
 		}
 		catch (e:Dynamic)
 		{
-			throw new DbException(e);
+			throw DbException.errorOnQuery(sql, e);
 		}
     }
 	

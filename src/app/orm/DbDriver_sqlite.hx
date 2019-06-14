@@ -21,13 +21,14 @@ class DbDriver_sqlite implements DbDriver
 	
     public function query(sql:String) : ResultSet
     {
-		var r = null;
-		try r = connection.request(sql)
+		try
+		{
+			return connection.request(sql);
+		}
 		catch (e:Dynamic)
 		{
-			throw new DbException(e);
+			throw DbException.errorOnQuery(sql, e);
 		}
-		return r;
     }
 	
 	public function close() : Void

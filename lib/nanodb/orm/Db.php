@@ -63,16 +63,10 @@ class Db
 
 	public function query(string $sql, array $params = null) : ?ResultSet
 	{
-		try {
-			if ($params !== null) {
-				$sql = $this->bind($sql, $params);
-			}
-			return $this->connection->query($sql);
+		if ($params !== null) {
+			$sql = $this->bind($sql, $params);
 		}
-		catch (DbException $e)
-		{
-			throw new \Exception("DATABASE\n\tSQL QUERY: " . $sql . "\n\tSQL RESULT: error code = " . $e->getCode() . ", message: " . $e->getMessage());
-		}
+		return $this->connection->query($sql);
 	}
 
 	public function quote($v) : string

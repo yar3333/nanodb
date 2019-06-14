@@ -166,7 +166,7 @@ class DbDriver_mysql implements OrmDbDriver {
 			return $this->connection->request($sql);
 		}
 		catch (\Throwable $e) {
-			throw new OrmDbException($e);
+			throw OrmDbException::errorOnQuery($sql, $e);
 		}
 	}
 
