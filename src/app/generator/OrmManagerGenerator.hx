@@ -61,30 +61,21 @@ class OrmManagerGenerator
         
 		klass.addMethod
 		(
-			'newEmptyModel',
+			'newEmpty',
 			Syntax.arrayDecl(),
 			Tools.toPhpType(modelClassName),
 			"return new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm, $this->serializer);"
 		);
-        
-		klass.addMethod
-		(
-			'newModelFromParams',
-			cast vars,
-			Tools.toPhpType(modelClassName),
-			  "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm, $this->serializer);\n"
-			+ vars.map(function(x) return "$_obj->" + x.haxeName + " = $" + x.haxeName + ";").join('\n') + "\n"
-			+ "return $_obj;"
-		);
 		
 		klass.addMethod
 		(
-			'newModelFromDbRow',
+			'newFromDbRow',
 			Syntax.arrayDecl(new PhpVar("row", "array")),
 			Tools.toPhpType(modelClassName),
-			   "$_obj = new " + Tools.toPhpType(modelClassName) + "($this->db, $this->orm, $this->serializer);\n"
+			   "$_obj = $this->newEmpty();\n"
 			 + "$this->serializer->deserializeObject($row, $_obj, [ " + vars.map(function(x) return "'" + x.haxeName + "'").join(", ") + " ]);\n"
-			 + "return $_obj;"
+			 + "return $_obj;",
+			"protected"
 		);
 		
 		var getVars = vars.filter(function(x) return x.isKey);
@@ -101,31 +92,6 @@ class OrmManagerGenerator
 		
 		var createVars = vars.filter(function(x) return !x.isAutoInc);
 		var autoIncVars = vars.filter(function(x) return x.isAutoInc);
-		
-		klass.addMethod
-		(
-			'create',
-			cast createVars,
-			Tools.toPhpType(modelClassName),
-			createVars.filter(function(x) return positions.is(x.table, x.name)).map
-			(
-				function(x) return 
-				  "if ($" + x.haxeName + " == null)\n"
-				+ "{\n"
-				+ "\tposition = $this->db->query('SELECT MAX(`" + x.name + "`) FROM `" + table + "`" 
-					+ getWhereSql(getForeignKeyVars(db, table, vars))
-					+ ").getIntResult(0) + 1;\n"
-				+ "}\n\n"
-			).join("")
-			+"$obj = $this->newModelFromParams(" + vars.map(function(x) return x.isAutoInc ? "0" : "$" + x.haxeName).join(", ") + ");\n"
-			+"$data = $this->serializer->serializeObject($obj, [ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
-			+"$fields = [];\n"
-			+"$values = [];\n"
-			+"foreach ($data as $k => $v) { $fields[] = \"`$k`\"; $values[] = $this->db->quote($v); }\n"
-			+"$this->db->query('INSERT INTO `" + table + "`(' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')');\n"
-			+autoIncVars.map(function(v) return "$obj->" + v.haxeName + " = $this->db->lastInsertId();\n").join("")
-			+"return $obj;"
-		);
 		
 		klass.addMethod
 		(
@@ -190,28 +156,6 @@ class OrmManagerGenerator
 		
 		
 		klass.addMethod(
-			"whereField",
-			Syntax.arrayDecl(
-				new PhpVar("field", "string"),
-				new PhpVar("op", "string"),
-				new PhpVar("value", null)
-			),
-			Tools.toPhpType(customManagerClassName),
-			"return parent::whereField($field, $op, $value);"
-		);
-		
-		// function where(rawSqlText:String) : SqlQuery<T>
-		klass.addMethod(
-			"where",
-			Syntax.arrayDecl(
-				new PhpVar("rawSqlText", "string")
-			),
-			Tools.toPhpType(customManagerClassName),
-			"return parent::where($rawSqlText);"
-		);
-		
-		//function orderAsc(value:Dynamic) : SqlQuery<T>
-		klass.addMethod(
 			"orderAsc",
 			Syntax.arrayDecl(
 				new PhpVar("rawSqlText", "string")
@@ -220,7 +164,6 @@ class OrmManagerGenerator
 			"return parent::orderAsc($rawSqlText);"
 		);
 		
-		//function orderDesc(value:Dynamic) : SqlQuery<T>
 		klass.addMethod(
 			"orderDesc",
 			Syntax.arrayDecl(
@@ -230,15 +173,11 @@ class OrmManagerGenerator
 			"return parent::orderDesc($rawSqlText);"
 		);
 		
-		//function findMany(?limit:Int, ?offset:Int) : TypedArray<T>
 		klass.addMethod(
 			"findMany",
-			Syntax.arrayDecl(
-				new PhpVar("limit", "int", "null"),
-				new PhpVar("offset", "int", "null")
-			),
+			Syntax.arrayDecl(),
 			Tools.toPhpType(modelClassName) + "[]",
-			"return parent::findMany($limit, $offset);"
+			"return parent::findMany();"
 		);
 
 		//function findOne() : T

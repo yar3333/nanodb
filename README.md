@@ -75,7 +75,11 @@ $orm = new Orm($db);
 #################
 
 # create user in database
-$user = $orm->user->create($login, $role, $status);
+$user = $orm->user->newEmpty();
+$user->login = $login;
+$user->role = $role;
+$user->status = $status;
+$orm->user->add($user); // insert into database
 
 # get user by ID
 $user = $orm->user->get(10);
@@ -111,8 +115,9 @@ $count = $orm->user->whereField("status", "=", 1)
                    ->whereField("role", "=", "support")
                    ->count();
 
-# remove user by ID
-$orm->user->delete(10);
+# removing
+$orm->user->deleteById(10);
+$orm->user->whereField("status", "!=", 2)->delete();
 
 # if you have unique index by `login` field, then you can do next
 $user = $orm->user->getByLogin('root');
@@ -127,18 +132,6 @@ $books = $orm->book->getByUserId(10);
 $user = $orm->user->get(10);
 $user->status = 5;
 $user->save();
-
-# save data received from external
-$user = $orm->user->newModelFromJson($request);
-# here - check field types and validate data
-$orm->user->add($user); # insert to database
-
-$user = $orm->user->newEmptyModel();
-$user->login = "hero";
-$user->role = "admin";
-$user->status = 1;
-$orm->user->add($user); # insert to database
-
 
 ################
 # Low-level code

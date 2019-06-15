@@ -84,63 +84,41 @@ class OrmManagerGenerator {
 		$klass->addVar($ormPhpVar, "protected");
 		$klass->addVar($serializerPhpVar, "protected");
 		$klass->addMethod("__construct", [$dbPhpVar, $ormPhpVar, $serializerPhpVar], null, "parent::__construct(\$db, '" . $table . "');\n" . "\$this->orm = \$orm;\n" . "\$this->serializer = \$serializer;");
-		$klass->addMethod("newEmptyModel", [], GeneratorTools::toPhpType($modelClassName), "return new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm, \$this->serializer);");
-		$tmp = GeneratorTools::toPhpType($modelClassName);
-		$tmp1 = "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm, \$this->serializer);\n" . (implode("\n", array_map(function ($x) {
-			return "\$_obj->" . $x->haxeName . " = \$" . $x->haxeName . ";";
-		}, $vars))??'null') . "\n" . "return \$_obj;";
-		$klass->addMethod("newModelFromParams", $vars, $tmp, $tmp1);
-		$klass->addMethod("newModelFromDbRow", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm, \$this->serializer);\n" . "\$this->serializer->deserializeObject(\$row, \$_obj, [ " . (implode(", ", array_map(function ($x1) {
-			return "'" . $x1->haxeName . "'";
-		}, $vars))??'null') . " ]);\n" . "return \$_obj;");
-		$getVars = array_filter($vars, function ($x2) {
-			return $x2->isKey;
+		$klass->addMethod("newEmpty", [], GeneratorTools::toPhpType($modelClassName), "return new " . GeneratorTools::toPhpType($modelClassName) . "(\$this->db, \$this->orm, \$this->serializer);");
+		$klass->addMethod("newFromDbRow", [new GeneratorPhpVar("row", "array")], GeneratorTools::toPhpType($modelClassName), "\$_obj = \$this->newEmpty();\n" . "\$this->serializer->deserializeObject(\$row, \$_obj, [ " . (implode(", ", array_map(function ($x) {
+			return "'" . $x->haxeName . "'";
+		}, $vars))??'null') . " ]);\n" . "return \$_obj;", "protected");
+		$getVars = array_filter($vars, function ($x1) {
+			return $x1->isKey;
 		});
 		if (count($getVars) > 0) {
 			$klass->addMethod("get", $getVars, "?" . GeneratorTools::toPhpType($modelClassName), "return \$this->getOne('SELECT * FROM `" . $table . "`" . $this->getWhereSql($getVars) . ");");
 		}
-		$createVars = array_filter($vars, function ($x3) {
-			return !$x3->isAutoInc;
+		$createVars = array_filter($vars, function ($x2) {
+			return !$x2->isAutoInc;
 		});
-		$autoIncVars = array_filter($vars, function ($x4) {
-			return $x4->isAutoInc;
+		$autoIncVars = array_filter($vars, function ($x3) {
+			return $x3->isAutoInc;
 		});
-		$klass->addMethod("create", $createVars, GeneratorTools::toPhpType($modelClassName), (implode("", array_map(function ($x5)  use (&$table, &$db, &$vars, &$_gthis) {
-			$this1 = "if (\$" . $x5->haxeName . " == null)\n" . "{\n" . "\tposition = \$this->db->query('SELECT MAX(`" . $x5->name . "`) FROM `" . $table . "`";
+		$klass->addMethod("add", [new GeneratorPhpVar("obj", GeneratorTools::toPhpType($modelClassName))], "void", (implode("", array_map(function ($x4)  use (&$table, &$db, &$vars, &$_gthis) {
+			$this1 = "if (\$" . $x4->haxeName . " == null)\n" . "{\n" . "\t\$obj->" . $x4->name . " = \$this->db->query('SELECT MAX(`" . $x4->name . "`) FROM `" . $table . "`";
 			$this2 = $_gthis->getForeignKeyVars($db, $table, $vars);
 			return $this1 . $_gthis->getWhereSql($this2) . ").getIntResult(0) + 1;\n" . "}\n\n";
-		}, array_filter($createVars, function ($x6)  use (&$positions) {
-			return $positions->is($x6->table, $x6->name);
-		})))??'null') . "\$obj = \$this->newModelFromParams(" . (implode(", ", array_map(function ($x7) {
-			if ($x7->isAutoInc) {
-				return "0";
-			} else {
-				return "\$" . $x7->haxeName;
-			}
-		}, $vars))??'null') . ");\n" . "\$data = \$this->serializer->serializeObject(\$obj, [ " . (implode(", ", array_map(function ($x8) {
-			return "'" . $x8->name . "'";
-		}, $createVars))??'null') . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$this->db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `" . $table . "`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')');\n" . (implode("", array_map(function ($v) {
-			return "\$obj->" . $v->haxeName . " = \$this->db->lastInsertId();\n";
-		}, $autoIncVars))??'null') . "return \$obj;");
-		$klass->addMethod("add", [new GeneratorPhpVar("obj", GeneratorTools::toPhpType($modelClassName))], "void", (implode("", array_map(function ($x9)  use (&$table, &$db, &$vars, &$_gthis) {
-			$this3 = "if (\$" . $x9->haxeName . " == null)\n" . "{\n" . "\t\$obj->" . $x9->name . " = \$this->db->query('SELECT MAX(`" . $x9->name . "`) FROM `" . $table . "`";
-			$this4 = $_gthis->getForeignKeyVars($db, $table, $vars);
-			return $this3 . $_gthis->getWhereSql($this4) . ").getIntResult(0) + 1;\n" . "}\n\n";
-		}, array_filter($createVars, function ($x10)  use (&$positions) {
-			return $positions->is($x10->table, $x10->name);
-		})))??'null') . "\$data = \$this->serializer->serializeObject(\$obj, [ " . (implode(", ", array_map(function ($x11) {
-			return "'" . $x11->name . "'";
-		}, $createVars))??'null') . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$this->db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `" . $table . "`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')');" . (((count($autoIncVars) > 0 ? "\n" . (implode("\n", array_map(function ($v1) {
-			return "\$obj->" . $v1->haxeName . " = \$this->db->lastInsertId();";
+		}, array_filter($createVars, function ($x5)  use (&$positions) {
+			return $positions->is($x5->table, $x5->name);
+		})))??'null') . "\$data = \$this->serializer->serializeObject(\$obj, [ " . (implode(", ", array_map(function ($x6) {
+			return "'" . $x6->name . "'";
+		}, $createVars))??'null') . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$this->db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `" . $table . "`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')');" . (((count($autoIncVars) > 0 ? "\n" . (implode("\n", array_map(function ($v) {
+			return "\$obj->" . $v->haxeName . " = \$this->db->lastInsertId();";
 		}, $autoIncVars))??'null') : ""))??'null'));
-		$deleteVars = array_filter($vars, function ($x12) {
-			return $x12->isKey;
+		$deleteVars = array_filter($vars, function ($x7) {
+			return $x7->isKey;
 		});
 		if (count($deleteVars) === 0) {
 			$deleteVars = $vars;
 		}
-		$klass->addMethod("deleteBy" . (implode("And", array_map(function ($x13) {
-			return GeneratorTools::fieldAsFunctionNamePart($x13->haxeName);
+		$klass->addMethod("deleteBy" . (implode("And", array_map(function ($x8) {
+			return GeneratorTools::fieldAsFunctionNamePart($x8->haxeName);
 		}, $deleteVars))??'null'), $deleteVars, "void", "\$this->db->query('DELETE FROM `" . $table . "`" . $this->getWhereSql($deleteVars) . " . ' LIMIT 1');");
 		$klass->addMethod("getOne", [new GeneratorPhpVar("sql", "string")], "?" . GeneratorTools::toPhpType($modelClassName), "/** @noinspection PhpIncompatibleReturnTypeInspection */\n" . "return parent::getOne(\$sql);");
 		$klass->addMethod("getMany", [new GeneratorPhpVar("sql", "string")], GeneratorTools::toPhpType($modelClassName) . "[]", "return parent::getMany(\$sql);");
@@ -148,8 +126,8 @@ class OrmManagerGenerator {
 		foreach ($collection as $key => $value) {
 			unset($fields);
 			$fields = $value;
-			$vs = array_filter($vars, function ($x14)  use (&$fields) {
-				return in_array($x14->name, $fields, false);
+			$vs = array_filter($vars, function ($x9)  use (&$fields) {
+				return in_array($x9->name, $fields, false);
 			});
 			$_gthis->createGetByMethodOne($table, $vars, $modelClassName, $vs, $klass);
 
@@ -157,15 +135,13 @@ class OrmManagerGenerator {
 
 		$collection1 = $this->getForeignKeyVars($db, $table, $vars);
 		foreach ($collection1 as $key1 => $value1) {
-			$tmp2 = [$value1];
-			$_gthis->createGetByMethodMany($table, $vars, $modelClassName, $tmp2, $klass, $positions);
+			$tmp = [$value1];
+			$_gthis->createGetByMethodMany($table, $vars, $modelClassName, $tmp, $klass, $positions);
 		}
 
-		$klass->addMethod("whereField", [new GeneratorPhpVar("field", "string"), new GeneratorPhpVar("op", "string"), new GeneratorPhpVar("value", null)], GeneratorTools::toPhpType($customManagerClassName), "return parent::whereField(\$field, \$op, \$value);");
-		$klass->addMethod("where", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($customManagerClassName), "return parent::where(\$rawSqlText);");
 		$klass->addMethod("orderAsc", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($customManagerClassName), "return parent::orderAsc(\$rawSqlText);");
 		$klass->addMethod("orderDesc", [new GeneratorPhpVar("rawSqlText", "string")], GeneratorTools::toPhpType($customManagerClassName), "return parent::orderDesc(\$rawSqlText);");
-		$klass->addMethod("findMany", [new GeneratorPhpVar("limit", "int", "null"), new GeneratorPhpVar("offset", "int", "null")], GeneratorTools::toPhpType($modelClassName) . "[]", "return parent::findMany(\$limit, \$offset);");
+		$klass->addMethod("findMany", [], GeneratorTools::toPhpType($modelClassName) . "[]", "return parent::findMany();");
 		$klass->addMethod("findOne", [], "?" . GeneratorTools::toPhpType($modelClassName), "return parent::findOne();");
 		return $klass;
 	}

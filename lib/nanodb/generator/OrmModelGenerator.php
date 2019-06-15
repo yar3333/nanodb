@@ -54,23 +54,11 @@ class OrmModelGenerator {
 		})) && current(array_filter($vars, function ($v1) {
 			return !$v1->isKey;
 		}))) {
-			$settedVars = array_filter($vars, function ($v2) {
-				if (!$v2->isKey) {
-					return !$v2->isAutoInc;
-				} else {
-					return false;
-				}
+			$savedVars = array_filter($vars, function ($v2) {
+				return !$v2->isKey;
 			});
-			if (count($settedVars) > 0) {
-				$klass->addMethod("set", $settedVars, "void", implode("\n", array_map(function ($v3) {
-					return "\$this->" . $v3->haxeName . " = \$" . $v3->haxeName . ";";
-				}, $settedVars)));
-			}
-			$savedVars = array_filter($vars, function ($v4) {
-				return !$v4->isKey;
-			});
-			$whereVars = array_filter($vars, function ($v5) {
-				return $v5->isKey;
+			$whereVars = array_filter($vars, function ($v3) {
+				return $v3->isKey;
 			});
 			$klass->addMethod("save", [], "void", "\$data = \$this->serializer->serializeObject(\$this, [ " . (implode(", ", array_map(function ($x) {
 				return "'" . $x->name . "'";

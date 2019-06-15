@@ -1,4 +1,5 @@
 <?php
+/** @noinspection ReturnTypeCanBeDeclaredInspection */
 
 namespace nanodb\orm;
 
@@ -32,6 +33,16 @@ abstract class DbQuery
 	private $isDistinct = false;
 
 	/**
+	 * @var int
+	 */
+	private $skip = null;
+	
+	/**
+	 * @var int
+	 */
+	private $limit = null;
+	
+	/**
 	 * @param string $table
 	 * @param Db $db
 	 */
@@ -48,9 +59,9 @@ abstract class DbQuery
 		return $r->getIntResult(0);
 	}
 
-	public function delete(int $limit = null, int $offset = null) : void
+	public function delete() : void
 	{
-		$this->db->query("DELETE FROM `" . $this->table . "`" . $this->getWhereSql() . $this->getLimitSql($limit) . $this->getOffsetSql($offset));
+		$this->db->query("DELETE FROM `" . $this->table . "`" . $this->getWhereSql() . $this->getLimitAndOffsetSql());
 	}
 
 	public function exists() : bool
@@ -58,17 +69,14 @@ abstract class DbQuery
 		return $this->findOneFields([SqlText::raw("1")]) !== null;
 	}
 
-	public function findMany(int $limit = null, int $offset = null) : array
+	public function findMany() : array
 	{
-		$sqlSelect = $this->getSelectSql(null);
-		$sqlLimit = $this->getLimitSql($limit);
-		$sqlOffset = $this->getOffsetSql($offset);
-		return $this->getMany($sqlSelect . $sqlLimit . $sqlOffset);
+		return $this->getMany($this->getSelectSql(null) . $this->getLimitAndOffsetSql());
 	}
 
-	public function findManyFields(array $fields, int $limit = null, int $offset = null) : ResultSet
+	public function findManyFields(array $fields) : ResultSet
 	{
-		return $this->db->query($this->getSelectSql($fields) . $this->getLimitSql($limit) . $this->getOffsetSql($offset));
+		return $this->db->query($this->getSelectSql($fields) . $this->getLimitAndOffsetSql());
 	}
 
 	public function findOne()
@@ -85,24 +93,19 @@ abstract class DbQuery
 		return null;
 	}
 
-	public function update(array $fields, int $limit = null, int $offset = null) : void
+	public function update(array $fields) : void
 	{
 		$sets = [];
 		foreach ($fields as $key => $value)
 		{
 			$sets[] = "`" . $key . "` = " . $this->db->quote($value);
 		}
-		$this->db->query("UPDATE `" . $this->table . "`\nSET\n\t" . implode("\n\t", $sets) . $this->getWhereSql() . $this->getLimitSql($limit) . $this->getOffsetSql($offset));
+		$this->db->query("UPDATE `" . $this->table . "`\nSET\n\t" . implode("\n\t", $sets) . $this->getWhereSql() . $this->getLimitAndOffsetSql());
 	}
 
-	protected function getLimitSql(int $limit=null) : string
+	protected function getLimitAndOffsetSql() : string
 	{
-    	return $limit !== null ? "\nLIMIT " . $limit : "";
-	}
-
-	protected function getOffsetSql(int $offset=null) : string
-	{
-		return $offset !== null ? "\nOFFSET " . $offset : "";
+		return ($this->limit !== null ? "\nLIMIT " . $this->limit : "") . ($this->skip ? "\nOFFSET " . $this->skip : "");
 	}
 
 	protected function getOrderBySql() : string
@@ -166,6 +169,28 @@ abstract class DbQuery
 		$r->isDistinct = true;
 		return $r;
     }
+	
+    /**
+     * @param int $skip
+     * @return static
+     */
+	public function skip(int $skip)
+    {
+		$r = clone $this;
+		$r->skip = $skip;
+		return $r;
+    }
+	
+    /**
+     * @param int $limit
+     * @return static
+     */
+	public function limit(int $limit)
+    {
+		$r = clone $this;
+		$r->limit = $limit;
+		return $r;
+    }
 
     /**
      * @param string $field
@@ -207,7 +232,7 @@ abstract class DbQuery
 		$resultSet = $this->db->query($sql . ' LIMIT 1');
 		if (!$resultSet) throw DbException::errorOnQuery($sql, new \Exception('Query must return ResultSet.'));
 		if (!$resultSet->hasNext()) return null;
-		return $this->newModelFromDbRow($resultSet->next());
+		return $this->newFromDbRow($resultSet->next());
 	}
     
 	public function getMany(string $sql) : array
@@ -218,10 +243,10 @@ abstract class DbQuery
 		/** @noinspection PhpAssignmentInConditionInspection */
 		while ($row = $resultSet->next())
 		{
-			$r[] = $this->newModelFromDbRow($row);
+			$r[] = $this->newFromDbRow($row);
 		}
 		return $r;
 	}
 
-	abstract public function newModelFromDbRow(array $row);
+	abstract public function newFromDbRow(array $row);
 }

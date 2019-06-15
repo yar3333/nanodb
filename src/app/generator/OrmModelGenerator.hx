@@ -56,17 +56,6 @@ class OrmModelGenerator
         
         if (vars.exists(function(v) return v.isKey) && vars.exists(function(v) return !v.isKey))
 		{
-			var settedVars = vars.filter(function(v) return !v.isKey && !v.isAutoInc);
-			if (settedVars.length > 0)
-			{
-				klass.addMethod(
-					"set",
-					cast settedVars,
-					"void",
-					settedVars.map(function(v) return "$this->" + v.haxeName + " = $" + v.haxeName + ";").join("\n")
-				);
-			}
-			
 			var savedVars = vars.filter(function(v) return !v.isKey);
 			var whereVars = vars.filter(function(v) return v.isKey);
 			klass.addMethod(
