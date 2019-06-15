@@ -248,5 +248,5 @@ abstract class DbQuery
 		return $r;
 	}
 
-	abstract public function newFromDbRow(array $row);
+	abstract protected function newFromDbRow(array $row);
 }
