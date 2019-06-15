@@ -65,6 +65,7 @@ Assumed you have a `users` table in your database with fields:
 
 ```php
 use \nanodb\orm\Db;
+use \nanodb\orm\SqlText;
 use \models\Orm;
 
 $db = new Db("mysql://root:123456@localhost/testdb");
@@ -90,8 +91,8 @@ $users = $orm->user->whereField("status", "=", 2)->findMany();
 # field name and value will be automatically quoted
 $users = $orm->user->whereField("status", "IN", [2, 3])->findMany();
 
-# prevent quoting by sqlTextRaw()
-$users = $orm->user->whereField("status", "=", $db->sqlTextRaw("1 + 1"))->findMany(); 
+# prevent quoting by SqlText::raw()
+$users = $orm->user->whereField("status", "=", SqlText::raw("1 + 1"))->findMany(); 
 
 # find by raw SQL condition
 $users = $orm->user->where("status = 2")->findMany();
