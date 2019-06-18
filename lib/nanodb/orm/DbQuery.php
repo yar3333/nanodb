@@ -120,9 +120,6 @@ abstract class DbQuery
 		return "SELECT " . ($this->isDistinct ? "DISTINCT " : "") . implode(", ", $f) . "\nFROM `" . $this->table . "`" . $this->getWhereSql() . $this->getOrderBySql();
 	}
 
-	/**
-	 * @return string
-	 */
 	protected function getWhereSql() : string
 	{
         return $this->conditions ? "\nWHERE " . implode("\n\tAND ", $this->conditions) : "";
@@ -130,7 +127,7 @@ abstract class DbQuery
 
 	/**
 	 * @param string $rawSqlText
-	 * @return static
+	 * @return mixed
 	 */
 	public function orderAsc(string $rawSqlText)
 	{
@@ -141,7 +138,7 @@ abstract class DbQuery
 
 	/**
 	 * @param string $rawSqlText
-	 * @return static
+	 * @return mixed
 	 */
 	public function orderDesc(string $rawSqlText)
 	{
@@ -152,7 +149,7 @@ abstract class DbQuery
 
     /**
      * @param string $rawSqlText
-     * @return static
+     * @return mixed
      */
 	public function where(string $rawSqlText)
 	{
@@ -162,7 +159,7 @@ abstract class DbQuery
 	}
 
     /**
-     * @return static
+     * @return mixed
      */
 	public function distinct()
     {
@@ -173,7 +170,7 @@ abstract class DbQuery
 	
     /**
      * @param int $skip
-     * @return static
+     * @return mixed
      */
 	public function skip(int $skip)
     {
@@ -184,7 +181,7 @@ abstract class DbQuery
 	
     /**
      * @param int $limit
-     * @return static
+     * @return mixed
      */
 	public function limit(int $limit)
     {
@@ -197,7 +194,7 @@ abstract class DbQuery
      * @param string $field
      * @param string $op
      * @param $value
-     * @return static
+     * @return mixed
      */
 	public function whereField(string $field, string $op, $value)
 	{

@@ -33,7 +33,7 @@ class OrmQueryGenerator
 		klass.addClassComment(
 			  "/**\n"
 			+ " * @method " + Tools.toPhpType(modelClassName) + "[] findMany\n"
-			+ " * @method ?" + Tools.toPhpType(modelClassName) + " findOne\n"
+			+ " * @method " + Tools.toPhpType(modelClassName) + " findOne\n"
 			+ " * @method " + Tools.toPhpType(queryClassName) + " whereField(string $field, string $op, $value)\n"
 			+ " * @method " + Tools.toPhpType(queryClassName) + " where(string $rawSqlText)\n"
 			+ " * @method " + Tools.toPhpType(queryClassName) + " orderDesc(int $rawSqlText)\n"
