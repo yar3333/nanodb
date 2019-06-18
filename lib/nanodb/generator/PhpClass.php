@@ -16,7 +16,7 @@ class PhpClass {
 	/**
 	 * @var mixed
 	 */
-	public $comments;
+	public $classComments;
 	/**
 	 * @var mixed
 	 */
@@ -25,6 +25,10 @@ class PhpClass {
 	 * @var string
 	 */
 	public $fullClassName;
+	/**
+	 * @var mixed
+	 */
+	public $globalComments;
 	/**
 	 * @var mixed
 	 */
@@ -48,15 +52,17 @@ class PhpClass {
 		$this->fullClassName = $fullClassName;
 		$this->baseFullClassName = $baseFullClassName;
 		$this1 = [];
-		$this->comments = $this1;
+		$this->globalComments = $this1;
 		$this2 = [];
-		$this->imports = $this2;
+		$this->classComments = $this2;
 		$this3 = [];
-		$this->vars = $this3;
+		$this->imports = $this3;
 		$this4 = [];
-		$this->methods = $this4;
+		$this->vars = $this4;
 		$this5 = [];
-		$this->customs = $this5;
+		$this->methods = $this5;
+		$this6 = [];
+		$this->customs = $this6;
 	}
 
 	/**
@@ -64,8 +70,8 @@ class PhpClass {
 	 * 
 	 * @return void
 	 */
-	public function addComment ($text) {
-		array_push($this->comments, $text);
+	public function addClassComment ($text) {
+		array_push($this->classComments, $text);
 	}
 
 	/**
@@ -75,6 +81,15 @@ class PhpClass {
 	 */
 	public function addCustom ($code) {
 		array_push($this->customs, $code);
+	}
+
+	/**
+	 * @param string $text
+	 * 
+	 * @return void
+	 */
+	public function addGlobalComment ($text) {
+		array_push($this->globalComments, $text);
 	}
 
 	/**
@@ -237,7 +252,7 @@ class PhpClass {
 			array_push($varLines, str_replace("\n", "\n\t", $value));
 		}
 
-		$s = "<?php\n\n" . (implode("\n", $this->comments)??'null') . (((count($this->comments) > 0 ? "\n\n" : ""))??'null') . "namespace " . (GeneratorTools::toPhpType($this->getNamespaceName($this->fullClassName), false)??'null') . ";\n" . "\n" . (implode("\n", $this->imports)??'null') . (((count($this->imports) > 0 ? "\n\n" : ""))??'null') . "class " . $this->getShortClassName($this->fullClassName) . ((($this->baseFullClassName !== null ? " extends " . GeneratorTools::toPhpType($this->baseFullClassName) : ""))??'null') . "\n" . "{\n" . (((count($this->vars) > 0 ? "\t" . (implode("\n\t\n\t", $varLines)??'null') . "\n\n" : ""))??'null') . (((count($this->methods) > 0 ? "\t" . (implode("\n\n\t", $this->methods)??'null') . "\n" : ""))??'null') . (((count($this->customs) > 0 ? "\t" . (implode("\n\n\t", $this->customs)??'null') . "\n" : ""))??'null') . "}";
+		$s = "<?php\n\n" . (implode("\n", $this->globalComments)??'null') . (((count($this->globalComments) > 0 ? "\n\n" : ""))??'null') . "namespace " . (GeneratorTools::toPhpType($this->getNamespaceName($this->fullClassName), false)??'null') . ";\n" . "\n" . (implode("\n", $this->imports)??'null') . (((count($this->imports) > 0 ? "\n\n" : ""))??'null') . (implode("\n", $this->classComments)??'null') . (((count($this->classComments) > 0 ? "\n" : ""))??'null') . "class " . $this->getShortClassName($this->fullClassName) . ((($this->baseFullClassName !== null ? " extends " . GeneratorTools::toPhpType($this->baseFullClassName) : ""))??'null') . "\n" . "{\n" . (((count($this->vars) > 0 ? "\t" . (implode("\n\t\n\t", $varLines)??'null') . "\n\n" : ""))??'null') . (((count($this->methods) > 0 ? "\t" . (implode("\n\n\t", $this->methods)??'null') . "\n" : ""))??'null') . (((count($this->customs) > 0 ? "\t" . (implode("\n\n\t", $this->customs)??'null') . "\n" : ""))??'null') . "}";
 		return $s;
 	}
 

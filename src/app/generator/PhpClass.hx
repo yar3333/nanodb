@@ -9,7 +9,8 @@ class PhpClass
 	var fullClassName : String;
 	var baseFullClassName : String;
 	
-	var comments : TypedArray<String>;
+	var globalComments : TypedArray<String>;
+	var classComments : TypedArray<String>;
 	var imports : TypedArray<String>;
 	var vars : TypedArray<String>;
 	var methods : TypedArray<String>;
@@ -20,7 +21,8 @@ class PhpClass
 		this.fullClassName = fullClassName;
 		this.baseFullClassName = baseFullClassName;
 		
-		this.comments = new TypedArray<String>();
+		this.globalComments = new TypedArray<String>();
+		this.classComments = new TypedArray<String>();
 		this.imports = new TypedArray<String>();
 		this.vars = new TypedArray<String>();
 		this.methods = new TypedArray<String>();
@@ -111,9 +113,14 @@ class PhpClass
 		customs.push(code);
 	}
 	
-	public function addComment(text:String) : Void
+	public function addGlobalComment(text:String) : Void
 	{
-		comments.push(text);
+		globalComments.push(text);
+	}
+	
+	public function addClassComment(text:String) : Void
+	{
+		classComments.push(text);
 	}
 	
 	public function toString() : String
@@ -125,10 +132,11 @@ class PhpClass
 		});
 		
 		var s = '<?php\n\n'
-			  + comments.join("\n") + (comments.length > 0 ? '\n\n' : '')
+			  + globalComments.join("\n") + (globalComments.length > 0 ? '\n\n' : '')
 			  + 'namespace ' + Tools.toPhpType(getNamespaceName(fullClassName), false) + ';\n'
 			  + '\n'
 			  + imports.join('\n') + (imports.length > 0 ? '\n\n' : '')
+			  + classComments.join("\n") + (classComments.length > 0 ? '\n' : '')
 			  + 'class ' + getShortClassName(fullClassName) + (baseFullClassName != null ? ' extends ' + Tools.toPhpType(baseFullClassName) : '') + '\n'
 			  + '{\n'
 			  + (vars.length > 0 ? '\t' + varLines.join('\n\t\n\t') + '\n\n' : '')

@@ -12,6 +12,11 @@ abstract class DbQuery
 	 */
 	protected $db;
 
+    /**
+     * @var ISerializer
+     */
+	protected $serializer;
+
 	/**
 	 * @var string
 	 */
@@ -42,20 +47,16 @@ abstract class DbQuery
 	 */
 	private $limit = null;
 	
-	/**
-	 * @param string $table
-	 * @param Db $db
-	 */
-	public function __construct(Db $db, string $table)
+	public function __construct(Db $db, ISerializer $serializer)
 	{
 		$this->db = $db;
-		$this->table = $table;
+		$this->serializer = $serializer;
 	}
 
 	public function count() : int
 	{
 		$r = $this->db->query("SELECT COUNT(*) FROM `" . $this->table . "`" . $this->getWhereSql());
-		if (!$r->hasNext()) return 0;
+        if (!$r->hasNext()) return 0;
 		return $r->getIntResult(0);
 	}
 
@@ -227,7 +228,7 @@ abstract class DbQuery
 		return $this->where("`" . $field . "` " . $op . " " . $this->db->quote($value));
 	}
 
-	public function getOne(string $sql)
+	protected function getOne(string $sql)
 	{
 		$resultSet = $this->db->query($sql . ' LIMIT 1');
 		if (!$resultSet) throw DbException::errorOnQuery($sql, new \Exception('Query must return ResultSet.'));
@@ -235,7 +236,7 @@ abstract class DbQuery
 		return $this->newFromDbRow($resultSet->next());
 	}
     
-	public function getMany(string $sql) : array
+	protected function getMany(string $sql) : array
 	{
 		$resultSet = $this->db->query($sql);
 		if (!$resultSet) throw DbException::errorOnQuery($sql, new \Exception('Query must return ResultSet.'));
