@@ -75,12 +75,12 @@ $orm = new Orm($db);
 # High-level code
 #################
 
-# create user in database
-$user = $orm->user->newEmpty();
+# create user and insert into database
+$user = new User();
 $user->login = $login;
 $user->role = $role;
 $user->status = $status;
-$orm->user->add($user); // insert into database
+$orm->user->add($user);
 
 # get user by ID
 $user = $orm->user->get(10);
@@ -132,7 +132,8 @@ $books = $orm->book->getByUserId(10);
 # get a user and fix `status`
 $user = $orm->user->get(10);
 $user->status = 5;
-$user->save();
+$orm->user->save($user);
+
 
 ################
 # Low-level code
