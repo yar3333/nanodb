@@ -61,7 +61,7 @@ class OrmManagerGenerator
 				'get',
 				cast getVars,
 				"?" + Tools.toPhpType(modelClassName),
-				"return $this->getOne('SELECT * FROM `$this->table`" + getWhereSql(getVars) + ");"
+				"return $this->getOne('SELECT * FROM `' . $this->table . '`" + getWhereSql(getVars) + ");"
 			);
 		}
 		
@@ -78,7 +78,7 @@ class OrmManagerGenerator
 				function(x) return 
 				  "if ($" + x.haxeName + " == null)\n"
 				+ "{\n"
-				+ "\t$obj->" + x.name + " = $this->db->query('SELECT MAX(`" + x.name + "`) FROM `$this->table`" 
+				+ "\t$obj->" + x.name + " = $this->db->query('SELECT MAX(`" + x.name + "`) FROM `' . $this->table . '`" 
 					+ getWhereSql(getForeignKeyVars(db, table, vars))
 					+ ").getIntResult(0) + 1;\n"
 				+ "}\n\n"
@@ -87,7 +87,7 @@ class OrmManagerGenerator
 			+"$fields = [];\n"
 			+"$values = [];\n"
 			+"foreach ($data as $k => $v) { $fields[] = \"`$k`\"; $values[] = $this->db->quote($v); }\n"
-			+"$this->db->query('INSERT INTO `$this->table`(' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')');"
+			+"$this->db->query('INSERT INTO `' . $this->table . '`(' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')');"
 			+(autoIncVars.length > 0 ? "\n" + autoIncVars.map(function(v) return "$obj->" + v.haxeName + " = $this->db->lastInsertId();").join("\n") : "")
 		);
 		
@@ -105,7 +105,7 @@ class OrmManagerGenerator
 				+ "$keys = $this->serializer->serializeObject($obj, [ " + whereVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
 				+ "$wheres = []; foreach ($keys as $k => $v) $wheres[] = \"`$k` = \" . $this->db->quote($v);\n"
 				+ "\n"
-				+ "$this->db->query('UPDATE `$this->table` SET ' . implode(', ', $sets) . ' WHERE ' . implode(' AND ', $wheres) . ' LIMIT 1');"
+				+ "$this->db->query('UPDATE `' . $this->table . '` SET ' . implode(', ', $sets) . ' WHERE ' . implode(' AND ', $wheres) . ' LIMIT 1');"
 			);
 		}
 		
@@ -116,7 +116,7 @@ class OrmManagerGenerator
 			'deleteBy' + deleteVars.map(function(x) return Tools.fieldAsFunctionNamePart(x.haxeName)).join('And'),
 			cast deleteVars,
 			'void',
-			"$this->db->query('DELETE FROM `$this->table`" + getWhereSql(deleteVars) + " . ' LIMIT 1');"
+			"$this->db->query('DELETE FROM `' . $this->table . '`" + getWhereSql(deleteVars) + " . ' LIMIT 1');"
 		);
 		
         Syntax.foreach(db.connection.getUniques(table), function(_, fields:TypedArray<String>)
@@ -154,7 +154,7 @@ class OrmManagerGenerator
 			'getBy' + whereVars.map(function(x) return Tools.fieldAsFunctionNamePart(x.haxeName)).join('And'),
 			cast whereVars, 
 			"?" + Tools.toPhpType(modelClassName),
-			"return $this->getOne('SELECT * FROM `$this->table`" + getWhereSql(whereVars) + ");"
+			"return $this->getOne('SELECT * FROM `' . $this->table . '`" + getWhereSql(whereVars) + ");"
 		);
 	}
 	
@@ -167,7 +167,7 @@ class OrmManagerGenerator
 			'getBy' + whereVars.map(function(v) return Tools.fieldAsFunctionNamePart(v.haxeName)).join('And'),
 			(cast whereVars:TypedArray<PhpVar>).concat(Syntax.arrayDecl(new PhpVar('_order', 'string', getOrderDefVal(vars, positions)))), 
 			Tools.toPhpType(modelClassName) + '[]',
-			"return $this->getMany('SELECT * FROM `$this->table`" + getWhereSql(whereVars) + " . ($_order !== null ? ' ORDER BY ' . $_order : ''));"
+			"return $this->getMany('SELECT * FROM `' . $this->table . '`" + getWhereSql(whereVars) + " . ($_order !== null ? ' ORDER BY ' . $_order : ''));"
 		);
 	}
 	
