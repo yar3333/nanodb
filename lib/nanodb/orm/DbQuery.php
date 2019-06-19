@@ -154,7 +154,7 @@ abstract class DbQuery
 	public function where(string $rawSqlText)
 	{
 		$r = clone $this;
-		$r->conditions[] = $rawSqlText;
+		$r->conditions[] = '(' . $rawSqlText . ')';
 		return $r;
 	}
 
