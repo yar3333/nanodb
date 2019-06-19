@@ -151,8 +151,10 @@ abstract class DbQuery
      * @param string $rawSqlText
      * @return mixed
      */
-	public function where(string $rawSqlText)
+	public function where(string $rawSqlText, array $params=null)
 	{
+	    if ($params !== null) $rawSqlText = $this->db->bind($rawSqlText, $params);
+
 		$r = clone $this;
 		$r->conditions[] = '(' . $rawSqlText . ')';
 		return $r;
