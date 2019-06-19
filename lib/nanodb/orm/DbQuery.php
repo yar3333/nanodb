@@ -125,25 +125,24 @@ abstract class DbQuery
         return $this->conditions ? "\nWHERE " . implode("\n\tAND ", $this->conditions) : "";
 	}
 
-	/**
-	 * @param string $rawSqlText
-	 * @return mixed
-	 */
-	public function orderAsc(string $rawSqlText)
+	public function orderAsc(string $field)
 	{
-		$r = clone $this;
-		$r->orderBys[] = $rawSqlText;
-		return $r;
+		return $this->order("`$field`");
+	}
+
+	public function orderDesc(string $field)
+	{
+		return $this->order("`$field` DESC");
 	}
 
 	/**
 	 * @param string $rawSqlText
 	 * @return mixed
 	 */
-	public function orderDesc(string $rawSqlText)
+	public function order(string $rawSqlText)
 	{
 		$r = clone $this;
-		$r->orderBys[] = $rawSqlText . " DESC";
+		$r->orderBys[] = $rawSqlText;
 		return $r;
 	}
 
