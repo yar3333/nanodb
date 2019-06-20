@@ -17,5 +17,11 @@ interface ISerializer
      * @param string[] $properties
      */
 	public function deserializeObject(array $src, object $dest, array $properties=null) : void;
+
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+	public function serializeValue($value);
 }
 

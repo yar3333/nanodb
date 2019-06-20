@@ -180,7 +180,7 @@ class OrmManagerGenerator
     function getWhereSql(vars:TypedArray<OrmPhpVar>) : String
     {
         return vars.length > 0
-            ? " WHERE " + vars.map(function(v) return "`" + v.name + "` = ' . $this->db->quote($" + v.haxeName + ")").join(". ' AND ")
+            ? " WHERE " + vars.map(function(v) return "`" + v.name + "` = ' . $this->quote($" + v.haxeName + ")").join(". ' AND ")
             : "'";
     }
     

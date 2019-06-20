@@ -99,7 +99,7 @@ abstract class DbQuery
 		$sets = [];
 		foreach ($fields as $key => $value)
 		{
-			$sets[] = "`" . $key . "` = " . $this->db->quote($value);
+			$sets[] = "`" . $key . "` = " . $this->quote($value);
 		}
 		$this->db->query("UPDATE `" . $this->table . "`\nSET\n\t" . implode("\n\t", $sets) . $this->getWhereSql() . $this->getLimitAndOffsetSql());
 	}
@@ -116,7 +116,7 @@ abstract class DbQuery
 
 	protected function getSelectSql(?array $fields) : string
 	{
-		$f = ($fields !== null ? array_map(function($x) { return $this->db->quote($x); }, $fields) : ["*"]);
+		$f = ($fields !== null ? array_map(function($x) { return $this->quote($x); }, $fields) : ["*"]);
 		return "SELECT " . ($this->isDistinct ? "DISTINCT " : "") . implode(", ", $f) . "\nFROM `" . $this->table . "`" . $this->getWhereSql() . $this->getOrderBySql();
 	}
 
@@ -148,11 +148,20 @@ abstract class DbQuery
 
     /**
      * @param string $rawSqlText
+     * @param mixed[] $params
      * @return mixed
      */
 	public function where(string $rawSqlText, array $params=null)
 	{
-	    if ($params !== null) $rawSqlText = $this->db->bind($rawSqlText, $params);
+	    if ($params !== null)
+	    {
+            /** @noinspection AlterInForeachInspection */
+            foreach ($params as $k => &$v)
+	        {
+	            $v = $this->serializer->serializeValue($v);
+            }
+            $rawSqlText = $this->db->bind($rawSqlText, $params);
+        }
 
 		$r = clone $this;
 		$r->conditions[] = '(' . $rawSqlText . ')';
@@ -204,13 +213,13 @@ abstract class DbQuery
 		if ($opUC === "!=" || $opUC === "<>")
 		{
 			if ($value === null) return $this->where("`" . $field . "` IS NOT NULL");
-			else                 return $this->where("`" . $field . "` != " . $this->db->quote($value));
+			else                 return $this->where("`" . $field . "` != " . $this->quote($value));
 		}
 		
 		if ($opUC === "=")
 		{
 			if ($value === null) return $this->where("`" . $field . "` IS NULL");
-			else                 return $this->where("`" . $field . "` = " . $this->db->quote($value));
+			else                 return $this->where("`" . $field . "` = " . $this->quote($value));
 		}
 		
 		if ($opUC === "IN" || $opUC === "NOT IN")
@@ -218,12 +227,12 @@ abstract class DbQuery
 			$values = [];
 			foreach ($value as $v)
 			{
-				$values[] = $this->db->quote($v);
+				$values[] = $this->quote($v);
 			}
 			return $this->where("`" . $field . "` " . $opUC . " (" . implode(", ", $values) . ")");
 		}
 
-		return $this->where("`" . $field . "` " . $op . " " . $this->db->quote($value));
+		return $this->where("`" . $field . "` " . $op . " " . $this->quote($value));
 	}
 
 	protected function getOne(string $sql)
@@ -246,6 +255,11 @@ abstract class DbQuery
 		}
 		return $r;
 	}
+
+	protected function quote($value)
+    {
+        return $this->db->quote($this->serializer->serializeValue($value));
+    }
 
 	abstract protected function newFromDbRow(array $row);
 }

@@ -36,5 +36,10 @@ class Serializer implements ISerializer
 			$dest->$value = $src[$value];
 		}
 	}
+
+	public function serializeValue($value)
+    {
+        return $value;
+    }
 }
 

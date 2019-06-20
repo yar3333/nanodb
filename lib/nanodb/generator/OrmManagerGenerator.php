@@ -207,7 +207,7 @@ class OrmManagerGenerator {
 	public function getWhereSql ($vars) {
 		if (count($vars) > 0) {
 			return " WHERE " . (implode(". ' AND ", array_map(function ($v) {
-				return "`" . $v->name . "` = ' . \$this->db->quote(\$" . $v->haxeName . ")";
+				return "`" . $v->name . "` = ' . \$this->quote(\$" . $v->haxeName . ")";
 			}, $vars))??'null');
 		} else {
 			return "'";
