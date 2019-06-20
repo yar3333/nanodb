@@ -41,6 +41,7 @@ class OrmQueryGenerator
 			+ " * @method " + Tools.toPhpType(queryClassName) + " order(string $rawSqlText)\n"
 			+ " * @method " + Tools.toPhpType(queryClassName) + " skip(int $skip)\n"
 			+ " * @method " + Tools.toPhpType(queryClassName) + " limit(int $limit)\n"
+			+ " * @method " + Tools.toPhpType(queryClassName) + " distinct()\n"
 			+ " */"
 		);
 		
