@@ -156,7 +156,7 @@ class PhpClass {
 			$isStatic = false;
 		}
 		if ($v !== null) {
-			$s = ((($v->haxeType !== null ? "/**\n * @var " . $v->haxeType . "\n */\n" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? " = " . $v->haxeDefVal : ""))??'null') . ";";
+			$s = ((($v->haxeType !== null ? "/**\n * @var " . $this->processPhpDocType($v->haxeType) . "\n */\n" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? " = " . $v->haxeDefVal : ""))??'null') . ";";
 			array_push($this->vars, $s);
 		} else {
 			array_push($this->vars, "");
@@ -180,10 +180,10 @@ class PhpClass {
 		while ($_g < count($vars)) {
 			$v = $vars[$_g];
 			++$_g;
-			$r = $r . "\t * @param " . $v->haxeType . " \$" . $v->haxeName . "\n";
+			$r = $r . "\t * @param " . $this->processPhpDocType($v->haxeType) . " \$" . $v->haxeName . "\n";
 		}
 
-		$r = $r . "\t * @return " . $retType . "\n";
+		$r = $r . "\t * @return " . $this->processPhpDocType($retType) . "\n";
 		$r = $r . "\t */\n\t";
 		return $r;
 	}
@@ -226,6 +226,18 @@ class PhpClass {
 			return "";
 		}
 		return $ind . (str_replace("\n", "\n" . $ind, $text)??'null');
+	}
+
+	/**
+	 * @param string $type
+	 * 
+	 * @return string
+	 */
+	public function processPhpDocType ($type) {
+		if ((strpos($type, "?") === 0)) {
+			return (mb_substr($type, 1, null)??'null') . "|null";
+		}
+		return $type;
 	}
 
 	/**

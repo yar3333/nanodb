@@ -38,7 +38,7 @@ class PhpClass
 	{
 		if (v != null)
 		{
-			var s = (v.haxeType != null ? "/**\n * @var " + v.haxeType + "\n */\n" : "")
+			var s = (v.haxeType != null ? "/**\n * @var " + processPhpDocType(v.haxeType) + "\n */\n" : "")
 				  + (access + " ")
 				  + (isStatic ? "static " : "")
 				  + "$" + v.haxeName
@@ -98,12 +98,18 @@ class PhpClass
 		var r = "/**\n";
 		for (v in vars)
 		{
-			r += "\t * @param " + v.haxeType + " $" + v.haxeName + "\n";
+			r += "\t * @param " + processPhpDocType(v.haxeType) + " $" + v.haxeName + "\n";
 		}
-		r += "\t * @return " + retType + "\n";
+		r += "\t * @return " + processPhpDocType(retType) + "\n";
 		r += "\t */\n\t";
 		
 		return r;
+	}
+	
+	private function processPhpDocType(type:String) : String
+	{
+		if (StringToolsNative.startsWith(type, "?")) return type.substr(1) + "|null";
+		return type;
 	}
 	
 	function renderPhpType(type:String) return type.contains("[]") ? "array" : type;
