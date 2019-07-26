@@ -112,9 +112,9 @@ class OrmManagerGenerator {
 			$whereVars = array_filter($vars, function ($v4) {
 				return $v4->isKey;
 			});
-			$klass->addMethod("save", [new GeneratorPhpVar("obj", GeneratorTools::toPhpType($modelClassName))], "void", "\$data = \$this->serializer->serializeObject(\$obj, [ " . (implode(", ", array_map(function ($x6) {
+			$klass->addMethod("save", [new GeneratorPhpVar("obj", GeneratorTools::toPhpType($modelClassName)), new GeneratorPhpVar("properties", "string[]", "null")], "void", "if (\$properties === null) \$properties = [ " . (implode(", ", array_map(function ($x6) {
 				return "'" . $x6->name . "'";
-			}, $savedVars))??'null') . " ]);\n" . "\$sets = []; foreach (\$data as \$k => \$v) \$sets[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$keys = \$this->serializer->serializeObject(\$obj, [ " . (implode(", ", array_map(function ($x7) {
+			}, $savedVars))??'null') . " ];\n" . "\n" . "\$data = \$this->serializer->serializeObject(\$obj, \$properties);\n" . "\$sets = []; foreach (\$data as \$k => \$v) \$sets[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$keys = \$this->serializer->serializeObject(\$obj, [ " . (implode(", ", array_map(function ($x7) {
 				return "'" . $x7->name . "'";
 			}, $whereVars))??'null') . " ]);\n" . "\$wheres = []; foreach (\$keys as \$k => \$v) \$wheres[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$this->db->query('UPDATE `' . \$this->table . '` SET ' . implode(', ', \$sets) . ' WHERE ' . implode(' AND ', \$wheres) . ' LIMIT 1');");
 		}

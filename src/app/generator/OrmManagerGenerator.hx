@@ -97,9 +97,14 @@ class OrmManagerGenerator
 			var whereVars = vars.filter(function(v) return v.isKey);
 			klass.addMethod(
 				"save",
-				Syntax.arrayDecl(new PhpVar('obj', Tools.toPhpType(modelClassName))),
+				Syntax.arrayDecl(
+					new PhpVar("obj", Tools.toPhpType(modelClassName)),
+					new PhpVar("properties", "string[]", "null")
+				),
 				"void",
-				  "$data = $this->serializer->serializeObject($obj, [ " + savedVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
+				  "if ($properties === null) $properties = [ " + savedVars.map(function(x) return "'" + x.name + "'").join(", ") + " ];\n"
+				+ "\n"
+				+ "$data = $this->serializer->serializeObject($obj, $properties);\n"
 				+ "$sets = []; foreach ($data as $k => $v) $sets[] = \"`$k` = \" . $this->db->quote($v);\n"
 				+ "\n"
 				+ "$keys = $this->serializer->serializeObject($obj, [ " + whereVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
