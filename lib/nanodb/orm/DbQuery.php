@@ -74,6 +74,11 @@ abstract class DbQuery
 	{
 		return $this->getMany($this->getSelectSql(null) . $this->getLimitAndOffsetSql());
 	}
+	
+	public function findManyIterator() : TypedIterator
+	{
+		return $this->getManyIterator($this->getSelectSql(null) . $this->getLimitAndOffsetSql());
+	}
 
 	public function findManyFields(array $fields) : ResultSet
 	{
@@ -242,7 +247,7 @@ abstract class DbQuery
 		if (!$resultSet->hasNext()) return null;
 		return $this->newFromDbRow($resultSet->next());
 	}
-    
+
 	protected function getMany(string $sql) : array
 	{
 		$resultSet = $this->db->query($sql);
@@ -255,6 +260,13 @@ abstract class DbQuery
 		}
 		return $r;
 	}
+
+	protected function getManyIterator(string $sql) : TypedIterator
+    {
+		$resultSet = $this->db->query($sql);
+		if (!$resultSet) throw DbException::errorOnQuery($sql, new \Exception('Query must return ResultSet.'));
+		return new TypedIterator($resultSet, function($row) { return $this->newFromDbRow($row); });
+    }
 
 	protected function quote($value)
     {
