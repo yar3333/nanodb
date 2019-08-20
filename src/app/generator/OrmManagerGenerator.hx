@@ -179,7 +179,7 @@ class OrmManagerGenerator
 	function getOrderDefVal(vars:TypedArray<OrmPhpVar>, positions:OrmPositions) : String
 	{
 		var positionVar = vars.filter(function(x) return positions.is(x.table, x.name));
-		return positionVar.length == 0 ? "null" : "'" + positionVar.map(function(x) return "$" + x.name).join(", ") + "'";
+		return positionVar.length == 0 ? "null" : "'" + positionVar.map(function(x) return x.name).join(", ") + "'";
 	}
     
     function getWhereSql(vars:TypedArray<OrmPhpVar>) : String

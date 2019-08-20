@@ -194,7 +194,7 @@ class OrmManagerGenerator {
 			return "null";
 		} else {
 			return "'" . (implode(", ", array_map(function ($x1) {
-				return "\$" . $x1->name;
+				return $x1->name;
 			}, $positionVar))??'null') . "'";
 		}
 	}
