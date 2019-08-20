@@ -93,7 +93,7 @@ class OrmManagerGenerator {
 		$klass->addMethod("add", [new GeneratorPhpVar("obj", GeneratorTools::toPhpType($modelClassName))], "void", (implode("", array_map(function ($x3)  use (&$table, &$db, &$vars, &$_gthis) {
 			$this1 = "if (\$obj->" . $x3->haxeName . " == null)\n" . "{\n" . "\t\$obj->" . $x3->name . " = \$this->db->query('SELECT MAX(`" . $x3->name . "`) FROM `' . \$this->table . '`";
 			$this2 = $_gthis->getForeignKeyVars($db, $table, $vars);
-			return $this1 . ($_gthis->getWhereSql($this2, "obj->")??'null') . ").getIntResult(0) + 1;\n" . "}\n\n";
+			return $this1 . ($_gthis->getWhereSql($this2, "obj->")??'null') . ")->getIntResult(0) + 1;\n" . "}\n\n";
 		}, array_filter($createVars, function ($x4)  use (&$positions) {
 			return $positions->is($x4->table, $x4->name);
 		})))??'null') . "\$data = \$this->serializer->serializeObject(\$obj, [ " . (implode(", ", array_map(function ($x5) {
