@@ -76,10 +76,10 @@ class OrmManagerGenerator
 			createVars.filter(function(x) return positions.is(x.table, x.name)).map
 			(
 				function(x) return 
-				  "if ($this->" + x.haxeName + " == null)\n"
+				  "if ($obj->" + x.haxeName + " == null)\n"
 				+ "{\n"
 				+ "\t$obj->" + x.name + " = $this->db->query('SELECT MAX(`" + x.name + "`) FROM `' . $this->table . '`" 
-					+ getWhereSql(getForeignKeyVars(db, table, vars), true)
+					+ getWhereSql(getForeignKeyVars(db, table, vars), "obj->")
 					+ ").getIntResult(0) + 1;\n"
 				+ "}\n\n"
 			).join("")
@@ -182,10 +182,10 @@ class OrmManagerGenerator
 		return positionVar.length == 0 ? "null" : "'" + positionVar.map(function(x) return x.name).join(", ") + "'";
 	}
     
-    function getWhereSql(vars:TypedArray<OrmPhpVar>, prefixThisToVars=false) : String
+    function getWhereSql(vars:TypedArray<OrmPhpVar>, varPrefix="") : String
     {
         return vars.length > 0
-            ? " WHERE " + vars.map(function(v) return "`" + v.name + "` = ' . $this->quote($" + (prefixThisToVars ? "this->" : "") + v.haxeName + ")").join(". ' AND ")
+            ? " WHERE " + vars.map(function(v) return "`" + v.name + "` = ' . $this->quote($" + varPrefix + v.haxeName + ")").join(". ' AND ")
             : "'";
     }
     
