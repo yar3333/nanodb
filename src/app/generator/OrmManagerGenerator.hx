@@ -80,7 +80,7 @@ class OrmManagerGenerator
 				+ "{\n"
 				+ "\t$obj->" + x.name + " = $this->db->query('SELECT MAX(`" + x.name + "`) FROM `' . $this->table . '`" 
 					+ getWhereSql(getForeignKeyVars(db, table, vars), "obj->")
-					+ ").getIntResult(0) + 1;\n"
+					+ ")->getIntResult(0) + 1;\n"
 				+ "}\n\n"
 			).join("")
 			+"$data = $this->serializer->serializeObject($obj, [ " + createVars.map(function(x) return "'" + x.name + "'").join(", ") + " ]);\n"
