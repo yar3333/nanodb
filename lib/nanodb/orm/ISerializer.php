@@ -4,7 +4,7 @@ namespace nanodb\orm;
 
 interface ISerializer
 {
-   /**
+    /**
      * @param object $src
      * @param string[] $properties
      * @return array
