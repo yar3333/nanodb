@@ -118,6 +118,13 @@ class SQLiteResultSet implements DbResultSet {
 	}
 
 	/**
+	 * @return void
+	 */
+	public function free () {
+		$this->result->finalize();
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public function getFieldsInfo () {

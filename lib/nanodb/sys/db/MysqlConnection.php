@@ -87,11 +87,12 @@ class MysqlConnection implements DbConnection {
 
 	/**
 	 * @param string $s
+	 * @param int $mode
 	 * 
 	 * @return DbResultSet
 	 */
-	public function request ($s) {
-		$result = $this->db->query($s);
+	public function request ($s, $mode = null) {
+		$result = $this->db->query($s, $mode);
 		if ($result === false) {
 			throw new \Exception("Failed to perform db query: " . $this->db->error);
 		}

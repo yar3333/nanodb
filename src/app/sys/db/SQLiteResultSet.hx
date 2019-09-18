@@ -44,20 +44,29 @@ class SQLiteResultSet implements ResultSet
 		return Global.array_values(rows[currentIndex])[n];
 	}
 
-	public function getIntResult( n : Int ) : Int {
+	public function getIntResult(n:Int) : Int 
+	{
 		return Syntax.int(getResult(n));
 	}
 
-	public function getFloatResult( n : Int ) : Float {
+	public function getFloatResult(n:Int) : Float 
+	{
 		return Syntax.float(getResult(n));
 	}
 
-	public function getFieldsNames() : TypedArray<String> {
+	public function getFieldsNames() : TypedArray<String> 
+	{
 		var fieldsInfo = getFieldsInfo();
 		return Global.array_keys(fieldsInfo);
 	}
+	
+	public function free() : Void
+	{
+		result.finalize();
+	}
 
-	function correctArrayTypes(row:NativeAssocArray<String>) : TypedAssoc<String, Dynamic> {
+	function correctArrayTypes(row:NativeAssocArray<String>) : TypedAssoc<String, Dynamic> 
+	{
 		var fieldsInfo = getFieldsInfo();
 		Syntax.foreach(row, function(field:String, value:String) {
 			row[field] = correctType(value, fieldsInfo[field]);

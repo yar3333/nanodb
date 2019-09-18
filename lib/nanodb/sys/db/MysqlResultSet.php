@@ -93,6 +93,13 @@ class MysqlResultSet implements DbResultSet {
 	}
 
 	/**
+	 * @return void
+	 */
+	public function free () {
+		$this->result->free();
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public function getFieldsInfo () {

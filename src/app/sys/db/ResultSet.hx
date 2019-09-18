@@ -15,4 +15,5 @@ interface ResultSet {
 	function getIntResult( n : Int ) : Int;
 	function getFloatResult( n : Int ) : Float;
 	function getFieldsNames() : TypedArray<String>;
+	function free() : Void;
 }

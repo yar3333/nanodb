@@ -46,10 +46,11 @@ interface DbDriver {
 
 	/**
 	 * @param string $sql
+	 * @param int $mode
 	 * 
 	 * @return ResultSet
 	 */
-	public function query ($sql) ;
+	public function query ($sql, $mode = null) ;
 
 	/**
 	 * @param mixed $s

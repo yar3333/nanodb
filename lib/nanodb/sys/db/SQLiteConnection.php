@@ -76,10 +76,11 @@ class SQLiteConnection implements DbConnection {
 
 	/**
 	 * @param string $s
+	 * @param int $mode
 	 * 
 	 * @return DbResultSet
 	 */
-	public function request ($s) {
+	public function request ($s, $mode = null) {
 		$result = $this->db->query($s);
 		return new DbSQLiteResultSet($result);
 	}

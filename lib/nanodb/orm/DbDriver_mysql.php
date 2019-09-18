@@ -8,11 +8,11 @@ namespace nanodb\orm;
 use \nanodb\orm\DbException as OrmDbException;
 use \nanodb\sys\db\Mysql;
 use \nanodb\orm\SqlTextField as OrmSqlTextField;
-use \nanodb\sys\db\Connection;
 use \nanodb\orm\DbDriver as OrmDbDriver;
 use \nanodb\sys\db\ResultSet;
 use \nanodb\orm\DbTableFieldData as OrmDbTableFieldData;
 use \nanodb\EReg;
+use \nanodb\sys\db\MysqlConnection;
 
 class DbDriver_mysql implements OrmDbDriver {
 	/**
@@ -21,7 +21,7 @@ class DbDriver_mysql implements OrmDbDriver {
 	const renewTimeoutSeconds = 120;
 
 	/**
-	 * @var Connection
+	 * @var MysqlConnection
 	 */
 	public $connection;
 	/**
@@ -157,13 +157,14 @@ class DbDriver_mysql implements OrmDbDriver {
 
 	/**
 	 * @param string $sql
+	 * @param int $mode
 	 * 
 	 * @return ResultSet
 	 */
-	public function query ($sql) {
+	public function query ($sql, $mode = null) {
 		$this->renew();
 		try {
-			return $this->connection->request($sql);
+			return $this->connection->request($sql, $mode);
 		}
 		catch (\Throwable $e) {
 			throw OrmDbException::errorOnQuery($sql, $e);

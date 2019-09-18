@@ -5,8 +5,8 @@ import php.Syntax;
 import php.TypedAssoc;
 import php.TypedArray;
 import php.calendar.DateTime;
-import sys.db.Connection;
 import sys.db.Mysql;
+import sys.db.MysqlConnection;
 import sys.db.ResultSet;
 import php.Exception;
 
@@ -20,7 +20,7 @@ class DbDriver_mysql implements DbDriver
 	var database : String;
 	var port : Int;
 	
-	var connection : Connection;
+	var connection : MysqlConnection;
 	
 	var lastAccessTime = 0;
 	
@@ -59,7 +59,7 @@ class DbDriver_mysql implements DbDriver
 			
 			if (connection == null)
 			{
-				connection = Mysql.connect(cast Syntax.object(Syntax.assocDecl({ host:host, user:user, pass:pass, database:database, port:port != 0 ? port : 3306, socket:null })));
+				connection = cast Mysql.connect(cast Syntax.object(Syntax.assocDecl({ host:host, user:user, pass:pass, database:database, port:port != 0 ? port : 3306, socket:null })));
 				connection.request("set names utf8");
 				connection.request("set character_set_client='utf8'");
 				connection.request("set character_set_results='utf8'");
@@ -70,13 +70,13 @@ class DbDriver_mysql implements DbDriver
 		lastAccessTime = Global.time();
 	}
 
-    public function query(sql:String) : ResultSet
+    public function query(sql:String, ?mode:Int) : ResultSet
     {
 		renew();
 		
 		try
 		{
-			return connection.request(sql);
+			return connection.request(sql, mode);
 		}
 		catch (e:Dynamic)
 		{

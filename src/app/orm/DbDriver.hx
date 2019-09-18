@@ -5,7 +5,7 @@ import sys.db.ResultSet;
 
 interface DbDriver 
 {
-	function query(sql:String) : ResultSet;
+	function query(sql:String, ?mode:Int) : ResultSet;
     
 	function quote(s:Dynamic) : String;
     function lastInsertId() : Int;

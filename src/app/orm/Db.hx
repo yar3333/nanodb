@@ -21,7 +21,7 @@ extern class Db
 	
     public function new(connectionString:String, ?logLevel:Int) : Void;
 	public function query(sql:String, ?params:TypedAssoc<String, Dynamic>) : ResultSet;
-    public function quote(v:Dynamic) : String;
+    public function quote(v:Dynamic, ?mode:Int) : String;
     public function lastInsertId() : Int;
 	public function close() : Void;
 	public function bind(sql:String, params:TypedAssoc<String, Dynamic>) : String;

@@ -12,29 +12,34 @@ class MysqlResultSet implements ResultSet
 	var fetchedRow:TypedAssoc<String, Dynamic>;
 	var fieldsInfo:TypedAssoc<String, MysqliFieldInfo>;
 
-	public function new( result:Mysqli_result ) {
+	public function new(result:Mysqli_result) 
+	{
 		this.result = result;
 		
 		this.length = result.num_rows;
 		this.nfields = result.field_count;
 	}
 
-	public function hasNext() : Bool {
+	public function hasNext() : Bool 
+	{
 		if (fetchedRow == null) fetchNext();
 		return fetchedRow != null;
 	}
 
-	public function next() : TypedAssoc<String, Dynamic> {
+	public function next() : TypedAssoc<String, Dynamic> 
+	{
 		if (fetchedRow == null) fetchNext();
 		return withdrawFetched();
 	}
 
-	public function results() : TypedArray<TypedAssoc<String, Dynamic>> {
+	public function results() : TypedArray<TypedAssoc<String, Dynamic>> 
+	{
 		var list = new TypedArray<TypedAssoc<String, Dynamic>>();
-
+		
 		result.data_seek(0);
 		var row : TypedAssoc<String, Dynamic> = cast result.fetch_assoc();
-		while (row != null) {
+		while (row != null) 
+		{
 			correctArrayTypes(row);
 			list.push(row);
 			row = cast result.fetch_assoc();
@@ -43,25 +48,35 @@ class MysqlResultSet implements ResultSet
 		return list;
 	}
 
-	public function getResult( n : Int ) : String {
+	public function getResult(n:Int) : String
+	{
 		if (fetchedRow == null) fetchNext();
 		return Global.array_values(fetchedRow)[n];
 	}
 
-	public function getIntResult( n : Int ) : Int {
+	public function getIntResult(n:Int) : Int
+	{
 		return Syntax.int(getResult(n));
 	}
 
-	public function getFloatResult( n : Int ) : Float {
+	public function getFloatResult(n:Int) : Float
+	{
 		return Syntax.float(getResult(n));
 	}
 
-	public function getFieldsNames() : TypedArray<String> {
+	public function getFieldsNames() : TypedArray<String>
+	{
 		var fields : TypedArray<MysqliFieldInfo> = cast result.fetch_fields();
 		return fields.map(function(x) return x.name);
 	}
+	
+	public function free() : Void
+	{
+		result.free();
+	}
 
-	function fetchNext() : Void {
+	function fetchNext() : Void 
+	{
 		var row : TypedAssoc<String, Dynamic> = cast result.fetch_assoc();
 		if (row != null)
 		{
@@ -70,31 +85,38 @@ class MysqlResultSet implements ResultSet
 		}
 	}
 
-	function withdrawFetched() : TypedAssoc<String, Dynamic> {
+	function withdrawFetched() : TypedAssoc<String, Dynamic> 
+	{
 		if (fetchedRow == null) return null;
 		var row = fetchedRow;
 		fetchedRow = null;
 		return row;
 	}
 
-	function correctArrayTypes(row:TypedAssoc<String, Dynamic>) {
+	function correctArrayTypes(row:TypedAssoc<String, Dynamic>) 
+	{
 		var fieldsInfo = getFieldsInfo();
-		Syntax.foreach(row, function(field:String, value:String) {
+		Syntax.foreach(row, function(field:String, value:String) 
+		{
 			row[field] = correctType(value, fieldsInfo[field].type);
 		});
 	}
 
-	inline function getFieldsInfo():TypedAssoc<String, MysqliFieldInfo> {
-		if (fieldsInfo == null) {
+	inline function getFieldsInfo():TypedAssoc<String, MysqliFieldInfo> 
+	{
+		if (fieldsInfo == null) 
+		{
 			fieldsInfo = cast Syntax.arrayDecl();
-			Syntax.foreach(result.fetch_fields(), function(_, info:MysqliFieldInfo) {
+			Syntax.foreach(result.fetch_fields(), function(_, info:MysqliFieldInfo)
+			{
 				fieldsInfo[info.name] = info;
 			});
 		}
 		return fieldsInfo;
 	}
 
-	function correctType(value:String, type:Int) : Scalar {
+	function correctType(value:String, type:Int) : Scalar 
+	{
 		if (value == null) return null;
 		if (
 			type == Const.MYSQLI_TYPE_BIT

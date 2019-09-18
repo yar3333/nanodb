@@ -170,10 +170,11 @@ class DbDriver_sqlite implements OrmDbDriver {
 
 	/**
 	 * @param string $sql
+	 * @param int $mode
 	 * 
 	 * @return ResultSet
 	 */
-	public function query ($sql) {
+	public function query ($sql, $mode = null) {
 		try {
 			return $this->connection->request($sql);
 		}

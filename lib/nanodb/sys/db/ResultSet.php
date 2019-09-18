@@ -7,6 +7,11 @@ namespace nanodb\sys\db;
 
 interface ResultSet {
 	/**
+	 * @return void
+	 */
+	public function free () ;
+
+	/**
 	 * @return mixed
 	 */
 	public function getFieldsNames () ;

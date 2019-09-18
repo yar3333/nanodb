@@ -19,7 +19,7 @@ class DbDriver_sqlite implements DbDriver
 		connection = Sqlite.open(dbparams);
     }
 	
-    public function query(sql:String) : ResultSet
+    public function query(sql:String, ?mode:Int) : ResultSet
     {
 		try
 		{
