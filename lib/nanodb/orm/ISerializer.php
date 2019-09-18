@@ -9,7 +9,7 @@ interface ISerializer
      * @param string[] $properties
      * @return array
      */
-	public function serializeObject(object $src, array $properties=null) : array;
+    public function serializeObject(object $src, array $properties=null) : array;
 
     /**
      * @param array $src

@@ -7,7 +7,6 @@ class Serializer implements ISerializer
 	/**
 	 * @param object $src
 	 * @param string[] $properties
-	 *
 	 * @return array
 	 */
 	public function serializeObject(object $src, array $properties=null) : array
