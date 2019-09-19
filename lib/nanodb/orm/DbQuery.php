@@ -121,8 +121,7 @@ abstract class DbQuery
 
 	protected function getSelectSql(?array $fields) : string
 	{
-		$f = ($fields !== null ? array_map(function($x) { return $this->quote($x); }, $fields) : ["*"]);
-		return "SELECT " . ($this->isDistinct ? "DISTINCT " : "") . implode(", ", $f) . "\nFROM `" . $this->table . "`" . $this->getWhereSql() . $this->getOrderBySql();
+		return "SELECT " . ($this->isDistinct ? "DISTINCT " : "") . ($fields !== null ? implode(", ", $fields) : "*") . "\nFROM `" . $this->table . "`" . $this->getWhereSql() . $this->getOrderBySql();
 	}
 
 	protected function getWhereSql() : string
