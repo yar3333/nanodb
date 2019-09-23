@@ -30,7 +30,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/nanodb/orm/DbQuery.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="380">
@@ -44,6 +44,15 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
               <caret line="4" column="6" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lib/nanodb/generator/OrmManagerGenerator.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="75" column="12" selection-start-line="75" selection-start-column="12" selection-end-line="75" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -112,7 +121,6 @@
         <option value="$PROJECT_DIR$/lib/nanodb/generator/Log.php" />
         <option value="$PROJECT_DIR$/lib/nanodb/generator/Main.php" />
         <option value="$PROJECT_DIR$/lib/nanodb/generator/OrmGenerator.php" />
-        <option value="$PROJECT_DIR$/lib/nanodb/generator/OrmManagerGenerator.php" />
         <option value="$PROJECT_DIR$/lib/nanodb/generator/OrmModelGenerator.php" />
         <option value="$PROJECT_DIR$/lib/nanodb/generator/OrmPhpVar.php" />
         <option value="$PROJECT_DIR$/lib/nanodb/generator/OrmPositions.php" />
@@ -142,6 +150,7 @@
         <option value="$PROJECT_DIR$/lib/nanodb/sys/db/SQLiteResultSet.php" />
         <option value="$PROJECT_DIR$/lib/nanodb/sys/db/MysqlResultSet.php" />
         <option value="$PROJECT_DIR$/lib/nanodb/orm/DbQuery.php" />
+        <option value="$PROJECT_DIR$/lib/nanodb/generator/OrmManagerGenerator.php" />
       </list>
     </option>
   </component>
@@ -333,7 +342,7 @@
       <workItem from="1562745617173" duration="577000" />
       <workItem from="1568799132962" duration="7150000" />
       <workItem from="1568894945045" duration="665000" />
-      <workItem from="1569240427468" duration="325000" />
+      <workItem from="1569240427468" duration="925000" />
     </task>
     <servers />
   </component>
@@ -370,18 +379,18 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="40131000" />
+    <option name="totallyTimeSpent" value="40731000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.24973656" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.25266525" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info id="Database" order="3" weight="0.32982087" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info active="true" anchor="bottom" id="Find" order="1" visible="true" weight="0.2611051" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.2611051" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.13217768" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.42470205" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -392,12 +401,12 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Inspection Results" order="12" visible="true" weight="0.4225352" />
-      <window_info anchor="bottom" id="Tool Output" order="13" />
-      <window_info anchor="bottom" id="ANTLR Preview" order="14" />
+      <window_info anchor="bottom" id="Tool Output" order="12" />
+      <window_info anchor="bottom" id="ANTLR Preview" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info active="true" anchor="right" id="Inspection Results" order="3" visible="true" weight="0.1391258" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -656,13 +665,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/nanodb/generator/OrmManagerGenerator.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2363">
-          <caret line="139" column="37" selection-start-line="139" selection-start-column="37" selection-end-line="139" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/nanodb/generator/OrmModelGenerator.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -723,6 +725,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="380">
           <caret line="89" column="56" lean-forward="true" selection-start-line="89" selection-start-column="56" selection-end-line="89" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/nanodb/generator/OrmManagerGenerator.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="75" column="12" selection-start-line="75" selection-start-column="12" selection-end-line="75" selection-end-column="12" />
         </state>
       </provider>
     </entry>

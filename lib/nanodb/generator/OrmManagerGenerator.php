@@ -32,9 +32,8 @@ class OrmManagerGenerator
 	 */
 	public function createGetByMethodOne($vars, $modelClassName, $whereVars, $model)
     {
-		if (($whereVars === null) || (count($whereVars) === 0)) {
-			return;
-		}
+		if (!$whereVars) return;
+
 		$model->addMethod("getBy" . (implode("And", array_map(function ($x) {
 			return Tools::fieldAsFunctionNamePart($x->haxeName);
 		}, $whereVars))??'null'), $whereVars, "?" . Tools::toPhpType($modelClassName), "return \$this->getOne('SELECT * FROM `' . \$this->table . '`" . $this->getWhereSql($whereVars) . ");");
@@ -62,64 +61,51 @@ class OrmManagerGenerator
 		$serializerPhpVar = new PhpVar("serializer", Tools::toPhpType("nanodb.orm.ISerializer"));
 		$klass->addVar($ormPhpVar, "protected");
 		$klass->addMethod("__construct", [$dbPhpVar, $ormPhpVar, $serializerPhpVar], null, "parent::__construct(\$db, \$serializer);\n" . "\$this->orm = \$orm;");
-		$getVars = array_filter($vars, function ($x) {
-			return $x->isKey;
-		});
-		if (count($getVars) > 0) {
+		$getVars = array_filter($vars, function ($x) { return $x->isKey; });
+		if ($getVars) {
 			$klass->addMethod("get", $getVars, "?" . Tools::toPhpType($modelClassName), "return \$this->getOne('SELECT * FROM `' . \$this->table . '`" . $this->getWhereSql($getVars) . ");");
 		}
-		$createVars = array_filter($vars, function ($x1) {
-			return !$x1->isAutoInc;
-		});
-		$autoIncVars = array_filter($vars, function ($x2) {
-			return $x2->isAutoInc;
-		});
-		$klass->addMethod("add", [new PhpVar("obj", Tools::toPhpType($modelClassName))], "void", (implode("", array_map(function ($x3)  use (&$table, &$db, &$vars, &$_gthis) {
+		$createVars = array_filter($vars, function ($x1) { return !$x1->isAutoInc; });
+		$autoIncVars = array_filter($vars, function ($x2) { return $x2->isAutoInc; });
+		$klass->addMethod("add", [new PhpVar("obj", Tools::toPhpType($modelClassName))], "void", implode("", array_map(function ($x3)  use (&$table, &$db, &$vars, &$_gthis) {
 			$this1 = "if (\$obj->" . $x3->haxeName . " == null)\n" . "{\n" . "\t\$obj->" . $x3->name . " = \$this->db->query('SELECT MAX(`" . $x3->name . "`) FROM `' . \$this->table . '`";
 			$this2 = $_gthis->getForeignKeyVars($db, $table, $vars);
 			return $this1 . ($_gthis->getWhereSql($this2, "obj->")??'null') . ")->getIntResult(0) + 1;\n" . "}\n\n";
 		}, array_filter($createVars, function ($x4)  use (&$positions) {
 			return $positions->is($x4->table, $x4->name);
-		})))??'null') . "\$data = \$this->serializer->serializeObject(\$obj, [ " . (implode(", ", array_map(function ($x5) {
+		}))) . "\$data = \$this->serializer->serializeObject(\$obj, [ " . implode(", ", array_map(function ($x5) {
 			return "'" . $x5->name . "'";
-		}, $createVars))??'null') . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$this->db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `' . \$this->table . '`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')');" . (((count($autoIncVars) > 0 ? "\n" . (implode("\n", array_map(function ($v) {
+		}, $createVars)) . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$this->db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `' . \$this->table . '`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')');" . ((count($autoIncVars) > 0 ? "\n" . implode("\n", array_map(function ($v) {
 			return "\$obj->" . $v->haxeName . " = \$this->db->lastInsertId();";
-		}, $autoIncVars))??'null') : ""))??'null'));
+		}, $autoIncVars)) : "")));
 		if (current(array_filter($vars, function ($v1) {
 			return $v1->isKey;
 		})) && current(array_filter($vars, function ($v2) {
 			return !$v2->isKey;
 		}))) {
-			$savedVars = array_filter($vars, function ($v3) {
-				return !$v3->isKey;
-			});
-			$whereVars = array_filter($vars, function ($v4) {
-				return $v4->isKey;
-			});
-			$klass->addMethod("save", [new PhpVar("obj", Tools::toPhpType($modelClassName)), new PhpVar("properties", "string[]", "null")], "void", "if (\$properties === null) \$properties = [ " . (implode(", ", array_map(function ($x6) {
+			$savedVars = array_filter($vars, function ($v3) { return !$v3->isKey; });
+			$whereVars = array_filter($vars, function ($v4) { return $v4->isKey; });
+			$klass->addMethod("save", [new PhpVar("obj", Tools::toPhpType($modelClassName)), new PhpVar("properties", "string[]", "null")], "void", "if (\$properties === null) \$properties = [ " . implode(", ", array_map(function ($x6) {
 				return "'" . $x6->name . "'";
-			}, $savedVars))??'null') . " ];\n" . "\n" . "\$data = \$this->serializer->serializeObject(\$obj, \$properties);\n" . "\$sets = []; foreach (\$data as \$k => \$v) \$sets[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$keys = \$this->serializer->serializeObject(\$obj, [ " . (implode(", ", array_map(function ($x7) {
+			}, $savedVars)) . " ];\n" . "\n" . "\$data = \$this->serializer->serializeObject(\$obj, \$properties);\n" . "\$sets = []; foreach (\$data as \$k => \$v) \$sets[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$keys = \$this->serializer->serializeObject(\$obj, [ " . implode(", ", array_map(function ($x7) {
 				return "'" . $x7->name . "'";
-			}, $whereVars))??'null') . " ]);\n" . "\$wheres = []; foreach (\$keys as \$k => \$v) \$wheres[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$this->db->query('UPDATE `' . \$this->table . '` SET ' . implode(', ', \$sets) . ' WHERE ' . implode(' AND ', \$wheres) . ' LIMIT 1');");
+			}, $whereVars)) . " ]);\n" . "\$wheres = []; foreach (\$keys as \$k => \$v) \$wheres[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$this->db->query('UPDATE `' . \$this->table . '` SET ' . implode(', ', \$sets) . ' WHERE ' . implode(' AND ', \$wheres) . ' LIMIT 1');");
 		}
-		$deleteVars = array_filter($vars, function ($x8) {
-			return $x8->isKey;
-		});
-		if (count($deleteVars) === 0) {
-			$deleteVars = $vars;
-		}
-		$klass->addMethod("deleteBy" . implode("And", array_map(function ($x9) {
-			return Tools::fieldAsFunctionNamePart($x9->haxeName);
-		}, $deleteVars)), $deleteVars, "void", "\$this->db->query('DELETE FROM `' . \$this->table . '`" . $this->getWhereSql($deleteVars) . " . ' LIMIT 1');");
+		$deleteVars = array_filter($vars, function ($x8) { return $x8->isKey; });
+		if (!$deleteVars)  $deleteVars = $vars;
+
+		$klass->addMethod(
+		    "deleteBy" . implode("And", array_map(function ($x9) { return Tools::fieldAsFunctionNamePart($x9->haxeName); }, $deleteVars)),
+            $deleteVars,
+            "void",
+            "\$this->db->query('DELETE FROM `' . \$this->table . '`" . $this->getWhereSql($deleteVars) . " . ' LIMIT 1');"
+        );
 		$collection = $db->connection->getUniques($table);
 		foreach ($collection as $key => $value) {
 			unset($fields);
 			$fields = $value;
-			$vs = array_filter($vars, function ($x10)  use (&$fields) {
-				return in_array($x10->name, $fields, false);
-			});
+			$vs = array_filter($vars, function ($x10)  use (&$fields) { return in_array($x10->name, $fields, false); });
 			$_gthis->createGetByMethodOne($vars, $modelClassName, $vs, $klass);
-
 		}
 
 		$collection1 = $this->getForeignKeyVars($db, $table, $vars);
