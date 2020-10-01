@@ -106,10 +106,24 @@ class OrmTools
 	 * @param string $type
 	 * @return bool
 	 */
-	static public function sqlTypeCheck ($checked, $type)
+    static public function sqlTypeCheck($checked, $type)
     {
-		$re = new EReg("^" . $type . "(\\(|\$)", "");
-		return $re->match($checked);
-	}
-}
+        $re = new EReg("^" . $type . "(\\(|\$)", "");
+        return $re->match(self::normalizeType($checked));
+    }
 
+    private const EXCLUDES = ['UNSIGNED', 'ZEROFILL'];
+
+    /**
+     * @param $sql_type
+     * @return string
+     */
+    private static function normalizeType($sql_type) : string
+    {
+        $res = $sql_type;
+        foreach (self::EXCLUDES as $EXCLUDE) {
+            $res = str_replace($EXCLUDE, '', $res);
+        }
+        return str_replace(' ', '', $res);
+    }
+}
