@@ -6,6 +6,13 @@ use \nanodb\orm\Db;
 
 class OrmManagerGenerator
 {
+    private $createdMethods = [];
+    private function allowedMethod(string $name) : bool
+    {
+        if (in_array($name, $this->createdMethods)) return false;
+        $this->createdMethods[] = $name;
+        return true;
+    }
 	/**
 	 * @param mixed $vars
 	 * @param string $modelClassName
@@ -17,8 +24,10 @@ class OrmManagerGenerator
 	public function createGetByMethodMany($vars, $modelClassName, $whereVars, $model, $positions)
     {
 		if ($whereVars === null || count($whereVars) === 0) return;
+		$method = "getBy" . implode("And", array_map(function ($v) { return Tools::fieldAsFunctionNamePart($v->haxeName); }, $whereVars));
+        if (!$this->allowedMethod($method)) return;
 		$model->addMethod(
-		    "getBy" . implode("And", array_map(function ($v) { return Tools::fieldAsFunctionNamePart($v->haxeName); }, $whereVars)),
+		    $method,
             array_merge($whereVars, [new PhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))]), Tools::toPhpType($modelClassName) . "[]", "return \$this->getMany('SELECT * FROM `' . \$this->table . '`" . $this->getWhereSql($whereVars) . " . (\$_order !== null ? ' ORDER BY ' . \$_order : ''));"
         );
 	}
@@ -33,10 +42,11 @@ class OrmManagerGenerator
 	public function createGetByMethodOne($vars, $modelClassName, $whereVars, $model)
     {
 		if (!$whereVars) return;
-
-		$model->addMethod("getBy" . (implode("And", array_map(function ($x) {
-			return Tools::fieldAsFunctionNamePart($x->haxeName);
-		}, $whereVars))??'null'), $whereVars, "?" . Tools::toPhpType($modelClassName), "return \$this->getOne('SELECT * FROM `' . \$this->table . '`" . $this->getWhereSql($whereVars) . ");");
+        $method = "getBy" . (implode("And", array_map(function ($x) {
+                    return Tools::fieldAsFunctionNamePart($x->haxeName);
+                }, $whereVars))??'null');
+        if (!$this->allowedMethod($method)) return;
+		$model->addMethod($method, $whereVars, "?" . Tools::toPhpType($modelClassName), "return \$this->getOne('SELECT * FROM `' . \$this->table . '`" . $this->getWhereSql($whereVars) . ");");
 	}
 
 	/**
