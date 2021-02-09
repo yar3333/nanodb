@@ -4,6 +4,7 @@ namespace nanodb\sys\db;
 
 class MysqlConnection implements Connection
 {
+    private const DEFAULT_CONNECTION_TIMEOUT = 30;
 	/**
 	 * @var \Mysqli
 	 */
@@ -18,7 +19,9 @@ class MysqlConnection implements Connection
 		if ($params->socket === null) $params->socket = ini_get("mysqli.default_socket");
 		if ($params->database === null) $params->database = "";
 
-		$this->db = new \Mysqli($params->host, $params->user, $params->pass, $params->database, $params->port, $params->socket);
+        $this->db = new \Mysqli();
+        $this->db->options(MYSQLI_OPT_CONNECT_TIMEOUT, $params->connection_timeout ?? self::DEFAULT_CONNECTION_TIMEOUT);
+        $this->db->connect($params->host, $params->user, $params->pass, $params->database, $params->port, $params->socket);
 	}
 
 	/**

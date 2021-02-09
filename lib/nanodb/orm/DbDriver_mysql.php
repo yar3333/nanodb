@@ -49,6 +49,11 @@ class DbDriver_mysql implements DbDriver
 	 */
 	public $user;
 
+    /**
+     * @var ?int
+     */
+    public $connection_timeout;
+
 	/**
 	 * @param string $dbparams
 	 * @return void
@@ -57,7 +62,7 @@ class DbDriver_mysql implements DbDriver
     {
 		$this->lastAccessTime = 0;
 
-		$re = new EReg("^([_a-zA-Z0-9]+)\\:(.+?)@([-_.a-zA-Z0-9]+)(?:[:](\\d+))?/([-_a-zA-Z0-9]+)\$", "");
+        $re = new EReg("^([_a-zA-Z0-9]+)\\:(.+?)@([-_.a-zA-Z0-9]+)(?:[:](\\d+))?/([-_a-zA-Z0-9]+)(#(\\d+))?\$", "");
 		if (!$re->match($dbparams)) throw new \Exception("Connection string invalid format.");
 
 		$this->host = $re->matched(3);
@@ -65,7 +70,7 @@ class DbDriver_mysql implements DbDriver
 		$this->pass = $re->matched(2);
 		$this->database = $re->matched(5);
 		$this->port = (($re->matched(4) !== null) && ($re->matched(4) !== "") ? (int)($re->matched(4)) : 0);
-
+        $this->connection_timeout = $re->matched(7);
 		$this->renew();
 	}
 
