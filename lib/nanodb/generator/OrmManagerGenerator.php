@@ -28,7 +28,7 @@ class OrmManagerGenerator
         if (!$this->allowedMethod($method)) return;
 		$model->addMethod(
 		    $method,
-            array_merge($whereVars, [new PhpVar("_order", "string", $this->getOrderDefVal($vars, $positions))]), Tools::toPhpType($modelClassName) . "[]", "return \$this->getMany('SELECT * FROM `' . \$this->table . '`" . $this->getWhereSql($whereVars) . " . (\$_order !== null ? ' ORDER BY ' . \$_order : ''));"
+            array_merge($whereVars, [new PhpVar("_order", "?string", $this->getOrderDefVal($vars, $positions))]), Tools::toPhpType($modelClassName) . "[]", "return \$this->getMany('SELECT * FROM `' . \$this->table . '`" . $this->getWhereSql($whereVars) . " . (\$_order !== null ? ' ORDER BY ' . \$_order : ''));"
         );
 	}
 
@@ -85,7 +85,7 @@ class OrmManagerGenerator
 			return $positions->is($x4->table, $x4->name);
 		}))) . "\$data = \$this->serializer->serializeObject(\$obj, [ " . implode(", ", array_map(function ($x5) {
 			return "'" . $x5->name . "'";
-		}, $createVars)) . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$k => \$v) { \$fields[] = \"`\$k`\"; \$values[] = \$this->db->quote(\$v); }\n" . "\$this->db->query('INSERT INTO `' . \$this->table . '`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')');" . ((count($autoIncVars) > 0 ? "\n" . implode("\n", array_map(function ($v) {
+		}, $createVars)) . " ]);\n" . "\$fields = [];\n" . "\$values = [];\n" . "foreach (\$data as \$key => \$value) { \$fields[] = \"`\$key`\"; \$values[] = \$this->db->quote(\$value); }\n" . "\$this->db->query('INSERT INTO `' . \$this->table . '`(' . implode(', ', \$fields) . ') VALUES (' . implode(', ', \$values) . ')');" . ((count($autoIncVars) > 0 ? "\n" . implode("\n", array_map(function ($v) {
 			return "\$obj->" . $v->haxeName . " = \$this->db->lastInsertId();";
 		}, $autoIncVars)) : "")));
 		if (current(array_filter($vars, function ($v1) {
@@ -97,9 +97,9 @@ class OrmManagerGenerator
 			$whereVars = array_filter($vars, function ($v4) { return $v4->isKey; });
 			$klass->addMethod("save", [new PhpVar("obj", Tools::toPhpType($modelClassName)), new PhpVar("properties", "string[]", "null")], "void", "if (\$properties === null) \$properties = [ " . implode(", ", array_map(function ($x6) {
 				return "'" . $x6->name . "'";
-			}, $savedVars)) . " ];\n" . "\n" . "\$data = \$this->serializer->serializeObject(\$obj, \$properties);\n" . "\$sets = []; foreach (\$data as \$k => \$v) \$sets[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$keys = \$this->serializer->serializeObject(\$obj, [ " . implode(", ", array_map(function ($x7) {
+			}, $savedVars)) . " ];\n" . "\n" . "\$data = \$this->serializer->serializeObject(\$obj, \$properties);\n" . "\$sets = []; foreach (\$data as \$key => \$value) \$sets[] = \"`\$key` = \" . \$this->db->quote(\$value);\n" . "\n" . "\$keys = \$this->serializer->serializeObject(\$obj, [ " . implode(", ", array_map(function ($x7) {
 				return "'" . $x7->name . "'";
-			}, $whereVars)) . " ]);\n" . "\$wheres = []; foreach (\$keys as \$k => \$v) \$wheres[] = \"`\$k` = \" . \$this->db->quote(\$v);\n" . "\n" . "\$this->db->query('UPDATE `' . \$this->table . '` SET ' . implode(', ', \$sets) . ' WHERE ' . implode(' AND ', \$wheres) . ' LIMIT 1');");
+			}, $whereVars)) . " ]);\n" . "\$wheres = []; foreach (\$keys as \$key => \$value) \$wheres[] = \"`\$key` = \" . \$this->db->quote(\$value);\n" . "\n" . "\$this->db->query('UPDATE `' . \$this->table . '` SET ' . implode(', ', \$sets) . ' WHERE ' . implode(' AND ', \$wheres) . ' LIMIT 1');");
 		}
 		$deleteVars = array_filter($vars, function ($x8) { return $x8->isKey; });
 		if (!$deleteVars)  $deleteVars = $vars;
