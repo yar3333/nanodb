@@ -67,7 +67,7 @@ class PhpClass
 	 */
 	public function addClassComment($text)
     {
-		array_push($this->classComments, $text);
+		$this->classComments[] = $text;
 	}
 
 	/**
@@ -76,7 +76,7 @@ class PhpClass
 	 */
 	public function addCustom($code)
     {
-		array_push($this->customs, $code);
+		$this->customs[] = $code;
 	}
 
 	/**
@@ -85,7 +85,7 @@ class PhpClass
 	 */
 	public function addGlobalComment($text)
     {
-		array_push($this->globalComments, $text);
+		$this->globalComments[] = $text;
 	}
 
 	/**
@@ -94,7 +94,7 @@ class PhpClass
 	 */
 	public function addImport ($className)
     {
-		array_push($this->imports, "use " . Tools::toPhpType($className) . ";");
+		$this->imports[] = "use " . Tools::toPhpType($className) . ";";
 	}
 
 	/**
@@ -114,8 +114,8 @@ class PhpClass
 		$header = $this->getMethodComment($vars, $retType) . "$access " . ($isStatic ? "static " : "") . "function " . $name . "(" . implode(", ", array_map(function($v) {
 			return (($v->haxeType !== null ? $this->renderPhpType($v->haxeType) . " " : "")) . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
 		}, $vars)) . ")" . (($retType !== null ? " : " . $this->renderPhpType($retType) : ""));
-		$s = $header . (($body !== null && mb_strlen(trim($body, null)) > 0 ? "\n\t{\n" . $this->indent(trim($body, null), "\t\t") . "\n\t}" : " {}"));
-		array_push($this->methods, $s);
+		$s = $header . (($body !== null && trim($body, null) !== '' ? "\n\t{\n" . $this->indent(trim($body, null), "\t\t") . "\n\t}" : " {}"));
+		$this->methods[] = $s;
 	}
 
 	/**
@@ -147,9 +147,9 @@ class PhpClass
 		}
 		if ($v !== null) {
 			$s = ((($v->haxeType !== null ? "/**\n * @var " . $this->processPhpDocType($v->haxeType) . "\n */\n" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? " = " . $v->haxeDefVal : ""))??'null') . ";";
-			array_push($this->vars, $s);
+			$this->vars[] = $s;
 		} else {
-			array_push($this->vars, "");
+			$this->vars[] = "";
 		}
 	}
 
@@ -167,11 +167,11 @@ class PhpClass
 		while ($_g < count($vars)) {
 			$v = $vars[$_g];
 			++$_g;
-			$r = $r . "\t * @param " . $this->processPhpDocType($v->haxeType) . " \$" . $v->haxeName . "\n";
+			$r .= "\t * @param " . $this->processPhpDocType($v->haxeType) . " \$" . $v->haxeName . "\n";
 		}
 
-		$r = $r . "\t * @return " . $this->processPhpDocType($retType) . "\n";
-		$r = $r . "\t */\n\t";
+		$r .= "\t * @return " . $this->processPhpDocType($retType) . "\n";
+		$r .= "\t */\n\t";
 		return $r;
 	}
 
@@ -240,7 +240,7 @@ class PhpClass
 		$varLines = [];
 		$collection = $this->vars;
 		foreach ($collection as $key => $value) {
-			array_push($varLines, str_replace("\n", "\n\t", $value));
+			$varLines[] = str_replace("\n", "\n\t", $value);
 		}
 
 		$s = "<?php\n\n"

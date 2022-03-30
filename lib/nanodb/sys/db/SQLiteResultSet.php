@@ -240,7 +240,7 @@ class SQLiteResultSet implements ResultSet
         $list = [];
         $collection = $this->rows;
         foreach ($collection as $key => $value) {
-            array_push($list, $this->correctArrayTypes($value));
+            $list[] = $this->correctArrayTypes($value);
         }
 
         return $list;

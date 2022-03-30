@@ -67,15 +67,15 @@ class OrmTable
 		while (count($packs) > 1) {
 			$pack = array_shift($packs);
 			$words = explode("_", $pack);
-			$s = $s . array_shift($words);
-			$s = $s . implode("", array_map(function ($x) {
-				return Tools::capitalize($x);
-			}, $words));
-			$s = $s . ".";
+			$s .= array_shift($words);
+			$s .= implode("", array_map(function ($x) {
+                return Tools::capitalize($x);
+            }, $words));
+			$s .= ".";
 		}
-		$s = $s . implode("", array_map(function ($x1) {
-			return Tools::capitalize($x1);
-		}, explode("_", $packs[0])));
+		$s .= implode("", array_map(function ($x1) {
+            return Tools::capitalize($x1);
+        }, explode("_", $packs[0])));
 		return $s;
 	}
 
@@ -89,17 +89,17 @@ class OrmTable
 		while (count($packs) > 1) {
 			$pack = array_shift($packs);
 			$words = explode("_", $pack);
-			$s = $s . array_shift($words);
-			$s = $s . implode("", array_map(function ($v) {
-				return Tools::capitalize($v);
-			}, $words));
-			$s = $s . "_";
+			$s .= array_shift($words);
+			$s .= implode("", array_map(function ($v) {
+                return Tools::capitalize($v);
+            }, $words));
+			$s .= "_";
 		}
 		$parts = explode("_", $packs[0]);
 		$s1 = implode("", array_map(function ($w) {
 			return Tools::capitalize($w);
 		}, array_slice($parts, 1, null)));
-		$s = $s . $parts[0] . $s1;
+		$s .= $parts[0] . $s1;
 		return $s;
 	}
 }

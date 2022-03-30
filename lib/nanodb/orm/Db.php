@@ -61,12 +61,12 @@ class Db
 		return $this->connection->lastInsertId();
 	}
 
-	public function query(string $sql, array $params = null, int $mode = null) : ?ResultSet
+	public function query(string $sql, array $params = null) : ?ResultSet
 	{
 		if ($params !== null) {
 			$sql = $this->bind($sql, $params);
 		}
-		return $this->connection->query($sql, $mode);
+		return $this->connection->query($sql);
 	}
 
 	public function quote($v) : string

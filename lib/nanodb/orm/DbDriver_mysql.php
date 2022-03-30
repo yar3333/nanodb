@@ -97,7 +97,7 @@ class DbDriver_mysql implements DbDriver
 		$resultSet = $this->query("SHOW COLUMNS FROM `" . $table . "`");
 		$collection = $resultSet->results();
 		foreach ($collection as $key => $value) {
-			array_push($r, new DbTableFieldData($value["Field"], $value["Type"], $value["Null"] === "YES", $value["Key"] === "PRI", $value["Extra"] === "auto_increment"));
+			$r[] = new DbTableFieldData($value["Field"], $value["Type"], $value["Null"] === "YES", $value["Key"] === "PRI", $value["Extra"] === "auto_increment");
 		}
 
 		return $r;
@@ -126,7 +126,7 @@ class DbDriver_mysql implements DbDriver
 		$collection = $resultSet->results();
 		foreach ($collection as $key => $value) {
 			$fields = array_keys($value);
-			array_push($r, $value[$fields[0]]);
+			$r[] = $value[$fields[0]];
 
 		}
 
@@ -149,7 +149,7 @@ class DbDriver_mysql implements DbDriver
 				$this2 = [];
 				$r[$key1] = $this2;
 			}
-			array_push($r[$key1], $value["Column_name"]);
+			$r[$key1][] = $value["Column_name"];
 
 		}
 
@@ -166,14 +166,13 @@ class DbDriver_mysql implements DbDriver
 
 	/**
 	 * @param string $sql
-	 * @param int $mode
 	 * @return ResultSet
 	 */
-	public function query($sql, $mode = null)
+	public function query($sql)
     {
 		$this->renew();
 		try {
-			return $this->connection->request($sql, $mode);
+			return $this->connection->request($sql);
 		}
 		catch (\Throwable $e) {
 			throw DbException::errorOnQuery($sql, $e);

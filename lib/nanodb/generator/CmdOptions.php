@@ -68,7 +68,7 @@ class CmdOptions {
 	public function addInner($name, $defaultValue, $type, $switches, $help, $repeatable) : void
     {
 		if (!$this->hasOption($name)) {
-			array_push($this->options, new CmdOption($name, $defaultValue, $type, $switches, $help, $repeatable));
+			$this->options[] = new CmdOption($name, $defaultValue, $type, $switches, $help, $repeatable);
 		} else {
 			throw new \Exception("Option '" . $name . "' already added.");
 		}
@@ -102,7 +102,7 @@ class CmdOptions {
 		if ($this->params[$name] === null) {
 			$this->params[$name] = [];
 		}
-		array_push($this->params[$name], $value);
+		$this->params[$name][] = $value;
 	}
 
 	/**
@@ -150,22 +150,22 @@ class CmdOptions {
 		foreach ($collection1 as $key1 => $value1) {
 			if (($value1->switches !== null) && (count($value1->switches) > 0)) {
 				$s1 = str_pad(implode(", ", $value1->switches), $maxSwitchLength + 1, " ");
-				$s = $s . $prefix . $s1;
+				$s .= $prefix . $s1;
 			} else {
 				$s2 = str_pad("<" . $value1->name . ">", $maxSwitchLength + 1, " ");
-				$s = $s . $prefix . $s2;
+				$s .= $prefix . $s2;
 			}
 			if (($value1->help !== null) && ($value1->help !== "")) {
 				$helpLines = explode("\n", $value1->help);
-				$s = $s . array_shift($helpLines) . "\n";
-				$s = $s . (implode("", array_map(function ($s3)  use (&$maxSwitchLength, &$prefix) {
-					$this1 = str_pad("", $maxSwitchLength + 1, " ", STR_PAD_LEFT);
-					return $prefix . $this1 . $s3 . "\n";
-				}, $helpLines))??'null');
+				$s .= array_shift($helpLines) . "\n";
+				$s .= (implode("", array_map(function ($s3) use (&$maxSwitchLength, &$prefix) {
+                        $this1 = str_pad("", $maxSwitchLength + 1, " ", STR_PAD_LEFT);
+                        return $prefix . $this1 . $s3 . "\n";
+                    }, $helpLines)) ?? 'null');
 			} else {
-				$s = $s . "\n";
+				$s .= "\n";
 			}
-			$s = $s . "\n";
+			$s .= "\n";
 
 		}
 
@@ -247,7 +247,7 @@ class CmdOptions {
     {
 		$arg = array_shift($this->args);
 		if ($arg !== "--") {
-			if ((mb_substr($arg, 0, 1) === "-") && ($arg !== "-")) {
+			if ((mb_strpos($arg, "-") === 0) && ($arg !== "-")) {
 				$arg = (new EReg("^(--?.+)=(.+)\$", ""))->map($arg, function(EReg $r) {
 					array_unshift($this->args, $r->matched(2));
 					return $r->matched(1);

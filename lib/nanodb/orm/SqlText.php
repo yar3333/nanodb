@@ -13,7 +13,7 @@ class SqlText
 	 * @param string $fieldName
 	 * @return SqlTextField
 	 */
-	static public function field($fieldName)
+	public static function field($fieldName)
     {
 		return new SqlTextField($fieldName);
 	}
@@ -22,7 +22,7 @@ class SqlText
 	 * @param string $sqlText
 	 * @return SqlTextRaw
 	 */
-	static public function raw($sqlText)
+	public static function raw($sqlText)
     {
 		return new SqlTextRaw($sqlText);
 	}

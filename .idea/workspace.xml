@@ -1,18 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="f71dbe19-3a52-4be3-8dcf-fc09493e0b50" name="Default Changelist" comment="" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <list default="true" id="f71dbe19-3a52-4be3-8dcf-fc09493e0b50" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/EReg.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/EReg.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/generator/CmdOptions.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/generator/CmdOptions.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/generator/Log.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/generator/Log.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/generator/Main.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/generator/Main.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/generator/OrmGenerator.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/generator/OrmGenerator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/generator/OrmPhpVar.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/generator/OrmPhpVar.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/generator/OrmTable.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/generator/OrmTable.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/generator/OrmTools.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/generator/OrmTools.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/generator/PhpClass.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/generator/PhpClass.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/generator/Tools.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/generator/Tools.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/orm/Db.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/orm/Db.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/orm/DbDriver.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/orm/DbDriver.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/orm/DbDriver_mysql.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/orm/DbDriver_mysql.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/orm/DbDriver_sqlite.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/orm/DbDriver_sqlite.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/orm/DbException.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/orm/DbException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/orm/DbQuery.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/orm/DbQuery.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/orm/SqlText.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/orm/SqlText.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/sys/db/Connection.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/sys/db/Connection.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/sys/db/Mysql.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/sys/db/Mysql.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/sys/db/MysqlConnection.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/sys/db/MysqlConnection.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/sys/db/MysqlResultSet.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/sys/db/MysqlResultSet.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/sys/db/SQLiteConnection.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/sys/db/SQLiteConnection.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/sys/db/SQLiteResultSet.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/sys/db/SQLiteResultSet.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/nanodb/sys/db/Sqlite.php" beforeDir="false" afterPath="$PROJECT_DIR$/lib/nanodb/sys/db/Sqlite.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="DONT_SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
-    <execution>
-      <executable />
-    </execution>
+    <execution />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -27,46 +55,6 @@
     </option>
     <expand />
     <select />
-  </component>
-  <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/nanodb/orm/DbQuery.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="89" column="56" lean-forward="true" selection-start-line="89" selection-start-column="56" selection-end-line="89" selection-end-column="56" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/nanodb/orm/SqlText.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="6" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lib/nanodb/generator/OrmManagerGenerator.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="75" column="12" selection-start-line="75" selection-start-column="12" selection-end-line="75" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/nanodb/orm/Db.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="640">
-              <caret line="73" selection-start-line="73" selection-end-line="73" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -154,8 +142,8 @@
       </list>
     </option>
   </component>
-  <component name="PhpServers">
-    <servers />
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP">
     <include_path>
@@ -191,6 +179,9 @@
       <path value="$PROJECT_DIR$/vendor/sebastian/type" />
     </include_path>
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectConfigurationFiles">
     <option name="files">
       <list>
@@ -208,6 +199,7 @@
     <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
+  <component name="ProjectId" id="23sPjhryzPlrpw5CE3V4xUcJONv" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -268,27 +260,26 @@
       <pane id="Scope" />
     </panes>
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../smart-enum" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager" selected="PHPUnit.MainTest">
     <configuration name="MainTest" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
@@ -317,6 +308,7 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="f71dbe19-3a52-4be3-8dcf-fc09493e0b50" name="Default Changelist" comment="" />
@@ -343,6 +335,9 @@
       <workItem from="1568799132962" duration="7150000" />
       <workItem from="1568894945045" duration="665000" />
       <workItem from="1569240427468" duration="925000" />
+      <workItem from="1642519959554" duration="54000" />
+      <workItem from="1648627904076" duration="417000" />
+      <workItem from="1648628974273" duration="1607000" />
     </task>
     <servers />
   </component>
@@ -410,7 +405,7 @@
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
     <ignored-roots>

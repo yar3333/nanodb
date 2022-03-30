@@ -41,10 +41,9 @@ interface DbDriver
 
 	/**
 	 * @param string $sql
-	 * @param int $mode
 	 * @return ResultSet
 	 */
-	function query($sql, $mode = null);
+	function query($sql);
 
 	/**
 	 * @param mixed $s

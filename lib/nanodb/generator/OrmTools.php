@@ -13,10 +13,10 @@ class OrmTools
 	 * @param OrmPositions $positions
 	 * @return OrmPhpVar
 	 */
-	static public function field2var ($table, $f, $positions)
+	public static function field2var ($table, $f, $positions)
     {
 		$f1 = $f->name;
-		$r = ($f->isNull ? "?" : "") . OrmTools::sqlType2phpType($f->type);
+		$r = ($f->isNull ? "?" : "") . self::sqlType2phpType($f->type);
 		$r1 = new OrmPhpVar($f1, $r, $positions->is($table, $f->name) ? "null" : null);
 		$r1->table = $table;
 		$r1->name = $f->name;
@@ -33,7 +33,7 @@ class OrmTools
 	 * @param OrmPositions $positions
 	 * @return mixed
 	 */
-	static public function fields2vars ($table, $fields, $positions)
+	public static function fields2vars ($table, $fields, $positions)
     {
 		return array_map(function ($x)  use ($table, $positions) {
 			return OrmTools::field2var($table, $x, $positions);
@@ -44,58 +44,58 @@ class OrmTools
 	 * @param string $sqlType
 	 * @return string
 	 */
-	static public function sqlType2phpType($sqlType)
+	public static function sqlType2phpType($sqlType)
     {
 		$sqlType = mb_strtoupper($sqlType);
-		if (OrmTools::sqlTypeCheck($sqlType, "BIT")) {
+		if (self::sqlTypeCheck($sqlType, "BIT")) {
 			return "bool";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "TINYINT")) {
+		if (self::sqlTypeCheck($sqlType, "TINYINT")) {
 			return "int";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "SMALLINT")) {
+		if (self::sqlTypeCheck($sqlType, "SMALLINT")) {
 			return "int";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "MEDIUMINT")) {
+		if (self::sqlTypeCheck($sqlType, "MEDIUMINT")) {
 			return "int";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "SHORT")) {
+		if (self::sqlTypeCheck($sqlType, "SHORT")) {
 			return "int";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "LONG")) {
+		if (self::sqlTypeCheck($sqlType, "LONG")) {
 			return "int";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "INT")) {
+		if (self::sqlTypeCheck($sqlType, "INT")) {
 			return "int";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "INTEGER")) {
+		if (self::sqlTypeCheck($sqlType, "INTEGER")) {
 			return "int";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "INT24")) {
+		if (self::sqlTypeCheck($sqlType, "INT24")) {
 			return "int";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "BIGINT")) {
+		if (self::sqlTypeCheck($sqlType, "BIGINT")) {
 			return "float";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "LONGLONG")) {
+		if (self::sqlTypeCheck($sqlType, "LONGLONG")) {
 			return "float";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "DECIMAL")) {
+		if (self::sqlTypeCheck($sqlType, "DECIMAL")) {
 			return "float";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "FLOAT")) {
+		if (self::sqlTypeCheck($sqlType, "FLOAT")) {
 			return "float";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "DOUBLE")) {
+		if (self::sqlTypeCheck($sqlType, "DOUBLE")) {
 			return "float";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "REAL")) {
+		if (self::sqlTypeCheck($sqlType, "REAL")) {
 			return "float";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "DATE")) {
+		if (self::sqlTypeCheck($sqlType, "DATE")) {
 			return "\\DateTime";
 		}
-		if (OrmTools::sqlTypeCheck($sqlType, "DATETIME")) {
+		if (self::sqlTypeCheck($sqlType, "DATETIME")) {
 			return "\\DateTime";
 		}
 		return "string";
@@ -106,10 +106,9 @@ class OrmTools
 	 * @param string $type
 	 * @return bool
 	 */
-    static public function sqlTypeCheck($checked, $type)
+    public static function sqlTypeCheck($checked, $type)
     {
-        $re = new EReg("^" . $type . "(\\(|\$)", "");
-        return $re->match(self::normalizeType($checked));
+        return (new EReg("^" . $type . "(\\(|\$)", ""))->match(self::normalizeType($checked));
     }
 
     private const EXCLUDES = ['UNSIGNED', 'ZEROFILL'];

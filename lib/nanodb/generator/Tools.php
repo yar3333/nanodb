@@ -8,7 +8,7 @@ class Tools
 	 * @param string $s
 	 * @return string
 	 */
-	static public function capitalize($s)
+	public static function capitalize($s)
     {
 		if ($s === "") return $s;
     	return mb_strtoupper(mb_substr($s, 0, 1)) . mb_substr($s, 1, null);
@@ -18,9 +18,9 @@ class Tools
 	 * @param string $field
 	 * @return string
 	 */
-	static public function fieldAsFunctionNamePart($field)
+	public static function fieldAsFunctionNamePart($field)
     {
-		return Tools::capitalize(preg_replace_callback("/_[a-z]/", function ($arr) {
+		return self::capitalize(preg_replace_callback("/_[a-z]/", function ($arr) {
 			return (function ()  use (&$arr) {
 				$_this = mb_substr($arr[0], 1, null);
 				return mb_strtoupper($_this);
@@ -32,7 +32,7 @@ class Tools
 	 * @param string $fullClassName
 	 * @return string
 	 */
-	static public function getNamespace($fullClassName)
+	public static function getNamespace($fullClassName)
     {
 		$parts = explode(".", $fullClassName);
 		if (count($parts) <= 1) return "";
@@ -43,27 +43,29 @@ class Tools
 	 * @param string $path
 	 * @return void
 	 */
-	static public function mkdir($path)
+	public static function mkdir($path)
     {
-		if (!file_exists($path)) mkdir($path, 511, true);
+		if (!file_exists($path)) if (!mkdir($path, 511, true) && !is_dir($path)) {
+            throw new \Exception("Directory $path was not created");
+        }
 	}
 
 	/**
 	 * @param string $word
 	 * @return string
 	 */
-	static public function pluralToSingular($word)
+	public static function pluralToSingular($word)
     {
 		if ($word === "person") return "people";
 
 		if (substr($word, -mb_strlen("xes")) === "xes" || substr($word, -mb_strlen("ses")) === "ses" || substr($word, -mb_strlen("zes")) === "zes" || substr($word, -mb_strlen("shes")) === "shes" || substr($word, -mb_strlen("ches")) === "ches") {
-			return mb_substr($word, 0, mb_strlen($word) - 2);
+			return mb_substr($word, 0, -2);
 		}
 		if (substr($word, -mb_strlen("ies")) === "ies") {
-			return mb_substr($word, 0, mb_strlen($word) - 3) . "y";
+			return mb_substr($word, 0, -3) . "y";
 		}
 		if (substr($word, -mb_strlen("s")) === "s") {
-			return mb_substr($word, 0, mb_strlen($word) - 1);
+			return mb_substr($word, 0, -1);
 		}
 		return $word;
 	}
@@ -73,7 +75,7 @@ class Tools
 	 * @param bool $fromRoot
 	 * @return string
 	 */
-	static public function toPhpType ($longType, $fromRoot = true)
+	public static function toPhpType ($longType, $fromRoot = true)
     {
 		if ($fromRoot === null) $fromRoot = true;
 		return ($fromRoot ? "\\" : "") . str_replace(".", "\\", $longType);

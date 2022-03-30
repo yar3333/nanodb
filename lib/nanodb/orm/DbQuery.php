@@ -215,7 +215,7 @@ abstract class DbQuery
      */
 	public function whereField(string $field, string $op, $value)
 	{
-		$opUC = trim(strtoupper($op), null);
+		$opUC = strtoupper(trim($op));
 		
 		if ($opUC === "!=" || $opUC === "<>")
 		{

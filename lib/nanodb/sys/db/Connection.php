@@ -40,10 +40,9 @@ interface Connection
 
 	/**
 	 * @param string $s
-	 * @param int $mode
 	 * @return DbResultSet
 	 */
-	public function request($s, $mode = null);
+	public function request($s);
 
 	/**
 	 * @return void

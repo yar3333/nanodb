@@ -33,16 +33,5 @@ class OrmPhpVar extends PhpVar
 	 * @var string
 	 */
 	public $type;
-
-	/**
-	 * @param string $haxeName
-	 * @param string $haxeType
-	 * @param string $haxeDefVal
-	 * @return void
-	 */
-	public function __construct ($haxeName, $haxeType, $haxeDefVal = null)
-    {
-		parent::__construct($haxeName, $haxeType, $haxeDefVal);
-	}
 }
 

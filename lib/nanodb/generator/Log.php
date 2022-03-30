@@ -56,13 +56,13 @@ class Log
 	 * @param int $level
 	 * @return void
 	 */
-	static public function echo($message, $level = 1)
+	public static function echo($message, $level = 1)
     {
 		if ($level === null) {
 			$level = 1;
 		}
-		if (Log::$instance !== null) {
-			Log::$instance->echoInner($message, $level);
+		if (self::$instance !== null) {
+			self::$instance->echoInner($message, $level);
 		}
 	}
 
@@ -70,13 +70,13 @@ class Log
 	 * @param string $text
 	 * @return void
 	 */
-	static public function finishFail($text = "FAIL")
+	public static function finishFail($text = "FAIL")
     {
 		if ($text === null) {
 			$text = "FAIL";
 		}
-		if (Log::$instance !== null) {
-			Log::$instance->finishFailInner($text);
+		if (self::$instance !== null) {
+			self::$instance->finishFailInner($text);
 		}
 	}
 
@@ -84,13 +84,13 @@ class Log
 	 * @param string $text
 	 * @return void
 	 */
-	static public function finishSuccess($text = "OK")
+	public static function finishSuccess($text = "OK")
     {
 		if ($text === null) {
 			$text = "OK";
 		}
-		if (Log::$instance !== null) {
-			Log::$instance->finishSuccessInner($text);
+		if (self::$instance !== null) {
+			self::$instance->finishSuccessInner($text);
 		}
 	}
 
@@ -100,20 +100,20 @@ class Log
 	 * @param \Closure $procFunc
 	 * @return void
 	 */
-	static public function process($message, $level, $procFunc)
+	public static function process($message, $level, $procFunc)
     {
 		if ($level === null) {
 			$level = 1;
 		}
-		Log::start($message, $level);
+		self::start($message, $level);
 		try {
 			$procFunc();
 		}
 		catch (\Throwable $e) {
-			Log::finishFail();
+			self::finishFail();
 			throw $e;
 		}
-		Log::finishSuccess();
+		self::finishSuccess();
 	}
 
 	/**
@@ -122,20 +122,20 @@ class Log
 	 * @param \Closure $procFunc
 	 * @return mixed
 	 */
-	static public function processResult($message, $level, $procFunc)
+	public static function processResult($message, $level, $procFunc)
     {
 		if ($level === null) $level = 1;
 
-		Log::start($message, $level);
+		self::start($message, $level);
 		$r = null;
 		try {
 			$r = $procFunc();
 		}
 		catch (\Throwable $e) {
-			Log::finishFail();
+			self::finishFail();
 			throw $e;
 		}
-		Log::finishSuccess();
+		self::finishSuccess();
 		return $r;
 	}
 
@@ -144,12 +144,12 @@ class Log
 	 * @param int $level
 	 * @return void
 	 */
-	static public function start($message, $level = 1)
+	public static function start($message, $level = 1)
     {
 		if ($level === null) $level = 1;
 
-		if (Log::$instance !== null) {
-			Log::$instance->startInner($message, $level);
+		if (self::$instance !== null) {
+			self::$instance->startInner($message, $level);
 		}
 	}
 
@@ -277,10 +277,10 @@ class Log
 				}
 				$this->print($this->indent($this->ind) . $message . ": ");
 				$this->inBlock = true;
-				array_push($this->shown, true);
+				$this->shown[] = true;
 				$this->ind++;
 			} else {
-				array_push($this->shown, false);
+				$this->shown[] = false;
 			}
 		}
 	}
@@ -289,7 +289,7 @@ class Log
 	 * @internal
 	 * @access private
 	 */
-	static public function init()
+	public static function init()
 	{
 		static $called = false;
 		if ($called) return;

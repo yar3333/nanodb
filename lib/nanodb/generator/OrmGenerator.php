@@ -43,7 +43,7 @@ class OrmGenerator
 				(new OrmModelGenerator())->make($db, $table, $customOrmClassName, $_gthis->outPath, $positions);
 				(new OrmQueryGenerator())->make($db, $table, $customOrmClassName, $_gthis->outPath, $positions);
 				(new OrmManagerGenerator())->make($db, $table, $customOrmClassName, $_gthis->outPath, $positions);
-				array_push($tables, $table);
+				$tables[] = $table;
 			}
 		}
 

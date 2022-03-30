@@ -9,7 +9,7 @@ class DbException extends \Exception
 	 * @param \Exception $e
 	 * @return DbException
 	 */
-	static public function errorOnQuery ($sql, $e)
+	public static function errorOnQuery ($sql, $e)
     {
 		return new DbException($sql, $e->getCode(), $e);
 	}

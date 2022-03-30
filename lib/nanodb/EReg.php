@@ -43,9 +43,9 @@ class EReg
      * @param string $s
      * @return string
      */
-    static public function escape($s)
+    public static function escape($s)
     {
-        return preg_quote($s);
+        return preg_quote($s, null);
     }
 
     /**
@@ -75,14 +75,14 @@ class EReg
                 break;
             }
             else if (!$this->matchSub($s, $offset)) {
-                $buf = $buf . (mb_substr($s, $offset, null) ?? 'null');
+                $buf .= (mb_substr($s, $offset, null) ?? 'null');
                 break;
             }
             $p = $this->matchedPosAssoc();
-            $buf = $buf . (mb_substr($s, $offset, $p["pos"] - $offset) ?? 'null');
-            $buf = $buf . $f($this);
+            $buf .= (mb_substr($s, $offset, $p["pos"] - $offset) ?? 'null');
+            $buf .= $f($this);
             if ($p["len"] === 0) {
-                $buf = $buf . (mb_substr($s, $p["pos"], 1) ?? 'null');
+                $buf .= (mb_substr($s, $p["pos"], 1) ?? 'null');
                 $offset = $p["pos"] + 1;
             }
             else {
@@ -93,7 +93,7 @@ class EReg
             }
         }
         if (!$this->global && ($offset > 0) && ($offset < $length)) {
-            $buf = $buf . (mb_substr($s, $offset, null) ?? 'null');
+            $buf .= (mb_substr($s, $offset, null) ?? 'null');
         }
         return $buf;
     }
@@ -175,8 +175,7 @@ class EReg
      */
     public function replace($s, $by)
     {
-        $by = str_replace("\\\$", "\\\\\$", $by);
-        $by = str_replace("\$\$", "\\\$", $by);
+        $by = str_replace(array("\\\$", "\$\$"), array("\\\\\$", "\\\$"), $by);
         if (!preg_match("/\\\\([^?].*?\\\\)/", $this->re)) {
             $by = preg_replace("/\\\$(\\d+)/", "\\\$\\1", $by);
         }

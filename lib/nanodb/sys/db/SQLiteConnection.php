@@ -57,7 +57,7 @@ class SQLiteConnection implements Connection
      */
     public function lastInsertId()
     {
-        return (int)($this->db->lastInsertRowID());
+        return $this->db->lastInsertRowID();
     }
 
     /**
@@ -74,10 +74,9 @@ class SQLiteConnection implements Connection
 
     /**
      * @param string $s
-     * @param int $mode
      * @return ResultSet
      */
-    public function request($s, $mode = null)
+    public function request($s)
     {
         return new SQLiteResultSet($this->db->query($s));
     }

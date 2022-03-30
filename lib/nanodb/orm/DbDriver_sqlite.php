@@ -67,11 +67,11 @@ class DbDriver_sqlite implements DbDriver
 			if ($reFK->match($value)) {
 				$value1 = $reFK->matched(1);
 				$value2 = $reFK->matched(2);
-				array_push($r, (object)([
-					"key" => $value1,
-					"parentTable" => $value2,
-					"parentKey" => $reFK->matched(3),
-				]));
+				$r[] = (object)([
+                    "key" => $value1,
+                    "parentTable" => $value2,
+                    "parentKey" => $reFK->matched(3),
+                ]);
 			}
 		}
 
@@ -104,13 +104,13 @@ class DbDriver_sqlite implements DbDriver
 		foreach ($collection as $key => $value) {
 			if ($reUNIQUE->match($value)) {
 				$fields = $reUNIQUE->matched(1);
-				array_push($r, array_map(function ($s) {
-					$s = trim($s, null);
-					if ((strpos($s, "\"") === 0) && (substr($s, -mb_strlen("\"")) === "\"")) {
-						$s = mb_substr($s, 1, mb_strlen($s) - 2);
-					}
-					return $s;
-				}, explode(",", $fields)));
+				$r[] = array_map(function ($s) {
+                    $s = trim($s, null);
+                    if ((strpos($s, "\"") === 0) && (substr($s, -mb_strlen("\"")) === "\"")) {
+                        $s = mb_substr($s, 1, -1);
+                    }
+                    return $s;
+                }, explode(",", $fields));
 			}
 		}
 
@@ -168,10 +168,9 @@ class DbDriver_sqlite implements DbDriver
 
 	/**
 	 * @param string $sql
-	 * @param int $mode
 	 * @return ResultSet
 	 */
-	public function query ($sql, $mode = null)
+	public function query ($sql)
     {
 		try {
 			return $this->connection->request($sql);

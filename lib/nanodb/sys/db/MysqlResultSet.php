@@ -185,7 +185,7 @@ class MysqlResultSet implements ResultSet
 		$row = $this->result->fetch_assoc();
 		while ($row !== null) {
 			$this->correctArrayTypes($row);
-			array_push($list, $row);
+			$list[] = $row;
 			$row = $this->result->fetch_assoc();
 		}
 		return $list;
