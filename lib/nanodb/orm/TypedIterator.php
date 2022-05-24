@@ -44,7 +44,7 @@ class TypedIterator implements \Iterator
     {
         if ($this->position != 0) throw new \RuntimeException("TypedIterator: rewind() unsupported.");
     }
-
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->item;
