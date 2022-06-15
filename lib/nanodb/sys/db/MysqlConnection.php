@@ -15,9 +15,9 @@ class MysqlConnection implements Connection
 	 */
 	public function __construct ($params)
     {
-		if ($params->port === null) $params->port = (int)ini_get("mysqli.default_port");
-		if ($params->socket === null) $params->socket = ini_get("mysqli.default_socket");
-		if ($params->database === null) $params->database = "";
+		if ($params->port === null) $params->port = (int)ini_get('mysqli.default_port');
+		if ($params->socket === null) $params->socket = ini_get('mysqli.default_socket');
+		if ($params->database === null) $params->database = '';
 
         $this->db = new \Mysqli();
         $this->db->options(MYSQLI_OPT_CONNECT_TIMEOUT, $params->connection_timeout ?? self::DEFAULT_CONNECTION_TIMEOUT);
@@ -39,7 +39,7 @@ class MysqlConnection implements Connection
     {
 		$success = $this->db->commit();
 		if (!$success) {
-			throw new \Exception("Failed to commit transaction: " . $this->db->error);
+			throw new \Exception('Failed to commit transaction: ' . $this->db->error);
 		}
 	}
 
@@ -48,7 +48,7 @@ class MysqlConnection implements Connection
 	 */
 	public function dbName()
     {
-		return "MySQL";
+		return 'MySQL';
 	}
 
 	/**
@@ -87,7 +87,7 @@ class MysqlConnection implements Connection
 	public function request($s)
     {
 		$result = $this->db->query($s);
-		if ($result === false) throw new \Exception("Failed to perform db query: " . $this->db->error);
+		if ($result === false) throw new \Exception('Failed to perform db query: ' . $this->db->error);
 		if ($result === true) return null;
 		return new MysqlResultSet($result);
 	}
@@ -98,7 +98,7 @@ class MysqlConnection implements Connection
 	public function rollback()
     {
 		$success = $this->db->rollback();
-		if (!$success) throw new \Exception("Failed to rollback transaction: " . $this->db->error);
+		if (!$success) throw new \Exception('Failed to rollback transaction: ' . $this->db->error);
 	}
 
 	/**
@@ -107,7 +107,7 @@ class MysqlConnection implements Connection
 	public function startTransaction ()
     {
 		$success = $this->db->begin_transaction();
-		if (!$success) throw new \Exception("Failed to start transaction: " . $this->db->error);
+		if (!$success) throw new \Exception('Failed to start transaction: ' . $this->db->error);
 	}
 }
 

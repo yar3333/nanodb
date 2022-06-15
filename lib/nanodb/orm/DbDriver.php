@@ -2,7 +2,7 @@
 
 namespace nanodb\orm;
 
-use \nanodb\sys\db\ResultSet;
+use nanodb\sys\db\ResultSet;
 
 interface DbDriver
 {

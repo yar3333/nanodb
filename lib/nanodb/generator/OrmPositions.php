@@ -25,11 +25,10 @@ class OrmPositions
 	 */
 	public function is($table, $name)
     {
-		if (!(in_array($table . "." . $name, $this->names, false) || in_array("*." . $name, $this->names, false))) {
-			return in_array($name, $this->names, false);
-		} else {
+		if (\in_array($table . '.' . $name, $this->names, false) || \in_array('*.' . $name, $this->names, false)) {
 			return true;
 		}
+        return \in_array($name, $this->names, false);
 	}
 }
 

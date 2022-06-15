@@ -19,7 +19,7 @@ class Log
 	/**
 	 * @var Log
 	 */
-	static public $instance;
+	public static $instance;
 
 	/**
 	 * @var int
@@ -70,10 +70,10 @@ class Log
 	 * @param string $text
 	 * @return void
 	 */
-	public static function finishFail($text = "FAIL")
+	public static function finishFail($text = 'FAIL')
     {
 		if ($text === null) {
-			$text = "FAIL";
+			$text = 'FAIL';
 		}
 		if (self::$instance !== null) {
 			self::$instance->finishFailInner($text);
@@ -84,10 +84,10 @@ class Log
 	 * @param string $text
 	 * @return void
 	 */
-	public static function finishSuccess($text = "OK")
+	public static function finishSuccess($text = 'OK')
     {
 		if ($text === null) {
-			$text = "OK";
+			$text = 'OK';
 		}
 		if (self::$instance !== null) {
 			self::$instance->finishSuccessInner($text);
@@ -181,7 +181,7 @@ class Log
 		if ($this->depth < $this->depthLimit) {
 			if ($level <= $this->levelLimit) {
 				if ($this->inBlock) {
-					$this->println("");
+					$this->println('');
 				}
 				$this->println($this->indent($this->ind) . str_replace("\n", "\n" . $this->indent($this->ind), $text));
 				$this->inBlock = false;
@@ -201,10 +201,10 @@ class Log
 					$this->print($this->indent($this->ind));
 				}
 				$this->ind--;
-				if (!(mb_strpos($text, "\n") !== false)) {
-					$this->println("[" . $text . "]");
+				if (mb_strpos($text, "\n") !== false) {
+					$this->println("\n" . $this->indent($this->ind + 1) . "[\n" . $this->indent($this->ind + 2) . str_replace("\n", "\n" . $this->indent($this->ind + 2), $text) . "\n" . $this->indent($this->ind + 1) . ']');
 				} else {
-					$this->println("\n" . $this->indent($this->ind + 1) . "[\n" . $this->indent($this->ind + 2) . str_replace("\n", "\n" . $this->indent($this->ind + 2), $text) . "\n" . $this->indent($this->ind + 1) . "]");
+					$this->println('[' . $text . ']');
 				}
 				$this->inBlock = false;
 			}
@@ -224,10 +224,10 @@ class Log
 					$this->print($this->indent($this->ind));
 				}
 				$this->ind--;
-				if (!(mb_strpos($text, "\n") !== false)) {
-					$this->println("[" . $text . "]");
+				if (mb_strpos($text, "\n") !== false) {
+					$this->println("\n" . $this->indent($this->ind + 1) . "[\n" . $this->indent($this->ind + 2) . str_replace("\n", "\n" . ($this->indent($this->ind + 2)??'null'), $text) . "\n" . $this->indent($this->ind + 1) . ']');
 				} else {
-					$this->println("\n" . $this->indent($this->ind + 1) . "[\n" . $this->indent($this->ind + 2) . str_replace("\n", "\n" . ($this->indent($this->ind + 2)??'null'), $text) . "\n" . $this->indent($this->ind + 1) . "]");
+					$this->println('[' . $text . ']');
 				}
 				$this->inBlock = false;
 			}
@@ -241,7 +241,7 @@ class Log
 	 */
 	public function indent ($depth)
     {
-		return str_pad("", $depth * 2, " ");
+		return str_pad('', $depth * 2);
 	}
 
 	/**
@@ -273,9 +273,9 @@ class Log
 		if ($this->depth < $this->depthLimit) {
 			if ($level <= $this->levelLimit) {
 				if ($this->inBlock) {
-					$this->println("");
+					$this->println('');
 				}
-				$this->print($this->indent($this->ind) . $message . ": ");
+				$this->print($this->indent($this->ind) . $message . ': ');
 				$this->inBlock = true;
 				$this->shown[] = true;
 				$this->ind++;

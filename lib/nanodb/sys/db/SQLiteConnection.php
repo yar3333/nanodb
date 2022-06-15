@@ -32,7 +32,7 @@ class SQLiteConnection implements Connection
      */
     public function commit()
     {
-        $this->db->query("COMMIT");
+        $this->db->query('COMMIT');
     }
 
     /**
@@ -40,7 +40,7 @@ class SQLiteConnection implements Connection
      */
     public function dbName()
     {
-        return "SQLite";
+        return 'SQLite';
     }
 
     /**
@@ -86,7 +86,7 @@ class SQLiteConnection implements Connection
      */
     public function rollback()
     {
-        $this->db->query("ROLLBACK");
+        $this->db->query('ROLLBACK');
     }
 
     /**
@@ -94,7 +94,7 @@ class SQLiteConnection implements Connection
      */
     public function startTransaction()
     {
-        $this->db->query("BEGIN TRANSACTION");
+        $this->db->query('BEGIN TRANSACTION');
     }
 }
 

@@ -2,7 +2,7 @@
 
 namespace nanodb\sys\db;
 
-use \nanodb\sys\db\ResultSet as DbResultSet;
+use nanodb\sys\db\ResultSet as DbResultSet;
 
 interface Connection
 {

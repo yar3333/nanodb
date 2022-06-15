@@ -94,7 +94,7 @@ class PhpClass
 	 */
 	public function addImport ($className)
     {
-		$this->imports[] = "use " . Tools::toPhpType($className) . ";";
+		$this->imports[] = 'use ' . Tools::toPhpType($className) . ';';
 	}
 
 	/**
@@ -106,15 +106,15 @@ class PhpClass
 	 * @param bool $isStatic
 	 * @return void
 	 */
-	public function addMethod ($name, $vars, $retType, $body, $access = "public", $isStatic = false)
+	public function addMethod ($name, $vars, $retType, $body, $access = 'public', $isStatic = false)
     {
-		if ($access === null) $access = "public";
+		if ($access === null) $access = 'public';
 		if ($isStatic === null) $isStatic = false;
 
-		$header = $this->getMethodComment($vars, $retType) . "$access " . ($isStatic ? "static " : "") . "function " . $name . "(" . implode(", ", array_map(function($v) {
-			return (($v->haxeType !== null ? $this->renderPhpType($v->haxeType) . " " : "")) . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? "=" . $v->haxeDefVal : ""))??'null');
-		}, $vars)) . ")" . (($retType !== null ? " : " . $this->renderPhpType($retType) : ""));
-		$s = $header . (($body !== null && trim($body, null) !== '' ? "\n\t{\n" . $this->indent(trim($body, null), "\t\t") . "\n\t}" : " {}"));
+		$header = $this->getMethodComment($vars, $retType) . "$access " . ($isStatic ? 'static ' : '') . 'function ' . $name . '(' . implode(', ', array_map(function($v) {
+			return (($v->haxeType !== null ? $this->renderPhpType($v->haxeType) . ' ' : '')) . '$' . $v->haxeName . ((($v->haxeDefVal !== null ? '=' . $v->haxeDefVal : ''))??'null');
+		}, $vars)) . ')' . (($retType !== null ? ' : ' . $this->renderPhpType($retType) : ''));
+		$s = $header . (($body !== null && trim($body) !== '' ? "\n\t{\n" . $this->indent(trim($body), "\t\t") . "\n\t}" : ' {}'));
 		$this->methods[] = $s;
 	}
 
@@ -126,9 +126,9 @@ class PhpClass
 	public function addProperty($v, $isStatic = false)
     {
 		if ($isStatic === null) $isStatic = false;
-		$this->addVar($v, "protected", $isStatic);
-		$this->addMethod("get" . Tools::capitalize($v->haxeName), [], $v->haxeType, "{ return \$this->" . $v->haxeName . "; }", "public", $isStatic);
-		$this->addMethod("set" . Tools::capitalize($v->haxeName), [new PhpVar($v->haxeName, $v->haxeType)], $v->haxeType, "{ \$this->" . $v->haxeName . " = " . $v->haxeName . "; }", "public", $isStatic);
+		$this->addVar($v, 'protected', $isStatic);
+		$this->addMethod('get' . Tools::capitalize($v->haxeName), [], $v->haxeType, '{ return $this->' . $v->haxeName . '; }', 'public', $isStatic);
+		$this->addMethod('set' . Tools::capitalize($v->haxeName), [new PhpVar($v->haxeName, $v->haxeType)], $v->haxeType, '{ $this->' . $v->haxeName . ' = ' . $v->haxeName . '; }', 'public', $isStatic);
 	}
 
 	/**
@@ -137,19 +137,19 @@ class PhpClass
 	 * @param bool $isStatic
 	 * @return void
 	 */
-	public function addVar ($v, $access = "public", $isStatic = false)
+	public function addVar ($v, $access = 'public', $isStatic = false)
     {
 		if ($access === null) {
-			$access = "public";
+			$access = 'public';
 		}
 		if ($isStatic === null) {
 			$isStatic = false;
 		}
 		if ($v !== null) {
-			$s = ((($v->haxeType !== null ? "/**\n * @var " . $this->processPhpDocType($v->haxeType) . "\n */\n" : ""))??'null') . (($access . " ")??'null') . ((($isStatic ? "static " : ""))??'null') . "\$" . $v->haxeName . ((($v->haxeDefVal !== null ? " = " . $v->haxeDefVal : ""))??'null') . ";";
+			$s = ((($v->haxeType !== null ? "/**\n * @var " . $this->processPhpDocType($v->haxeType) . "\n */\n" : ''))??'null') . (($access . ' ')??'null') . ((($isStatic ? 'static ' : ''))??'null') . '$' . $v->haxeName . ((($v->haxeDefVal !== null ? ' = ' . $v->haxeDefVal : ''))??'null') . ';';
 			$this->vars[] = $s;
 		} else {
-			$this->vars[] = "";
+			$this->vars[] = '';
 		}
 	}
 
@@ -160,14 +160,14 @@ class PhpClass
 	 */
 	public function getMethodComment($vars, $retType)
     {
-		if (!current(array_filter($vars, function($x) { return mb_strpos($x->haxeType, "[]") !== false; })) && mb_strpos($retType, "[]") === false) return "";
+		if (!current(array_filter($vars, static function($x) { return mb_strpos($x->haxeType??'', '[]') !== false; })) && mb_strpos($retType??'', '[]') === false) return '';
 
 		$r = "/**\n";
 		$_g = 0;
-		while ($_g < count($vars)) {
+		while ($_g < \count($vars)) {
 			$v = $vars[$_g];
 			++$_g;
-			$r .= "\t * @param " . $this->processPhpDocType($v->haxeType) . " \$" . $v->haxeName . "\n";
+			$r .= "\t * @param " . $this->processPhpDocType($v->haxeType) . ' $' . $v->haxeName . "\n";
 		}
 
 		$r .= "\t * @return " . $this->processPhpDocType($retType) . "\n";
@@ -181,10 +181,10 @@ class PhpClass
 	 */
 	public function getNamespaceName($fullClassName)
     {
-		if (mb_strpos($fullClassName, ".") !== false) {
-			return mb_substr($fullClassName, 0, mb_strrpos($fullClassName, "."));
+		if (mb_strpos($fullClassName, '.') !== false) {
+			return mb_substr($fullClassName, 0, mb_strrpos($fullClassName, '.'));
 		}
-		return "";
+		return '';
 	}
 
 	/**
@@ -193,8 +193,8 @@ class PhpClass
 	 */
 	public function getShortClassName($fullClassName)
     {
-		if (mb_strpos($fullClassName, ".") !== false) {
-			return mb_substr($fullClassName, mb_strrpos($fullClassName, ".") + 1, null);
+		if (mb_strpos($fullClassName, '.') !== false) {
+			return mb_substr($fullClassName, mb_strrpos($fullClassName, '.') + 1, null);
 		}
 		return $fullClassName;
 	}
@@ -207,7 +207,7 @@ class PhpClass
 	public function indent($text, $ind = "\t")
     {
 		if ($ind === null) $ind = "\t";
-		if ($text === "") return "";
+		if ($text === '') return '';
 		return $ind . str_replace("\n", "\n" . $ind, $text);
 	}
 
@@ -217,8 +217,8 @@ class PhpClass
 	 */
 	public function processPhpDocType($type)
     {
-		if (strpos($type, "?") === 0) {
-			return mb_substr($type, 1, null) . "|null";
+		if (strncmp($type, '?', 1) === 0) {
+			return mb_substr($type, 1, null) . '|null';
 		}
 		return $type;
 	}
@@ -229,7 +229,7 @@ class PhpClass
 	 */
 	public function renderPhpType($type)
     {
-        return mb_strpos($type, "[]") !== false ? "array" : $type;
+        return mb_strpos($type, '[]') !== false ? 'array' : $type;
 	}
 
 	/**
@@ -243,23 +243,22 @@ class PhpClass
 			$varLines[] = str_replace("\n", "\n\t", $value);
 		}
 
-		$s = "<?php\n\n"
-            . implode("\n", $this->globalComments)
-            . (count($this->globalComments) > 0 ? "\n\n" : "")
-            . "namespace " . Tools::toPhpType($this->getNamespaceName($this->fullClassName), false) . ";\n"
-            . "\n"
-            . implode("\n", $this->imports)
-            . (count($this->imports) > 0 ? "\n\n" : "")
-            . implode("\n", $this->classComments)
-            . (count($this->classComments) > 0 ? "\n" : "")
-            . "class " . $this->getShortClassName($this->fullClassName) . ($this->baseFullClassName !== null ? " extends " . Tools::toPhpType($this->baseFullClassName) : "")
-            . "\n"
-            . "{\n"
-            . (count($this->vars) > 0 ? "\t" . implode("\n\t\n\t", $varLines) . "\n\n" : "")
-            . (count($this->methods) > 0 ? "\t" . implode("\n\n\t", $this->methods) . "\n" : "")
-            . (count($this->customs) > 0 ? "\t" . implode("\n\n\t", $this->customs) . "\n" : "")
-            . "}";
-		return $s;
+        return "<?php\n\n"
+. implode("\n", $this->globalComments)
+. (\count($this->globalComments) > 0 ? "\n\n" : '')
+. 'namespace ' . Tools::toPhpType($this->getNamespaceName($this->fullClassName), false) . ";\n"
+. "\n"
+. implode("\n", $this->imports)
+. (\count($this->imports) > 0 ? "\n\n" : '')
+. implode("\n", $this->classComments)
+. (\count($this->classComments) > 0 ? "\n" : '')
+. 'class ' . $this->getShortClassName($this->fullClassName) . ($this->baseFullClassName !== null ? ' extends ' . Tools::toPhpType($this->baseFullClassName) : '')
+. "\n"
+. "{\n"
+. (\count($this->vars) > 0 ? "\t" . implode("\n\t\n\t", $varLines) . "\n\n" : '')
+. (\count($this->methods) > 0 ? "\t" . implode("\n\n\t", $this->methods) . "\n" : '')
+. (\count($this->customs) > 0 ? "\t" . implode("\n\n\t", $this->customs) . "\n" : '')
+. '}';
 	}
 
 	public function __toString()

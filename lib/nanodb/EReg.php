@@ -45,7 +45,7 @@ class EReg
      */
     public static function escape($s)
     {
-        return preg_quote($s, null);
+        return preg_quote($s);
     }
 
     /**
@@ -55,9 +55,9 @@ class EReg
     public function __construct($r, $opt)
     {
         $this->pattern = $r;
-        $this->options = str_replace("g", "", $opt);
+        $this->options = str_replace('g', '', $opt);
         $this->global = $this->options !== $opt;
-        $this->re = "\"" . (str_replace("\"", "\\\"", $r) ?? 'null') . "\"u" . $this->options;
+        $this->re = '"' . (str_replace('"', "\\\"", $r) ?? 'null') . '"u' . $this->options;
     }
 
     /**
@@ -68,25 +68,26 @@ class EReg
     public function map($s, $f)
     {
         $offset = 0;
-        $buf = "";
+        $buf = '';
         $length = mb_strlen($s);
         while (true) {
             if ($offset >= $length) {
                 break;
             }
-            else if (!$this->matchSub($s, $offset)) {
+
+            if (!$this->matchSub($s, $offset)) {
                 $buf .= (mb_substr($s, $offset, null) ?? 'null');
                 break;
             }
             $p = $this->matchedPosAssoc();
-            $buf .= (mb_substr($s, $offset, $p["pos"] - $offset) ?? 'null');
+            $buf .= (mb_substr($s, $offset, $p['pos'] - $offset) ?? 'null');
             $buf .= $f($this);
-            if ($p["len"] === 0) {
-                $buf .= (mb_substr($s, $p["pos"], 1) ?? 'null');
-                $offset = $p["pos"] + 1;
+            if ($p['len'] === 0) {
+                $buf .= (mb_substr($s, $p['pos'], 1) ?? 'null');
+                $offset = $p['pos'] + 1;
             }
             else {
-                $offset = $p["pos"] + $p["len"];
+                $offset = $p['pos'] + $p['len'];
             }
             if (!$this->global) {
                 break;
@@ -131,8 +132,8 @@ class EReg
      */
     public function matched($n)
     {
-        if ($this->matches === null || $n < 0) throw new \Exception("EReg::matched");
-        if ($n >= count($this->matches)) return null;
+        if ($this->matches === null || $n < 0) throw new \Exception('EReg::matched');
+        if ($n >= \count($this->matches)) return null;
         if ($this->matches[$n][1] < 0) return null;
         return $this->matches[$n][0];
     }
@@ -142,7 +143,7 @@ class EReg
      */
     public function matchedLeft()
     {
-        if (count($this->matches) === 0) throw new \Exception("No string matched");
+        if (\count($this->matches) === 0) throw new \Exception('No string matched');
         return substr($this->last, 0, $this->matches[0][1]);
     }
 
@@ -153,8 +154,8 @@ class EReg
     {
         $tmp = mb_strlen(substr($this->last, 0, $this->matches[0][1]));
         return [
-            "pos" => $tmp,
-            "len" => mb_strlen($this->matches[0][0]),
+            'pos' => $tmp,
+            'len' => mb_strlen($this->matches[0][0]),
         ];
     }
 
@@ -163,8 +164,8 @@ class EReg
      */
     public function matchedRight()
     {
-        if (count($this->matches) === 0) throw new \Exception("No string matched");
-        $x = $this->matches[0][1] + strlen($this->matches[0][0]);
+        if (\count($this->matches) === 0) throw new \Exception('No string matched');
+        $x = $this->matches[0][1] + \strlen($this->matches[0][0]);
         return substr($this->last, $x);
     }
 
@@ -175,7 +176,7 @@ class EReg
      */
     public function replace($s, $by)
     {
-        $by = str_replace(array("\\\$", "\$\$"), array("\\\\\$", "\\\$"), $by);
+        $by = str_replace(["\\\$", '$$'], ["\\\\\$", "\\\$"], $by);
         if (!preg_match("/\\\\([^?].*?\\\\)/", $this->re)) {
             $by = preg_replace("/\\\$(\\d+)/", "\\\$\\1", $by);
         }

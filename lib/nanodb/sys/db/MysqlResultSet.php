@@ -123,7 +123,7 @@ class MysqlResultSet implements ResultSet
 	public function getFieldsNames()
     {
 		$fields = $this->result->fetch_fields();
-		return array_map(function ($x) {
+		return array_map(static function ($x) {
 			return $x->name;
 		}, $fields);
 	}

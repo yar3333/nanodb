@@ -31,10 +31,10 @@ class Db
 		
 		$this->logLevel = $logLevel ?? 0;
 		
-		$n = mb_strpos($connectionString, "://");
+		$n = mb_strpos($connectionString, '://');
 		if ($n === false) throw new \Exception("Connection string format must be 'dbtype://params'.");
 		$dbtype = mb_substr($connectionString, 0, $n);
-		$dbparams = mb_substr($connectionString, $n + mb_strlen("://"));
+		$dbparams = mb_substr($connectionString, $n + mb_strlen('://'));
 		
 		$klassName = "\\nanodb\\orm\\DbDriver_" . $dbtype;
 		$this->connection = new $klassName($dbparams);
@@ -42,9 +42,9 @@ class Db
 
 	public function bind(string $sql, array $params) : string
 	{
-		return preg_replace_callback("/[{]([_a-zA-Z][_a-zA-Z0-9]*)[}]/", function ($mathes)  use ($params, $sql) {
+		return preg_replace_callback('/[{]([_a-zA-Z]\w*)[}]/', function ($mathes)  use ($params, $sql) {
 			$name = $mathes[1];
-			if (array_key_exists($name, $params)) return $this->quote($params[$name]);
+			if (\array_key_exists($name, $params)) return $this->quote($params[$name]);
 			throw new \Exception("Param \"$name\" not found while binding SQL query \"$sql\".");
 		}, $sql);
 	}
@@ -73,8 +73,8 @@ class Db
 	{
 		if ($v instanceof SqlTextRaw) return $v->text;
 		
-		if (is_array($v) || $v instanceof \ArrayObject) {
-			return "(" . implode(", ", array_map(function ($x) { return $this->quote($x); }, $v)) . ")";
+		if (\is_array($v) || $v instanceof \ArrayObject) {
+			return '(' . implode(', ', array_map(function ($x) { return $this->quote($x); }, $v)) . ')';
 		}
 		return $this->connection->quote($v);
 	}
